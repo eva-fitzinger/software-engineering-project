@@ -132,4 +132,4 @@ create repair vehicles (with destination)
 
 Fragen per E-Mail (Eva):
 
- - [ ]  Where do we get the plan of the city (OpenStreetMaps etc.)? nope :/
+ - [x]  Where do we get the plan of the city (OpenStreetMaps etc.)? nope :/
