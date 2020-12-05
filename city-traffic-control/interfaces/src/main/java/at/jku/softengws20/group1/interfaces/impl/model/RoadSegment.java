@@ -1,9 +1,6 @@
-package at.jku.softengws20.group1.controlsystem.model;
+package at.jku.softengws20.group1.interfaces.impl.model;
 
-import at.jku.softengws20.group1.interfaces.controlsystem.Position;
-import at.jku.softengws20.group1.interfaces.impl.RoadType;
-
-public class RoadSegment implements at.jku.softengws20.group1.interfaces.controlsystem.RoadSegment {
+public class RoadSegment <T0 extends Position> implements at.jku.softengws20.group1.interfaces.controlsystem.RoadSegment {
 
     private String id;
     private String roadId;
@@ -12,9 +9,11 @@ public class RoadSegment implements at.jku.softengws20.group1.interfaces.control
     private RoadType roadType;
     private double length;
     private int defaultSpeedLimit;
-    private Position[] path;
+    private T0[] path;
 
-    public RoadSegment(String id, String roadId, String crossingAId, String crossingBId, RoadType roadType, double length, int defaultSpeedLimit, Position[] path) {
+    public RoadSegment() {}
+
+    public RoadSegment(String id, String roadId, String crossingAId, String crossingBId, RoadType roadType, double length, int defaultSpeedLimit, T0[] path) {
         this.id = id;
         this.roadId = roadId;
         this.crossingAId = crossingAId;
@@ -61,7 +60,7 @@ public class RoadSegment implements at.jku.softengws20.group1.interfaces.control
     }
 
     @Override
-    public Position[] getPath() {
+    public T0[] getPath() {
         return path;
     }
 }

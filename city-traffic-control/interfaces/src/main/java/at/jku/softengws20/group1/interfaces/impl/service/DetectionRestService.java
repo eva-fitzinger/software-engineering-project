@@ -1,4 +1,4 @@
-package at.jku.softengws20.group1.interfaces.impl;
+package at.jku.softengws20.group1.interfaces.impl.service;
 
 import at.jku.softengws20.group1.interfaces.detection.CarPosition;
 import at.jku.softengws20.group1.interfaces.detection.DetectionInterface;

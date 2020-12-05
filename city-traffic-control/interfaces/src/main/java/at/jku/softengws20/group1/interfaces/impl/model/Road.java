@@ -1,10 +1,12 @@
-package at.jku.softengws20.group1.controlsystem.model;
+package at.jku.softengws20.group1.interfaces.impl.model;
 
 public class Road implements at.jku.softengws20.group1.interfaces.controlsystem.Road {
 
     private String id;
     private String name;
     private String number;
+
+    public Road() {}
 
     public Road(String id, String name, String number) {
         this.id = id;

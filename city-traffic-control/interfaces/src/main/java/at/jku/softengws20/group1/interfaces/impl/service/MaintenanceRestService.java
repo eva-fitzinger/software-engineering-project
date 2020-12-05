@@ -1,4 +1,4 @@
-package at.jku.softengws20.group1.interfaces.impl;
+package at.jku.softengws20.group1.interfaces.impl.service;
 
 import at.jku.softengws20.group1.interfaces.controlsystem.Timeslot;
 import at.jku.softengws20.group1.interfaces.maintenance.MaintenanceCarDestination;

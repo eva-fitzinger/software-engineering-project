@@ -1,4 +1,4 @@
-package at.jku.softengws20.group1.interfaces.impl;
+package at.jku.softengws20.group1.interfaces.impl.service;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;

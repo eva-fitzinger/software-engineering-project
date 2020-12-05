@@ -1,7 +1,5 @@
 package at.jku.softengws20.group1.controlsystem.restservice;
 
-import at.jku.softengws20.group1.controlsystem.model.TrafficLoad;
-import at.jku.softengws20.group1.controlsystem.service.DetectionService;
 import at.jku.softengws20.group1.controlsystem.service.MapRepository;
 import at.jku.softengws20.group1.interfaces.controlsystem.ControlSystemInterface;
 import at.jku.softengws20.group1.interfaces.controlsystem.MaintenanceRequest;
@@ -17,9 +15,6 @@ public class ControlSystemController implements ControlSystemInterface {
     @Autowired
     private MapRepository mapRepository;
 
-    @Autowired
-    private DetectionService detectionService;
-
     @Override
     @GetMapping(ControlSystemInterface.GET_ROAD_NETWORK_URL)
     public RoadNetwork getRoadNetwork() {
@@ -29,9 +24,6 @@ public class ControlSystemController implements ControlSystemInterface {
     @Override
     @GetMapping(ControlSystemInterface.GET_STATUS_URL)
     public RoadSegmentStatus[] getStatus() {
-        TrafficLoad[] tl = detectionService.getTrafficLoad();
-        System.out.println("lsjflsjflkjf LENGTH");
-        System.out.println(tl.length);
         return new RoadSegmentStatus[0];
     }
 

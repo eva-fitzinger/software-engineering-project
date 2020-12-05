@@ -1,10 +1,18 @@
-package at.jku.softengws20.group1.controlsystem.model;
+package at.jku.softengws20.group1.interfaces.impl.model;
 
 public class RoadSegmentStatus implements at.jku.softengws20.group1.interfaces.controlsystem.RoadSegmentStatus {
 
     private String roadSegmentId;
     private boolean isOpen;
     private double trafficLoad;
+
+    public RoadSegmentStatus() {}
+
+    public RoadSegmentStatus(String roadSegmentId, boolean isOpen, double trafficLoad) {
+        this.roadSegmentId = roadSegmentId;
+        this.isOpen = isOpen;
+        this.trafficLoad = trafficLoad;
+    }
 
     @Override
     public String getRoadSegmentId() {
