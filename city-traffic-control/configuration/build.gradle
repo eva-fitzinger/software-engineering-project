@@ -1,0 +1,11 @@
+plugins {
+    id 'org.springframework.boot' version '2.4.0'
+}
+
+dependencies {
+    implementation project(':control-system')
+    implementation project(':maintenance')
+    implementation project(':participants')
+    implementation project(':detection')
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.4.0'
+}

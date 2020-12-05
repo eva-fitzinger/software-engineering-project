@@ -1,0 +1,8 @@
+rootProject.name = 'city-traffic-control'
+include 'interfaces'
+include 'control-system'
+include 'maintenance'
+include 'participants'
+include 'detection'
+include 'configuration'
+
