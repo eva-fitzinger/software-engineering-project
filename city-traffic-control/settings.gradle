@@ -1,5 +1,5 @@
 rootProject.name = 'city-traffic-control'
-include 'interfaces'
+include 'shared'
 include 'control-system'
 include 'maintenance'
 include 'participants'

@@ -4,6 +4,8 @@
     <bytecodeTargetLevel>
       <module name="city-traffic-control.control-center.main" target="1.8" />
       <module name="city-traffic-control.control-center.test" target="1.8" />
+      <module name="city-traffic-control.interfaces.main" target="11" />
+      <module name="city-traffic-control.interfaces.test" target="11" />
       <module name="city-traffic-control.main" target="11" />
       <module name="city-traffic-control.test" target="11" />
     </bytecodeTargetLevel>
