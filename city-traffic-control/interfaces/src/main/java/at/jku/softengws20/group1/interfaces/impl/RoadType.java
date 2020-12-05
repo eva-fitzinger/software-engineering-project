@@ -1,4 +1,4 @@
-package at.jku.softengws20.group1.interfaces;
+package at.jku.softengws20.group1.interfaces.impl;
 
 import java.util.Arrays;
 

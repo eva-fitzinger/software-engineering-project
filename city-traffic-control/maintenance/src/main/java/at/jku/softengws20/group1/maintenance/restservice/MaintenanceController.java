@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/maintenance")
+@RequestMapping(MaintenanceInterface.URL)
 public class MaintenanceController implements MaintenanceInterface {
     @Override
-    @PostMapping("notifyApprovedMaintenance")
+    @PostMapping(MaintenanceInterface.NOTIFY_APPROVED_MAINTENANCE_URL)
     public void notifyApprovedMaintenance(@RequestBody Timeslot approvedTimeslot) {
 
     }
 
     @Override
-    @PostMapping("notifyMaintenanceCarArrived")
+    @PostMapping(MaintenanceInterface.NOTIFY_MAINTENANCE_CAR_ARRIVED_URL)
     public void notifyMaintenanceCarArrived(@RequestBody MaintenanceCarDestination destination) {
 
     }

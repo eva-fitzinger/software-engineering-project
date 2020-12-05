@@ -1,7 +1,7 @@
 package at.jku.softengws20.group1.controlsystem.model;
 
 import at.jku.softengws20.group1.interfaces.controlsystem.Position;
-import at.jku.softengws20.group1.interfaces.RoadType;
+import at.jku.softengws20.group1.interfaces.impl.RoadType;
 
 public class RoadSegment implements at.jku.softengws20.group1.interfaces.controlsystem.RoadSegment {
 
