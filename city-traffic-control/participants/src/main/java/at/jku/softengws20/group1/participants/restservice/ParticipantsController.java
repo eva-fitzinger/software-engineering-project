@@ -8,16 +8,16 @@ import org.springframework.web.bind.annotation.RestController;
 import at.jku.softengws20.group1.interfaces.participants.ParticipantsInterface;
 
 @RestController
-@RequestMapping("/participants")
+@RequestMapping(ParticipantsInterface.URL)
 public class ParticipantsController implements ParticipantsInterface {
     @Override
-    @PostMapping("sendMaintenanceCar")
+    @PostMapping(ParticipantsInterface.SEND_MAINTENANCE_CAR_URL)
     public void sendMaintenanceCar(@RequestBody MaintenanceCarDestination request) {
 
     }
 
     @Override
-    @PostMapping("notifyCarsPassed")
+    @PostMapping(ParticipantsInterface.NOTIFY_CARS_PASSED_URL)
     public void notifyCarsPassed(@RequestBody String[] carIds) {
 
     }
