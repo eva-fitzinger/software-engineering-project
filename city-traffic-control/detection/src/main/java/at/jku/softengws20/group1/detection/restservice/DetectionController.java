@@ -1,10 +1,10 @@
 package at.jku.softengws20.group1.detection.restservice;
 
-import at.jku.softengws20.group1.interfaces.detection.CarPosition;
-import at.jku.softengws20.group1.interfaces.detection.DetectionInterface;
-import at.jku.softengws20.group1.interfaces.detection.TrafficLightRule;
-import at.jku.softengws20.group1.interfaces.detection.TrafficLoad;
-import at.jku.softengws20.group1.interfaces.impl.model.RoadNetwork;
+import at.jku.softengws20.group1.shared.detection.CarPosition;
+import at.jku.softengws20.group1.shared.detection.DetectionInterface;
+import at.jku.softengws20.group1.shared.detection.TrafficLightRule;
+import at.jku.softengws20.group1.shared.detection.TrafficLoad;
+import at.jku.softengws20.group1.shared.impl.model.RoadNetwork;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

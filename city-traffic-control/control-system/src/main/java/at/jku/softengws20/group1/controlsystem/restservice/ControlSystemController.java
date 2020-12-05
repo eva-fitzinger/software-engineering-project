@@ -1,10 +1,10 @@
 package at.jku.softengws20.group1.controlsystem.restservice;
 
 import at.jku.softengws20.group1.controlsystem.service.MapRepository;
-import at.jku.softengws20.group1.interfaces.controlsystem.ControlSystemInterface;
-import at.jku.softengws20.group1.interfaces.controlsystem.MaintenanceRequest;
-import at.jku.softengws20.group1.interfaces.controlsystem.RoadNetwork;
-import at.jku.softengws20.group1.interfaces.controlsystem.RoadSegmentStatus;
+import at.jku.softengws20.group1.shared.controlsystem.ControlSystemInterface;
+import at.jku.softengws20.group1.shared.controlsystem.MaintenanceRequest;
+import at.jku.softengws20.group1.shared.controlsystem.RoadNetwork;
+import at.jku.softengws20.group1.shared.controlsystem.RoadSegmentStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

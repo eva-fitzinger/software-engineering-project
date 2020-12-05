@@ -1,7 +1,7 @@
 package at.jku.softengws20.group1.detection.restservice;
 
-import at.jku.softengws20.group1.interfaces.impl.service.ControlSystemRestService;
-import at.jku.softengws20.group1.interfaces.impl.model.*;
+import at.jku.softengws20.group1.shared.impl.service.ControlSystemRestService;
+import at.jku.softengws20.group1.shared.impl.model.*;
 import org.springframework.stereotype.Service;
 
 @Service

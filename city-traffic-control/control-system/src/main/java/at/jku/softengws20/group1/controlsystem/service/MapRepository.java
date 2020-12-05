@@ -1,7 +1,7 @@
 package at.jku.softengws20.group1.controlsystem.service;
 
-import at.jku.softengws20.group1.interfaces.impl.model.RoadType;
-import at.jku.softengws20.group1.interfaces.impl.model.*;
+import at.jku.softengws20.group1.shared.impl.model.RoadType;
+import at.jku.softengws20.group1.shared.impl.model.*;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;

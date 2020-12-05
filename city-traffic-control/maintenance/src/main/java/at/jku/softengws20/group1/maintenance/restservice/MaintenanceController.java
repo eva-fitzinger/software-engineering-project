@@ -1,8 +1,8 @@
 package at.jku.softengws20.group1.maintenance.restservice;
 
-import at.jku.softengws20.group1.interfaces.controlsystem.Timeslot;
-import at.jku.softengws20.group1.interfaces.maintenance.MaintenanceCarDestination;
-import at.jku.softengws20.group1.interfaces.maintenance.MaintenanceInterface;
+import at.jku.softengws20.group1.shared.controlsystem.Timeslot;
+import at.jku.softengws20.group1.shared.maintenance.MaintenanceCarDestination;
+import at.jku.softengws20.group1.shared.maintenance.MaintenanceInterface;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

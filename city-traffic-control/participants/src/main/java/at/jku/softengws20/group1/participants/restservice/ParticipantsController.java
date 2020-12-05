@@ -1,11 +1,11 @@
 package at.jku.softengws20.group1.participants.restservice;
 
-import at.jku.softengws20.group1.interfaces.maintenance.MaintenanceCarDestination;
+import at.jku.softengws20.group1.shared.maintenance.MaintenanceCarDestination;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import at.jku.softengws20.group1.interfaces.participants.ParticipantsInterface;
+import at.jku.softengws20.group1.shared.participants.ParticipantsInterface;
 
 @RestController
 @RequestMapping(ParticipantsInterface.URL)
