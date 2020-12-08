@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import at.jku.softengws20.group1.shared.participants.ParticipantsInterface;
 
-import java.util.Collection;
-
 @RestController
 @RequestMapping(ParticipantsInterface.URL)
 public class ParticipantsController implements ParticipantsInterface {
@@ -20,7 +18,7 @@ public class ParticipantsController implements ParticipantsInterface {
 
     @Override
     @PostMapping(ParticipantsInterface.NOTIFY_CARS_PASSED_URL)
-    public void notifyCarsPassed(@RequestBody Collection<String> carIds) {
+    public void notifyCarsPassed(@RequestBody String[] carIds) {
 
     }
 }

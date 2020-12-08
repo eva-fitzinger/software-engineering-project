@@ -1,17 +1,14 @@
 package at.jku.softengws20.group1.shared.impl.model;
 
-import java.util.Collection;
-
-public class MaintenanceRequest<T0 extends Timeslot>
-        implements at.jku.softengws20.group1.shared.controlsystem.MaintenanceRequest<T0> {
+public class MaintenanceRequest<T0 extends Timeslot> implements at.jku.softengws20.group1.shared.controlsystem.MaintenanceRequest {
 
     private String requestType;
     private String roadSegmentId;
-    private Collection<T0> timeslots;
+    private T0[] timeslots;
 
     public MaintenanceRequest() {}
 
-    public MaintenanceRequest(String requestType, String roadSegmentId, Collection<T0> timeslots) {
+    public MaintenanceRequest(String requestType, String roadSegmentId, T0[] timeslots) {
         this.requestType = requestType;
         this.roadSegmentId = roadSegmentId;
         this.timeslots = timeslots;
@@ -28,7 +25,7 @@ public class MaintenanceRequest<T0 extends Timeslot>
     }
 
     @Override
-    public Collection<T0> getTimeSlots() {
+    public T0[] getTimeSlots() {
         return timeslots;
     }
 }

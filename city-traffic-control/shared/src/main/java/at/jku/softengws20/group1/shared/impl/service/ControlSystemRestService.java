@@ -5,11 +5,8 @@ import at.jku.softengws20.group1.shared.controlsystem.MaintenanceRequest;
 import at.jku.softengws20.group1.shared.controlsystem.RoadNetwork;
 import at.jku.softengws20.group1.shared.controlsystem.RoadSegmentStatus;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 public abstract class ControlSystemRestService<T0 extends RoadNetwork, T1 extends RoadSegmentStatus>
-        extends BaseService implements ControlSystemInterface<T0, T1> {
+        extends BaseService implements ControlSystemInterface {
 
     private Class<T0> roadNetworkClass;
     private Class<T1[]> roadSegmentStatusClass;
@@ -26,8 +23,8 @@ public abstract class ControlSystemRestService<T0 extends RoadNetwork, T1 extend
     }
 
     @Override
-    public Collection<T1> getStatus() {
-        return Arrays.asList(successBodyOrNull(ControlSystemInterface.GET_STATUS_URL, roadSegmentStatusClass));
+    public T1[] getStatus() {
+        return successBodyOrNull(ControlSystemInterface.GET_STATUS_URL, roadSegmentStatusClass);
     }
 
     @Override

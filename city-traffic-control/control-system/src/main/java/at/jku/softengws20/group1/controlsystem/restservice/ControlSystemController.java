@@ -8,9 +8,6 @@ import at.jku.softengws20.group1.shared.controlsystem.RoadSegmentStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 @RestController
 @RequestMapping(ControlSystemInterface.URL)
 public class ControlSystemController implements ControlSystemInterface {
@@ -26,8 +23,8 @@ public class ControlSystemController implements ControlSystemInterface {
 
     @Override
     @GetMapping(ControlSystemInterface.GET_STATUS_URL)
-    public Collection<RoadSegmentStatus> getStatus() {
-        return new ArrayList<>();
+    public RoadSegmentStatus[] getStatus() {
+        return new RoadSegmentStatus[0];
     }
 
     @Override

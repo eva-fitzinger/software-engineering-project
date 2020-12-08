@@ -3,28 +3,28 @@ package at.jku.softengws20.group1.detection.restservice;
 import at.jku.softengws20.group1.shared.detection.CarPosition;
 import at.jku.softengws20.group1.shared.detection.DetectionInterface;
 import at.jku.softengws20.group1.shared.detection.TrafficLightRule;
-import at.jku.softengws20.group1.shared.impl.model.BasicRoadNetwork;
-import at.jku.softengws20.group1.shared.impl.model.TrafficLoad;
+import at.jku.softengws20.group1.shared.detection.TrafficLoad;
+import at.jku.softengws20.group1.shared.impl.model.RoadNetwork;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collection;
-
 @RestController()
 @RequestMapping(DetectionInterface.URL)
-public class DetectionController implements DetectionInterface<TrafficLoad> {
+public class DetectionController implements DetectionInterface {
 
     @Autowired
     private ControlSystemService controlSystemService;
 
     @Override
     @GetMapping(DetectionInterface.GET_TRAFFIC_LOAD_URL)
-    public Collection<TrafficLoad> getTrafficLoad() {
-        BasicRoadNetwork network = controlSystemService.getRoadNetwork();
-        network.getRoadSegments().forEach(rs -> System.out.println(rs.getId()));
+    public TrafficLoad[] getTrafficLoad() {
+        RoadNetwork network = controlSystemService.getRoadNetwork();
+        for (int i = 0; i < network.getRoadSegments().length; i++) {
+            System.out.println(network.getRoadSegments()[i].getId());
+        }
         return null;
     }
 

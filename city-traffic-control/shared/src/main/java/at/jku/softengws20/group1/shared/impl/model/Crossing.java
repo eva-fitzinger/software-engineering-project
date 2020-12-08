@@ -1,16 +1,14 @@
 package at.jku.softengws20.group1.shared.impl.model;
 
-import java.util.Collection;
-
 public class Crossing <T0 extends Position>
         implements at.jku.softengws20.group1.shared.controlsystem.Crossing {
     private String id;
     private T0 position;
-    private Collection<String> roadSegmentIds;
+    private String[] roadSegmentIds;
 
     public Crossing() {}
 
-    public Crossing(String id, T0 position, Collection<String> roadSegmentIds) {
+    public Crossing(String id, T0 position, String[] roadSegmentIds) {
         this.id = id;
         this.position = position;
         this.roadSegmentIds = roadSegmentIds;
@@ -27,7 +25,7 @@ public class Crossing <T0 extends Position>
     }
 
     @Override
-    public Collection<String> getRoadSegmentIds() {
+    public String[] getRoadSegmentIds() {
         return roadSegmentIds;
     }
 }

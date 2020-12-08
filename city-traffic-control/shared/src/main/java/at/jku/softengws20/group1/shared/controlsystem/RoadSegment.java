@@ -1,6 +1,6 @@
 package at.jku.softengws20.group1.shared.controlsystem;
 
-public interface RoadSegment<T0 extends Position> {
+public interface RoadSegment {
     String getId();
     String getRoadId();
     String getRoadType();
@@ -8,5 +8,5 @@ public interface RoadSegment<T0 extends Position> {
     double getLength();
     String getCrossingAId();
     String getCrossingBId();
-    T0[] getPath();
+    Position[] getPath();
 }
