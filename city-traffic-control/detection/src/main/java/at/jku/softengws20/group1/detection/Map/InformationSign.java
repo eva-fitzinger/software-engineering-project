@@ -9,7 +9,9 @@ public class InformationSign {
         this.text = text;
     }
 
-    public InformationSign() {}
+    public InformationSign() {
+        this.text = Config.STANDARD_TEST_INFO_SIGN;
+    }
 
     public void setText(final String text) {
         this.text = text;

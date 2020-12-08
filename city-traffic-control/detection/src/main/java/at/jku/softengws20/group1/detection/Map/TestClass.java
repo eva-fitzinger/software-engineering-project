@@ -1,7 +1,6 @@
 package at.jku.softengws20.group1.detection.Map;
-import at.jku.softengws20.group1.shared.impl.model.RoadNetwork;
 
-import javax.accessibility.AccessibleRelation;
+import at.jku.softengws20.group1.shared.impl.model.RoadNetwork;
 
 public class TestClass {
     private static CityMap cityMap = new CityMap();

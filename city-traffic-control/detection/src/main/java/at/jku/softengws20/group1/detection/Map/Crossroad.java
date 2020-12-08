@@ -19,14 +19,6 @@ public class Crossroad {
         this.id = id;
     }
 
-    public void putStreet(Street street) {
-        streets.put(street.getId(), street);
-    }
-
-    public Street getStreet(String streetID) {
-        return streets.get(streetID);
-    }
-
     public List<TrafficLoad> getNumberOfVehicles() {
         List<TrafficLoad> trafficLoad = new LinkedList<>();
         for (int i = 0; i < trafficLight.getNumberOfVehicles().size(); i++) {
@@ -37,17 +29,26 @@ public class Crossroad {
         return trafficLoad;
     }
 
-    public TrafficLights getTrafficLight() {
-        return trafficLight;
+    public void start() {
+        trafficLight = new TrafficLights(streets, id);
+        executor.submit(trafficLight);
     }
 
     public void deleteStreet(String id) {
         streets.remove(id);
     }
 
-    public void start() {
-        trafficLight = new TrafficLights(streets, id);
-        executor.submit(trafficLight);
+    //Getter und Setter and reset
+    public TrafficLights getTrafficLight() {
+        return trafficLight;
+    }
+
+    public void putStreet(Street street) {
+        streets.put(street.getId(), street);
+    }
+
+    public Street getStreet(String streetID) {
+        return streets.get(streetID);
     }
 
     public void setInformationSign(final String text) {
@@ -57,6 +58,9 @@ public class Crossroad {
     public void resetInformationSign() {
         informationSign.resetText();
     }
+
+
+
 
     /*For further Implementation if more time:
         - block roads possible

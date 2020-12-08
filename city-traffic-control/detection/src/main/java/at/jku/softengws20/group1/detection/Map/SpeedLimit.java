@@ -4,24 +4,21 @@ public class SpeedLimit {
     private int standardSpeedLimit;
     private int speedLimit;
 
-    public SpeedLimit(final int standardSpeedLimit) {
-        this.standardSpeedLimit = standardSpeedLimit;
-        this.speedLimit = standardSpeedLimit;
+    public void setStandardSpeedLimit(int speedLimit) {
+        this.standardSpeedLimit = speedLimit;
     }
-
-    public SpeedLimit() {}
-
-
 
     public void setSpeedLimit(final int speedLimit) {
         this.speedLimit = speedLimit;
+    }
+
+    public int getSpeedLimit() {
+        return speedLimit;
     }
 
     public void resetSpeedLimit() {
         speedLimit = standardSpeedLimit;
     }
 
-    public int getSpeedLimit() {
-        return speedLimit;
-    }
+
 }

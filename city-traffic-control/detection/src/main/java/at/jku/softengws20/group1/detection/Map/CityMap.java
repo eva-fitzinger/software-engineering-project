@@ -13,13 +13,16 @@ public class CityMap {
 
     public void createCityMap(RoadNetwork roadNetwork) {
         for (int i = 0; i < roadNetwork.getRoadSegments().length ; i++) {
-            putStreet(roadNetwork.getRoadSegments()[i].getId());
+            String id = roadNetwork.getRoadSegments()[i].getId();
+            streets.put(id, new Street(id));
+            streets.get(id).getSpeedLimit().setStandardSpeedLimit(roadNetwork.getRoadSegments()[i].getDefaultSpeedLimit());
         }
 
         for (int i = 0; i < roadNetwork.getCrossings().length; i++) {
-            putCrossroad(roadNetwork.getCrossings()[i].getId());
+            String id = roadNetwork.getCrossings()[i].getId();
+            crossroads.put(id, new Crossroad(id));
             for (int j = 0; j < roadNetwork.getCrossings()[i].getRoadSegmentIds().length; j++) {
-                putStreetToCrossroad(roadNetwork.getCrossings()[i].getId() ,roadNetwork.getCrossings()[i].getRoadSegmentIds()[j]);
+                putStreetToCrossroad(id ,roadNetwork.getCrossings()[i].getRoadSegmentIds()[j]);
             }
         }
 
@@ -56,7 +59,6 @@ public class CityMap {
     }
 
     /*For further Implementation if more time:
-        - accessibility for information signs
         - block roads possible
      */
 }

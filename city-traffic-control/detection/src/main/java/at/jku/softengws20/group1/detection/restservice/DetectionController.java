@@ -34,7 +34,7 @@ public class DetectionController implements DetectionInterface {
             try {
                 Thread.sleep(200);
                 cityMap.createCityMap(controlSystemService.getRoadNetwork());
-                System.out.print("Detection running");
+                System.out.println("Detection running");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -45,7 +45,7 @@ public class DetectionController implements DetectionInterface {
     @Override   //request from Control system
     @GetMapping(DetectionInterface.GET_TRAFFIC_LOAD_URL)
     public TrafficLoad[] getTrafficLoad() {
-        RoadNetwork network = controlSystemService.getRoadNetwork();    //TODO delete
+        RoadNetwork network = controlSystemService.getRoadNetwork();
         for (int i = 0; i < network.getRoadSegments().length; i++) {
             System.out.println(network.getRoadSegments()[i].getId());
         }
@@ -54,7 +54,7 @@ public class DetectionController implements DetectionInterface {
         for(Map.Entry<String, Crossroad> entry : cityMap.getCrossroads().entrySet()) {
             trafficLoad.addAll(entry.getValue().getNumberOfVehicles());
         }
-        return trafficLoad.toArray(new TrafficLoad[trafficLoad.size()]);    //TODO check
+        return trafficLoad.toArray(new TrafficLoad[trafficLoad.size()]);
     }
 
     @Override       //set from Control system
