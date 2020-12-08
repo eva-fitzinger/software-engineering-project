@@ -5,6 +5,9 @@ import at.jku.softengws20.group1.shared.detection.DetectionInterface;
 import at.jku.softengws20.group1.shared.detection.TrafficLightRule;
 import at.jku.softengws20.group1.shared.detection.TrafficLoad;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 public abstract class DetectionRestService<T0 extends TrafficLoad> extends BaseService implements DetectionInterface<T0> {
 
     private Class<T0[]> trafficLoadType;
@@ -15,8 +18,8 @@ public abstract class DetectionRestService<T0 extends TrafficLoad> extends BaseS
     }
 
     @Override
-    public T0[] getTrafficLoad() {
-        return successBodyOrNull(DetectionInterface.GET_TRAFFIC_LOAD_URL, trafficLoadType);
+    public Collection<T0> getTrafficLoad() {
+        return Arrays.asList(successBodyOrNull(DetectionInterface.GET_TRAFFIC_LOAD_URL, trafficLoadType));
     }
 
     @Override
