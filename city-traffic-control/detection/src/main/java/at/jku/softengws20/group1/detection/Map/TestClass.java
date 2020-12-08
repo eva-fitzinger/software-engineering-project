@@ -8,9 +8,9 @@ public class TestClass {
 
     public static void main(String[] args) {
         //createCityMapTest();
+        boolean test = true;
 
-        System.out.printf("TrafficLight:%d StreetSeg:%d GREEN ", "1est", 1);
-
+        System.out.printf("TrafficLight:%s StreetSeg:%d GREEN %b", "1est", 1, test);
     }
 
     public CityMap createCityMap(RoadNetwork roadNetwork) {
@@ -25,7 +25,7 @@ public class TestClass {
             }
         }
 
-        cityMap.start();      //TODO
+        cityMap.start();
         return cityMap;
     }
 

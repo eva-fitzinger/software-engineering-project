@@ -10,6 +10,7 @@ public class TrafficLights implements Runnable {
     public static boolean stop = false;
     private final String crossroadId;
     private final float minutesForFullRun = Config.MINUTES_FOR_FULL_TRAFFIC_LIGHT_RUN * Config.REAL_TIME_FACTOR;
+    private boolean standardPriority = true;
     Map<String, List<String>> streets = new HashMap<>();
     Map<String, Double> priority = new HashMap<>();
 
@@ -29,6 +30,7 @@ public class TrafficLights implements Runnable {
         for(Map.Entry<String, List<String>> entry : streets.entrySet()) {
             priority.put(entry.getKey(), time);
         }
+        standardPriority = true;
     }
 
     public Map<String, List<String>> getNumberOfVehicles() {
@@ -49,6 +51,7 @@ public class TrafficLights implements Runnable {
                 priority.put(entry.getKey(), time);
             }
         }
+        standardPriority = false;
     }
 
     private void outgoingCar(List<String> passedCars) {
@@ -58,7 +61,7 @@ public class TrafficLights implements Runnable {
     @Override
     public void run() {
         long time;
-        System.out.printf("Traffic light start: %s\n", crossroadId);
+        System.out.printf("start traffic light %s\n", crossroadId);
         while (!stop) {
             for(Map.Entry<String, Double> entry : priority.entrySet()) {
                 time = (long)(entry.getValue()*60);
@@ -71,7 +74,7 @@ public class TrafficLights implements Runnable {
                 if (passedCars.size() > 0) {
                     outgoingCar(passedCars);
                 }
-                System.out.printf("TrafficLight:%s StreetSeg:%s GREEN\n", crossroadId, entry.getKey());
+                System.out.printf("TrafficLight:%s StreetSeg:%s GREEN (Standard Priority: %b)\n", crossroadId, entry.getKey(), standardPriority);
                 try {
                     TimeUnit.SECONDS.sleep(time);
                 } catch (InterruptedException e) {
