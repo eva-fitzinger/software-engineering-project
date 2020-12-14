@@ -9,4 +9,14 @@ public class ControlSystemService extends ControlSystemRestService<RoadNetwork, 
     public ControlSystemService() {
         super(RoadNetwork.class, RoadSegmentStatus[].class);
     }
+
+    @Override
+    public RoadNetwork getRoadNetwork() {
+        return super.getRoadNetwork();
+    }
+
+    @Override
+    public RoadSegmentStatus[] getStatus() {
+        return super.getStatus();
+    }
 }
