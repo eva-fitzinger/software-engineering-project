@@ -1,8 +1,9 @@
 package at.jku.softengws20.group1.detection.Map;
 
 import at.jku.softengws20.group1.detection.restservice.ParticipantsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import at.jku.softengws20.group1.shared.Config;
+import at.jku.softengws20.group1.shared.impl.model.TrafficLightChange;
+
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -10,42 +11,44 @@ public class TrafficLights implements Runnable {
     public static boolean stop = false;
     private final String crossroadId;
     private final float minutesForFullRun = Config.MINUTES_FOR_FULL_TRAFFIC_LIGHT_RUN * Config.REAL_TIME_FACTOR;
-    private boolean standardPriority = true;
-    Map<String, List<String>> streets = new HashMap<>();
+    Map<String, HashSet<String>> streets = new HashMap<>();
     Map<String, Double> priority = new HashMap<>();
-
-    @Autowired
-    ParticipantsService participantsService;
+    private ParticipantsService participantsService = new ParticipantsService();
+    private boolean standardPriority = true;
 
     public TrafficLights(final Map<String, Street> streets, final String crossroadId) {
         this.crossroadId = crossroadId;
-        for(Map.Entry<String, Street> entry : streets.entrySet()) {
-            this.streets.put(entry.getKey(), new LinkedList<>());
+        for (Map.Entry<String, Street> entry : streets.entrySet()) {
+            this.streets.put(entry.getKey(), new HashSet<>());
         }
         standardPriority();
     }
 
-    public void standardPriority() {
+    public synchronized void standardPriority() {
         double time = minutesForFullRun / streets.size();
-        for(Map.Entry<String, List<String>> entry : streets.entrySet()) {
+        for (Map.Entry<String, HashSet<String>> entry : streets.entrySet()) {
             priority.put(entry.getKey(), time);
         }
         standardPriority = true;
     }
 
-    public Map<String, List<String>> getNumberOfVehicles() {
+    public synchronized Map<String, HashSet<String>> getNumberOfVehicles() {
         return streets;
     }
 
-    public void incomingVehicle(String StreetID ,String CarID) {
+    public synchronized void incomingVehicle(String StreetID, String CarID) {
         streets.get(StreetID).add(CarID);
     }
 
-    public void setPriority(String StreetID, double prio) {
+    public synchronized void outgoingVehicle(String StreetID, String CarID) {
+        streets.get(StreetID).remove(CarID);
+    }
+
+    public synchronized void setPriority(String StreetID, double prio) {
         double prioStreet = minutesForFullRun * prio;
-        double time = (minutesForFullRun - prioStreet) / (streets.size() -1);
-        for(Map.Entry<String, List<String>> entry : streets.entrySet()) {
-            if(entry.getKey().equals(StreetID)) {
+        double time = (minutesForFullRun - prioStreet) / (streets.size() - 1);
+        for (Map.Entry<String, HashSet<String>> entry : streets.entrySet()) {
+            if (entry.getKey().equals(StreetID)) {
                 priority.put(entry.getKey(), prioStreet);
             } else {
                 priority.put(entry.getKey(), time);
@@ -54,26 +57,14 @@ public class TrafficLights implements Runnable {
         standardPriority = false;
     }
 
-    private void outgoingCar(List<String> passedCars) {
-        participantsService.notifyCarsPassed(passedCars.toArray(new String[passedCars.size()]));
-    }
-
     @Override
-    public void run() {
+    public synchronized void run() {
         long time;
         System.out.printf("start traffic light %s\n", crossroadId);
         while (!stop) {
-            for(Map.Entry<String, Double> entry : priority.entrySet()) {
-                time = (long)(entry.getValue()*60);
-                int allowedPasses = (int) (Config.PASSED_CAR_PER_MINUTE * entry.getValue());
-                List<String> waitingCars = streets.get(entry.getKey());
-                List<String> passedCars = new LinkedList<>();
-                for (int i = 0; i < allowedPasses && i < waitingCars.size(); i++) {
-                    passedCars.add(waitingCars.remove(1));
-                }
-                if (passedCars.size() > 0) {
-                    outgoingCar(passedCars);
-                }
+            for (Map.Entry<String, Double> entry : priority.entrySet()) {
+                time = (long) (entry.getValue() * 60);
+                participantsService.notifyTrafficLightChanged(new TrafficLightChange(crossroadId, new String[]{entry.getKey()}));
                 System.out.printf("TrafficLight:%s StreetSeg:%s GREEN (Standard Priority: %b)\n", crossroadId, entry.getKey(), standardPriority);
                 try {
                     TimeUnit.SECONDS.sleep(time);

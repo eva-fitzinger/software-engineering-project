@@ -1,10 +1,8 @@
 package at.jku.softengws20.group1.detection.Map;
 
 import at.jku.softengws20.group1.shared.impl.model.TrafficLoad;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -22,7 +20,7 @@ public class Crossroad {
     public List<TrafficLoad> getNumberOfVehicles() {
         List<TrafficLoad> trafficLoad = new LinkedList<>();
         for (int i = 0; i < trafficLight.getNumberOfVehicles().size(); i++) {
-            for(Map.Entry<String, List<String>> entry : trafficLight.getNumberOfVehicles().entrySet()) {
+            for(Map.Entry<String, HashSet<String>> entry : trafficLight.getNumberOfVehicles().entrySet()) {
                 trafficLoad.add(new TrafficLoad(entry.getKey(), id, entry.getValue().size()));
             }
         }

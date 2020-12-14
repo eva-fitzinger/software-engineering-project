@@ -25,7 +25,7 @@ public abstract class DetectionRestService<T0 extends TrafficLoad> extends BaseS
     }
 
     @Override
-    public void registerCarForTrafficLight(CarPosition position) {
-        post(DetectionInterface.REGISTER_CAR_FOR_TRAFFIC_LIGHT_URL, position);
+    public void setCarPosition(CarPosition position) {
+        post(DetectionInterface.SET_CAR_POSITION, position);
     }
 }

@@ -1,6 +1,6 @@
 package at.jku.softengws20.group1.shared.participants;
 
-import at.jku.softengws20.group1.shared.detection.TrafficLightChange;
+import at.jku.softengws20.group1.shared.impl.model.TrafficLightChange;
 import at.jku.softengws20.group1.shared.maintenance.CarPath;
 
 public interface ParticipantsInterface {

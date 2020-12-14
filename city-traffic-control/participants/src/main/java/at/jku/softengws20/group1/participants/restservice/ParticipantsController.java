@@ -3,7 +3,7 @@ package at.jku.softengws20.group1.participants.restservice;
 import at.jku.softengws20.group1.participants.navigation.Navigation;
 import at.jku.softengws20.group1.participants.roadNetwork.*;
 import at.jku.softengws20.group1.shared.controlsystem.RoadSegment;
-import at.jku.softengws20.group1.shared.detection.TrafficLightChange;
+import at.jku.softengws20.group1.shared.impl.model.TrafficLightChange;
 import at.jku.softengws20.group1.shared.maintenance.CarPath;
 import at.jku.softengws20.group1.shared.participants.ParticipantsInterface;
 import org.springframework.context.ApplicationListener;

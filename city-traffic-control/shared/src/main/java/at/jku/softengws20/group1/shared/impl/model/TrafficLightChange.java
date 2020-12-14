@@ -1,14 +1,15 @@
 package at.jku.softengws20.group1.shared.impl.model;
 
-import at.jku.softengws20.group1.shared.detection.TrafficLightState;
-
 public class TrafficLightChange implements at.jku.softengws20.group1.shared.detection.TrafficLightChange {
-    private final String crossingId;
-    private TrafficLightState trafficLightState;
+    private String crossingId;
+    private String[] greenForRoads;
 
-    public TrafficLightChange(String crossingId, TrafficLightState trafficLightState) {
+    public TrafficLightChange() {
+    }
+
+    public TrafficLightChange(String crossingId, String[] greenForRoads) {
         this.crossingId = crossingId;
-        this.trafficLightState = trafficLightState;
+        this.greenForRoads = greenForRoads;
     }
 
 
@@ -18,7 +19,7 @@ public class TrafficLightChange implements at.jku.softengws20.group1.shared.dete
     }
 
     @Override
-    public TrafficLightState getTrafficLightState() {
-        return trafficLightState;
+    public String[] getGreenForRoads() {
+        return greenForRoads;
     }
 }

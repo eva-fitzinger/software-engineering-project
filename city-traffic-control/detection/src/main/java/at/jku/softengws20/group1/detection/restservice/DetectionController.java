@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ public class DetectionController implements DetectionInterface {
     private ControlSystemService controlSystemService;
 
     private CityMap cityMap = new CityMap();
+    private HashMap<String, CrossingPosition> carPositions = new HashMap<>();
 
     @PostConstruct
     public void init() {
@@ -51,7 +53,7 @@ public class DetectionController implements DetectionInterface {
         }
 
         List<TrafficLoad> trafficLoad = new LinkedList<>();
-        for(Map.Entry<String, Crossroad> entry : cityMap.getCrossroads().entrySet()) {
+        for (Map.Entry<String, Crossroad> entry : cityMap.getCrossroads().entrySet()) {
             trafficLoad.addAll(entry.getValue().getNumberOfVehicles());
         }
         return trafficLoad.toArray(new TrafficLoad[trafficLoad.size()]);
@@ -66,8 +68,29 @@ public class DetectionController implements DetectionInterface {
     }
 
     @Override       //set from Participants
-    @PostMapping(DetectionInterface.REGISTER_CAR_FOR_TRAFFIC_LIGHT_URL)
-    public void registerCarForTrafficLight(CarPosition position) {
-        cityMap.getCrossroad(position.getCrossingId()).getTrafficLight().incomingVehicle(position.getIncomingRoadSegmentId(), position.getCarId());
+    @PostMapping(DetectionInterface.SET_CAR_POSITION)
+    public void setCarPosition(CarPosition position) {
+        CrossingPosition old = carPositions.get(position.getCarId());
+        if(old != null) {
+            cityMap.getCrossroad(old.CrossingId).getTrafficLight().outgoingVehicle(old.RoadSegmentId, position.getCarId());
+        }
+        carPositions.put(position.getCarId(), new CrossingPosition(position.getCrossingId(), position.getIncomingRoadSegmentId()));
+    }
+
+    @Override
+    @PostMapping(DetectionInterface.SET_WAITING)
+    public void setWaiting(String carId) {
+        CrossingPosition position = carPositions.get(carId);
+        if(position != null) cityMap.getCrossroad(position.CrossingId).getTrafficLight().incomingVehicle(position.RoadSegmentId, carId);
+    }
+
+    private static class CrossingPosition {
+        public final String CrossingId;
+        public final String RoadSegmentId;
+
+        public CrossingPosition(String crossingId, String roadSegmentId) {
+            CrossingId = crossingId;
+            RoadSegmentId = roadSegmentId;
+        }
     }
 }

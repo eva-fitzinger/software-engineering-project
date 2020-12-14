@@ -6,8 +6,4 @@ import org.springframework.stereotype.Service;
 @Service
 public class ParticipantsService extends ParticipantsRestService {
 
-    @Override
-    public void notifyCarsPassed(final String[] carIds) {
-        super.notifyCarsPassed(carIds);
-    }
 }
