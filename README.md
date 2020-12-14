@@ -5,6 +5,9 @@
 https://drive.google.com/drive/folders/1eF4OMavKfaXQatTloGTNh_hAAD_2ZOll?usp=sharing
 ----------------------------------------------------------------------------------------------------------
 
+**Presentation of milestone 2:**
+https://docs.google.com/presentation/d/1gfAcvY_FZexEdbXeNN-L02StYULn71gfjeuxu4iyo24/edit?usp=sharing
+
 **Presentation of milestone 1:**
 https://docs.google.com/presentation/d/1mE4UIsXjSMLN_JhOA-W38GiTq1uLKtsp4dWdwwsGyaI/edit?usp=sharing
 
