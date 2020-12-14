@@ -1,5 +1,12 @@
 package at.jku.softengws20.group1.participants.roadNetwork;
 
+import at.jku.softengws20.group1.participants.simulation.Participant;
+
+import javax.servlet.http.Part;
+import java.util.Queue;
+import java.util.TreeSet;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 public class Road {
     private final String id;
     private final Crossing start;
@@ -8,6 +15,7 @@ public class Road {
     private boolean isClosed;
     private double speedLimit;
     private double estimatedSpeed;
+    private ConcurrentLinkedQueue<Participant> participants = new ConcurrentLinkedQueue<>();
 
     public Road(String id, Crossing start, Crossing end, double length, double defaultSpeedLimit) {
         this.id = id;
