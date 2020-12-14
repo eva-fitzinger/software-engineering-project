@@ -1,7 +1,7 @@
 package at.jku.softengws20.group1.shared.impl.service;
 
 import at.jku.softengws20.group1.shared.controlsystem.Timeslot;
-import at.jku.softengws20.group1.shared.maintenance.MaintenanceCarDestination;
+import at.jku.softengws20.group1.shared.maintenance.CarPath;
 import at.jku.softengws20.group1.shared.maintenance.MaintenanceInterface;
 
 public abstract class MaintenanceRestService extends BaseService implements MaintenanceInterface {
@@ -15,7 +15,7 @@ public abstract class MaintenanceRestService extends BaseService implements Main
     }
 
     @Override
-    public void notifyMaintenanceCarArrived(MaintenanceCarDestination destination) {
+    public void notifyMaintenanceCarArrived(CarPath destination) {
         post(MaintenanceInterface.NOTIFY_MAINTENANCE_CAR_ARRIVED_URL, destination);
     }
 }

@@ -1,7 +1,7 @@
 package at.jku.softengws20.group1.maintenance.restservice;
 
 import at.jku.softengws20.group1.shared.controlsystem.Timeslot;
-import at.jku.softengws20.group1.shared.maintenance.MaintenanceCarDestination;
+import at.jku.softengws20.group1.shared.maintenance.CarPath;
 import at.jku.softengws20.group1.shared.maintenance.MaintenanceInterface;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +19,7 @@ public class MaintenanceController implements MaintenanceInterface {
 
     @Override
     @PostMapping(MaintenanceInterface.NOTIFY_MAINTENANCE_CAR_ARRIVED_URL)
-    public void notifyMaintenanceCarArrived(@RequestBody MaintenanceCarDestination destination) {
+    public void notifyMaintenanceCarArrived(@RequestBody CarPath destination) {
 
     }
 }
