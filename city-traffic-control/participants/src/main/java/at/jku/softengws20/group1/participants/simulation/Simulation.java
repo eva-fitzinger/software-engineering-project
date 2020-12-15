@@ -12,13 +12,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Simulation implements Runnable {
-    private static final double TIME_FACTOR = 0;
-    private static final double MAX_COUNT_PER_TICK = 1000;
+    private static final double TIME_FACTOR = 10;
+    private static final double MAX_COUNT_PER_TICK = 0.5;
     private final Navigation navigation;
     private final HashSet<Participant> participants = new HashSet<>();
     private Random random = new Random();
     private double currentNewCount = 0;
-    private int targetCount = 500000;
+    private int targetCount = 1000;
     private final ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
     public Simulation(Navigation navigation) {
