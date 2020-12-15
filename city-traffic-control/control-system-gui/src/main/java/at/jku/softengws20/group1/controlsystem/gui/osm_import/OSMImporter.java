@@ -1,6 +1,5 @@
-package at.jku.softengws20.group1.controlsystem.mapimport;
+package at.jku.softengws20.group1.controlsystem.gui.osm_import;
 
-import org.springframework.context.annotation.Bean;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -14,10 +13,9 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
-public class OSMImporter {
+class OSMImporter {
 
-    @Bean
-    public OSMStreetNetwork parse(String filename) throws IOException, SAXException, ParserConfigurationException {
+    OSMStreetNetwork parse(String filename) throws IOException, SAXException, ParserConfigurationException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document document = builder.parse(new File(filename));
@@ -45,7 +43,7 @@ public class OSMImporter {
         return streetNetwork;
     }
 
-    public void combineWays(OSMStreetNetwork streetNetwork) {
+    void combineWays(OSMStreetNetwork streetNetwork) {
         for (OSMNode node : streetNetwork.getNodes().values()) {
             if (node.getStreets().size() == 2) {
                 OSMWay[] ways = node.getStreets().values().toArray(new OSMWay[0]);

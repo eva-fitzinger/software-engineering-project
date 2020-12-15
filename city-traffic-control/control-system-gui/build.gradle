@@ -9,8 +9,10 @@ javafx {
 }
 
 mainClassName = "at.jku.softengws20.group1.controlsystem.gui.App"
+//mainClassName = "at.jku.softengws20.group1.controlsystem.gui.osm_import.ImportOSM"
 
 dependencies {
     implementation project(':shared')
     implementation project(':control-system')
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.0'
 }

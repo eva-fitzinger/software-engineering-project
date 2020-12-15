@@ -5,9 +5,7 @@ import at.jku.softengws20.group1.shared.impl.model.Crossing;
 import at.jku.softengws20.group1.shared.impl.model.Position;
 import at.jku.softengws20.group1.shared.impl.model.RoadType;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.LineTo;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
+import javafx.scene.shape.*;
 
 public class RoadSegmentDrawable {
 
@@ -46,6 +44,8 @@ public class RoadSegmentDrawable {
     public void setStyle(RoadStyle style) {
         path.setStrokeWidth(style.lineWidth);
         path.setStroke(style.strokeColor);
+        path.setStrokeLineJoin(StrokeLineJoin.ROUND);
+        path.setStrokeLineCap(StrokeLineCap.ROUND);
     }
 
     public void select() {

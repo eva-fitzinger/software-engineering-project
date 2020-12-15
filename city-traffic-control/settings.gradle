@@ -6,4 +6,5 @@ include 'participants'
 include 'detection'
 include 'configuration'
 include 'control-system-gui'
+include 'osm-import'
 
