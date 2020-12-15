@@ -16,4 +16,11 @@ public class Position {
     public double getRoadPosition() {
         return roadPosition;
     }
+
+    public Coordinate getCoordinate() {
+        return new Coordinate(
+                road.getStart().getPosition().getX()+(road.getEnd().getPosition().getX()-road.getStart().getPosition().getX())*roadPosition,
+                road.getStart().getPosition().getY()+(road.getEnd().getPosition().getY()-road.getStart().getPosition().getY())*roadPosition
+        );
+    }
 }

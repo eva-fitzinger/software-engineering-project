@@ -5,7 +5,7 @@ import at.jku.softengws20.group1.participants.roadNetwork.Position;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Participant {
-    private static AtomicInteger sequence;
+    private static AtomicInteger sequence = new AtomicInteger();
     private final int id;
     private final Position destination;
     private Position position;
@@ -16,5 +16,13 @@ public class Participant {
         id = sequence.getAndIncrement();
         this.position = position;
         this.destination = destination;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public Position getPosition() {
+        return position;
     }
 }
