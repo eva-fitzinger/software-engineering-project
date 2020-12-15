@@ -8,12 +8,10 @@ import at.jku.softengws20.group1.shared.maintenance.CarPath;
 import at.jku.softengws20.group1.shared.participants.ParticipantsInterface;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -34,6 +32,37 @@ public class ParticipantsController implements ParticipantsInterface, Applicatio
     @PostMapping(ParticipantsInterface.SEND_CAR)
     public void sendCar(@RequestBody CarPath request) {
 
+    }
+
+    @RequestMapping("gui")
+    public String getGui() {
+        double minX = Double.POSITIVE_INFINITY;
+        double minY = Double.POSITIVE_INFINITY;
+        double maxX = Double.NEGATIVE_INFINITY;
+        double maxY = Double.NEGATIVE_INFINITY;
+        for (Crossing crossing : roadNetwork.crossings) {
+            if(crossing.getPosition().getX() < minX) minX = crossing.getPosition().getX();
+            if(crossing.getPosition().getY() < minY) minY = crossing.getPosition().getY();
+            if(crossing.getPosition().getX() > maxX) maxX = crossing.getPosition().getX();
+            if(crossing.getPosition().getY() > maxY) maxY = crossing.getPosition().getY();
+        }
+        StringBuilder gui = new StringBuilder("<svg width=100% height=100%>\n");
+        for (Road road : roadNetwork.roads) {
+            double x1 = (road.getStart().getPosition().getX()-minX)/(maxX-minX)*90+5;
+            double y1 = (road.getStart().getPosition().getY()-minY)/(maxY-minY)*90+5;
+            double x2 = (road.getEnd().getPosition().getX()-minX)/(maxX-minX)*90+5;
+            double y2 = (road.getEnd().getPosition().getY()-minY)/(maxY-minY)*90+5;
+            gui.append("<line x1=").append(x1).append("% y1=").append(y1).append("% x2=").append(x2).append("% y2=").append(y2).append("% style='stroke:rgb(0,0,0);stroke-width:2'/>");
+            gui.append("<text x=").append((x1+x2)/2+1).append("% y=").append((y1+y2)/2-1).append("% class='small'>").append(road.getId()).append("</text>");
+        }
+        for (Crossing crossing : roadNetwork.crossings) {
+            double x = (crossing.getPosition().getX()-minX)/(maxX-minX)*90+5;
+            double y = (crossing.getPosition().getY()-minY)/(maxY-minY)*90+5;
+            gui.append("<text x=").append(x+1).append("% y=").append(y-1).append("% class='small'>").append(crossing.getId()).append("</text>");
+            gui.append("<circle cx=").append(x).append("% cy=").append(y).append("% r=5").append(" fill='red'/>");
+        }
+        gui.append("</svg");
+        return gui.toString();
     }
 
     @Override
