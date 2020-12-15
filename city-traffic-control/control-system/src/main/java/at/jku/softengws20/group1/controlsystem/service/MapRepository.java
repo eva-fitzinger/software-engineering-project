@@ -1,18 +1,20 @@
 package at.jku.softengws20.group1.controlsystem.service;
 
-import at.jku.softengws20.group1.shared.impl.model.RoadType;
 import at.jku.softengws20.group1.shared.impl.model.*;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.json.JsonWriteFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 
 @Repository
 public class MapRepository {
 
     private RoadNetwork roadNetwork;
 
-    @PostConstruct
-    public void loadMap() {
+    private void loadDummyMap() {
         Road[] roads = new Road[]{
                 new Road("ring", "Ring", "R1"),
                 new Road("diag", "Diagonal", "D2"),
@@ -28,12 +30,14 @@ public class MapRepository {
                         2, 50, new Position[0]),
                 new RoadSegment("rs4", "ring", "2", "5", RoadType.RESIDENTIAL,
                         2, 50, new Position[0]),
-                new RoadSegment("rs5", "diag", "1", "4", RoadType.RESIDENTIAL,
+                new RoadSegment("rs5", "diag", "1", "4", RoadType.PRIMARY,
                         2, 50, new Position[0]),
                 new RoadSegment("rs6", "ring", "3", "4", RoadType.RESIDENTIAL,
                         2, 50, new Position[0]),
                 new RoadSegment("rs7", "ring", "1", "3", RoadType.RESIDENTIAL,
                         2, 50, new Position[0]),
+                new RoadSegment("rs8", "ring", "3", "1", RoadType.RESIDENTIAL,
+                        3, 70, new Position[0])
 
         };
 
@@ -46,6 +50,22 @@ public class MapRepository {
         };
 
         roadNetwork = new RoadNetwork(crossings, roadSegments, roads, "A-B");
+    }
+
+    private void loadJsonMap() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.getFactory().configure(JsonWriteFeature.ESCAPE_NON_ASCII.mappedFeature(), true);
+        try (JsonParser parser = mapper.createParser(getClass().getClassLoader().getResourceAsStream("urfahr.json"))) {
+            roadNetwork = parser.readValueAs(RoadNetwork.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @PostConstruct
+    public void loadMap() {
+        //loadJsonMap();
+        loadDummyMap();
     }
 
     public RoadNetwork getRoadNetwork() {
