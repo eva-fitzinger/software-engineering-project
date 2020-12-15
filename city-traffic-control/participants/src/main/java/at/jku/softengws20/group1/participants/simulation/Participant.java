@@ -77,7 +77,7 @@ public class Participant {
             acceleration = Math.min(acceleration, -velDiff / bufferSec); //geschwindigkeit an das maximum anpassen
         if (acceleration < minAcceleration) acceleration = minAcceleration;
         else if (acceleration > maxAcceleration) acceleration = maxAcceleration;
-        if (Double.isNaN(acceleration)) {
+        if (Double.isNaN(acceleration) || Double.isNaN(velocity)) {
             int x = 0;
         }
     }
@@ -97,7 +97,13 @@ public class Participant {
                 return true;
             }
         }
+        int cnt = 0;
         while (newPos > position.getRoad().getLength()) {
+            if(cnt++ > 100) {
+                System.out.println("navigation loop");
+                return true;
+            }
+            if(position.getRoad() == destination.getRoad()) return true;
             newPos -= position.getRoad().getLength();
             Road nextRoad = navigation.getNext(position.getRoad().getEnd(), destination);
             if (nextRoad == null) return true; //destination not reachable

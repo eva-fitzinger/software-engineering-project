@@ -57,8 +57,8 @@ public class ParticipantsController implements ParticipantsInterface, Applicatio
         for (Participant participant : simulation.getParticipants()) {
             Coordinate c = participant.getPosition().getCoordinate();
             Coordinate screenOffset = participant.getPosition().getRoad().getScreenOffset();
-            res.append("<circle cx=").append((c.getX()-minX)/(maxX-minX)*90+5+screenOffset.getX())
-                    .append("% cy=").append((c.getY()-minY)/(maxY-minY)*90+5+screenOffset.getY()).append("% r=3").append(" fill='red'/>");
+            res.append("<circle cx=").append((c.getX() - minX) / (maxX - minX) * 90 + 5 + screenOffset.getX())
+                    .append("% cy=").append((c.getY() - minY) / (maxY - minY) * 90 + 5 + screenOffset.getY()).append("% r=3").append(" fill='red'/>");
         }
         return res.toString();
     }
@@ -76,15 +76,15 @@ public class ParticipantsController implements ParticipantsInterface, Applicatio
             double x2 = (road.getEnd().getPosition().getX() - minX) / (maxX - minX) * 90 + 5;
             double y2 = (road.getEnd().getPosition().getY() - minY) / (maxY - minY) * 90 + 5;
             Coordinate screenOffset = road.getScreenOffset();
-            gui.append("<line x1=").append(x1+screenOffset.getX()).append("% y1=").append(y1+screenOffset.getY())
-                    .append("% x2=").append(x2+screenOffset.getX()).append("% y2=").append(y2+screenOffset.getY())
+            gui.append("<line x1=").append(x1 + screenOffset.getX()).append("% y1=").append(y1 + screenOffset.getY())
+                    .append("% x2=").append(x2 + screenOffset.getX()).append("% y2=").append(y2 + screenOffset.getY())
                     .append("% style='stroke:rgb(0,0,0);stroke-width:2'/>");
-            gui.append("<text x=").append((x1 + x2) / 2 + 1).append("% y=").append((y1 + y2) / 2 - 1).append("% class='small'>").append(road.getId()).append("</text>");
+            //gui.append("<text x=").append((x1 + x2) / 2 + 1).append("% y=").append((y1 + y2) / 2 - 1).append("% class='small'>").append(road.getId()).append("</text>");
         }
         for (Crossing crossing : roadNetwork.crossings) {
             double x = (crossing.getPosition().getX() - minX) / (maxX - minX) * 90 + 5;
             double y = (crossing.getPosition().getY() - minY) / (maxY - minY) * 90 + 5;
-            gui.append("<text x=").append(x + 1).append("% y=").append(y - 1).append("% class='small'>").append(crossing.getId()).append("</text>");
+            //gui.append("<text x=").append(x + 1).append("% y=").append(y - 1).append("% class='small'>").append(crossing.getId()).append("</text>");
             gui.append("<circle cx=").append(x).append("% cy=").append(y).append("% r=5").append(" fill='black'/>");
         }
         gui.append("</svg>");
@@ -117,6 +117,7 @@ public class ParticipantsController implements ParticipantsInterface, Applicatio
         simulation.addParticipant(new Participant(new Position(roadNetwork.roads[0], 0), new Position(roadNetwork.roads[5], 1), navigation));
         simulation.addParticipant(new Participant(new Position(roadNetwork.roads[0], 300), new Position(roadNetwork.roads[5], 1), navigation));
         Thread t = new Thread(simulation);
+        t.setName("simulator");
         t.start();
     }
 
@@ -130,7 +131,7 @@ public class ParticipantsController implements ParticipantsInterface, Applicatio
         }
         for (RoadSegment roadSource : roadNetworkSource.getRoadSegments()) {
             roads.put(roadSource.getId(), new Road(roadSource.getId(), crossings.get(roadSource.getCrossingAId()), crossings.get(roadSource.getCrossingBId()),
-                    roadSource.getLength() * 1000, roadSource.getDefaultSpeedLimit() / 3.6));
+                    roadSource.getLength() * 1000, Math.max(roadSource.getDefaultSpeedLimit(), 30) / 3.6));
             //roads.put(new Road(roadSource.getId(), crossings.get(roadSource.getCrossingBId()), crossings.get(roadSource.getCrossingAId()),
             //       roadSource.getLength() * 1000, roadSource.getDefaultSpeedLimit() / 3.6));
         }
