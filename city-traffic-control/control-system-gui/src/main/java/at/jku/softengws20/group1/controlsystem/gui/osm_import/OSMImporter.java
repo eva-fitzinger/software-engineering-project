@@ -1,6 +1,5 @@
-package at.jku.softengws20.group1.controlsystem.mapimport;
+package at.jku.softengws20.group1.controlsystem.gui.osm_import;
 
-import org.springframework.context.annotation.Bean;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -14,10 +13,9 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
-public class OSMImporter {
+class OSMImporter {
 
-    @Bean
-    public OSMStreetNetwork parse(String filename) throws IOException, SAXException, ParserConfigurationException {
+    OSMStreetNetwork parse(String filename) throws IOException, SAXException, ParserConfigurationException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document document = builder.parse(new File(filename));
@@ -45,7 +43,7 @@ public class OSMImporter {
         return streetNetwork;
     }
 
-    public void combineWays(OSMStreetNetwork streetNetwork) {
+    void combineWays(OSMStreetNetwork streetNetwork) {
         for (OSMNode node : streetNetwork.getNodes().values()) {
             if (node.getStreets().size() == 2) {
                 OSMWay[] ways = node.getStreets().values().toArray(new OSMWay[0]);
@@ -60,6 +58,21 @@ public class OSMImporter {
                     if (i0 != 0 && i0 != last0 || i1 != 0 && i1 != last1) {
                         continue;
                     }
+                    if (i0 == 0 && i1 == last1) {
+                        var tmp = w0;
+                        w0 = w1;
+                        w1 = tmp;
+                        last0 = last1;
+                        var tmp2 = i0;
+                        i0 = i1;
+                        i1 = tmp2;
+                    }
+                    if(w0.isOneWay() || w1.isOneWay()) {
+                        if (last0 != i0 || i1 != 0) {
+                            // one-way roads cannot be reversed
+                            continue;
+                        }
+                    }
                     mergeWays(w0, w1, i0 != last0, i1 != 0, streetNetwork);
                 }
             }
@@ -67,7 +80,9 @@ public class OSMImporter {
     }
 
     private boolean isSameStreetSegment(OSMWay a, OSMWay b) {
-        return a.getName() != null && !a.getName().isEmpty() && a.getName().equals(b.getName());
+        if (a.getName() == null) return b.getName() == null;
+        if (a.getName().isEmpty()) return b.getName().isEmpty();
+        return a.getName().equals(b.getName());
     }
 
     private void mergeWays(OSMWay a, OSMWay b, boolean revertA, boolean revertB, OSMStreetNetwork streetNetwork) {

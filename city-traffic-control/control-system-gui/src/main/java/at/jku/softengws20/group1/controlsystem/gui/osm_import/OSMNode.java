@@ -1,43 +1,43 @@
-package at.jku.softengws20.group1.controlsystem.mapimport;
+package at.jku.softengws20.group1.controlsystem.gui.osm_import;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class OSMNode {
+class OSMNode {
     private String id;
     private double lat;
     private double lon;
     private Map<String, OSMWay> streets = new HashMap<>();
 
-    public boolean isCrossing() {
+    boolean isCrossing() {
         return streets.size() > 1;
     }
 
-    public String getId() {
+    String getId() {
         return id;
     }
 
-    public void setId(String id) {
+    void setId(String id) {
         this.id = id;
     }
 
-    public double getLat() {
+    double getLat() {
         return lat;
     }
 
-    public void setLat(double lat) {
+    void setLat(double lat) {
         this.lat = lat;
     }
 
-    public double getLon() {
+    double getLon() {
         return lon;
     }
 
-    public void setLon(double lon) {
+    void setLon(double lon) {
         this.lon = lon;
     }
 
-    public Map<String, OSMWay> getStreets() {
+    Map<String, OSMWay> getStreets() {
         return streets;
     }
 }
