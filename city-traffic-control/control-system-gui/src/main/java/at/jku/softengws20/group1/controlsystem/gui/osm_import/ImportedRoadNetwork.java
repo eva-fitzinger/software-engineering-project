@@ -4,6 +4,7 @@ import at.jku.softengws20.group1.shared.impl.model.Position;
 import at.jku.softengws20.group1.shared.impl.model.RoadType;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 class ImportedRoadNetwork {
 
@@ -33,6 +34,7 @@ class ImportedRoadNetwork {
             }
             roadNetwork.createRoadSegments(r, way, proj);
         }
+        roadNetwork.removeIslands();
         return roadNetwork;
     }
 
@@ -42,6 +44,63 @@ class ImportedRoadNetwork {
 
     Map<String, ImportedCrossing> getCrossings() {
         return crossings;
+    }
+
+    private void removeIslands() {
+        Map<ImportedCrossing, Collection<ImportedRoadSegment>> edges = new HashMap<>();
+        for(var r : roads.values()) {
+            for(var rs: r.getRoadSegments()) {
+                var l = edges.getOrDefault(rs.getCrossingA(), new ArrayList<>());
+                l.add(rs);
+                edges.put(rs.getCrossingA(), l);
+            }
+        }
+
+        Set<ImportedCrossing> toDelete = new HashSet<>();
+        for (var c : crossings.values()) {
+            if (toDelete.contains(c)) {
+                continue;
+            }
+            Set<ImportedCrossing> visited = new HashSet<>();
+            if(isIsland(c, visited, edges, 20)) {
+                toDelete.addAll(visited);
+            }
+        }
+
+        for (var c : toDelete) {
+            for(var rs : edges.getOrDefault(c, new ArrayList<>())) {
+                rs.getRoad().getRoadSegments().remove(rs);
+            }
+            crossings.remove(c.getId());
+        }
+
+        for(var rs : roads.values().stream().flatMap(r -> r.getRoadSegments().stream()).collect(Collectors.toList())) {
+                if(!crossings.containsKey(rs.getCrossingA().getId()) || !crossings.containsKey(rs.getCrossingB().getId())) {
+                    rs.getRoad().getRoadSegments().remove(rs);
+                }
+        }
+
+        for (var r : new ArrayList<>(roads.values())) {
+            if(r.getRoadSegments().isEmpty()) {
+                roads.remove(r.getId());
+            }
+        }
+    }
+
+    private boolean isIsland(ImportedCrossing crossing, Set<ImportedCrossing> visited, Map<ImportedCrossing, Collection<ImportedRoadSegment>> edges, int maxDepth) {
+        visited.add(crossing);
+        if(maxDepth == 0) {
+            return false;
+        }
+
+        for(var rs : edges.getOrDefault(crossing, new ArrayList<>())) {
+            if(!visited.contains(rs.getCrossingB())) {
+                if (!isIsland(rs.getCrossingB(), visited, edges, maxDepth-1)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private void createRoadSegments(ImportedRoad r, OSMWay way, LatLonProjector proj) {
@@ -61,9 +120,11 @@ class ImportedRoadNetwork {
                 continue;
             }
             currentSegment.setCrossingB(getOrCreateCrossing(node, proj));
-            r.getRoadSegments().add(currentSegment);
-            if (!way.isOneWay()) {
-                r.getRoadSegments().add(createDirectedLane(currentSegment, way));
+            if(currentSegment.getCrossingA() != null && currentSegment.getCrossingB() != null) {
+                r.getRoadSegments().add(currentSegment);
+                if (!way.isOneWay()) {
+                    r.getRoadSegments().add(createDirectedLane(currentSegment, way));
+                }
             }
             currentSegment = createRoadData(r, way);
             currentSegment.setCrossingA(getOrCreateCrossing(node, proj));

@@ -55,7 +55,7 @@ public class MapRepository {
     private void loadJsonMap() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.getFactory().configure(JsonWriteFeature.ESCAPE_NON_ASCII.mappedFeature(), true);
-        try (JsonParser parser = mapper.createParser(getClass().getClassLoader().getResourceAsStream("linz.json"))) {
+        try (JsonParser parser = mapper.createParser(getClass().getClassLoader().getResourceAsStream("urfahr.json"))) {
             roadNetwork = parser.readValueAs(RoadNetwork.class);
         } catch (IOException e) {
             e.printStackTrace();
@@ -64,7 +64,8 @@ public class MapRepository {
 
     @PostConstruct
     public void loadMap() {
-        loadJsonMap();
+        //loadJsonMap();
+        loadDummyMap();
     }
 
     public RoadNetwork getRoadNetwork() {
