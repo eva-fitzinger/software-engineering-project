@@ -1,34 +1,42 @@
-package at.jku.softengws20.group1.controlsystem.gui.viewmodel;
+package at.jku.softengws20.group1.controlsystem.gui.citymap;
 
 import at.jku.softengws20.group1.controlsystem.gui.model.RoadSegment;
+import at.jku.softengws20.group1.shared.impl.model.Crossing;
+import at.jku.softengws20.group1.shared.impl.model.Position;
 import at.jku.softengws20.group1.shared.impl.model.RoadType;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 
 public class RoadSegmentDrawable {
 
+    private static final double BASE_LINE_WIDTH = 2.5;
+
     private at.jku.softengws20.group1.controlsystem.gui.model.RoadSegment roadSegment;
     private Path path;
 
-    RoadSegmentDrawable(RoadSegment segment) {
+    RoadSegmentDrawable(RoadSegment segment, Crossing ca, Crossing cb, Transform globalTransform) {
         this.roadSegment = segment;
         path = new Path();
-        path.setStrokeWidth(2);
-        /*Crossing ca = roadSegment.getCrossingA();
-        Crossing cb = roadSegment.getCrossingB();
+        path.setStrokeWidth(4);
         if (ca != null) {
-            path.getElements().add(new MoveTo(ca.getPosition().getX(), ca.getPosition().getY()));
+            Position pos = globalTransform.transform(ca.getPosition());
+            path.getElements().add(new MoveTo(pos.getX(), pos.getY()));
         } else {
-            path.getElements().add(new MoveTo(roadSegment.getPath().get(0).getX(), roadSegment.getPath().get(0).getY()));
+            Position pos = globalTransform.transform(roadSegment.getPath()[0]);
+            path.getElements().add(new MoveTo(pos.getX(), pos.getY()));
         }
         for (Position p : roadSegment.getPath()) {
-            path.getElements().add(new LineTo(p.getX(), p.getY()));
+            Position pos = globalTransform.transform(p);
+            path.getElements().add(new LineTo(pos.getX(), pos.getY()));
         }
         if (cb != null) {
-            path.getElements().add(new LineTo(cb.getPosition().getX(), cb.getPosition().getY()));
+            Position pos = globalTransform.transform(cb.getPosition());
+            path.getElements().add(new LineTo(pos.getX(), pos.getY()));
         }
 
-        setStyle(RoadStyle.road(roadSegment.getRoadType()));*/
+        setStyle(RoadStyle.road(roadSegment.getRoadTypeEnum()));
     }
 
     public Path getPath() {
@@ -44,6 +52,10 @@ public class RoadSegmentDrawable {
         setStyle(RoadStyle.road(roadSegment.getRoadTypeEnum()).select());
     }
 
+    public void selectSecondary() {
+        setStyle(RoadStyle.road(roadSegment.getRoadTypeEnum()).selectSecondary());
+    }
+
     public void deselect() {
         setStyle(RoadStyle.road(roadSegment.getRoadTypeEnum()));
     }
@@ -52,6 +64,7 @@ public class RoadSegmentDrawable {
         return roadSegment;
     }
 
+
     public static class RoadStyle {
         private Color strokeColor = null;
         private Double lineWidth = null;
@@ -59,10 +72,6 @@ public class RoadSegmentDrawable {
         private RoadStyle(Color strokeColor, double lineWidth) {
             this.strokeColor = strokeColor;
             this.lineWidth = lineWidth;
-        }
-
-        static RoadStyle road() {
-            return new RoadStyle(Color.BLACK, 1);
         }
 
         static RoadStyle road(RoadType roadType) {
@@ -78,12 +87,16 @@ public class RoadSegmentDrawable {
             }
         }
 
+        static RoadStyle road() {
+            return new RoadStyle(Color.BLACK, BASE_LINE_WIDTH);
+        }
+
         static RoadStyle highway() {
-            return new RoadStyle(Color.BLACK, 3);
+            return new RoadStyle(Color.BLACK, BASE_LINE_WIDTH*2);
         }
 
         static RoadStyle primary() {
-            return new RoadStyle(Color.BLACK, 2);
+            return new RoadStyle(Color.BLACK, BASE_LINE_WIDTH*1.5);
         }
 
         RoadStyle blocked() {
@@ -100,6 +113,10 @@ public class RoadSegmentDrawable {
 
         RoadStyle select() {
             return new RoadStyle(Color.BLUE, lineWidth + 2);
+        }
+
+        RoadStyle selectSecondary() {
+            return new RoadStyle(Color.LIGHTBLUE, lineWidth + 1);
         }
     }
 }

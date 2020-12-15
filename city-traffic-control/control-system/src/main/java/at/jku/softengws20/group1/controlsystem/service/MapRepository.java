@@ -1,6 +1,5 @@
 package at.jku.softengws20.group1.controlsystem.service;
 
-import at.jku.softengws20.group1.shared.impl.model.RoadType;
 import at.jku.softengws20.group1.shared.impl.model.*;
 import org.springframework.stereotype.Repository;
 
@@ -28,12 +27,14 @@ public class MapRepository {
                         2, 50, new Position[0]),
                 new RoadSegment("rs4", "ring", "2", "5", RoadType.RESIDENTIAL,
                         2, 50, new Position[0]),
-                new RoadSegment("rs5", "diag", "1", "4", RoadType.RESIDENTIAL,
+                new RoadSegment("rs5", "diag", "1", "4", RoadType.PRIMARY,
                         2, 50, new Position[0]),
                 new RoadSegment("rs6", "ring", "3", "4", RoadType.RESIDENTIAL,
                         2, 50, new Position[0]),
                 new RoadSegment("rs7", "ring", "1", "3", RoadType.RESIDENTIAL,
                         2, 50, new Position[0]),
+                new RoadSegment("rs8", "ring", "3", "1", RoadType.RESIDENTIAL,
+                3, 70, new Position[0])
 
         };
 

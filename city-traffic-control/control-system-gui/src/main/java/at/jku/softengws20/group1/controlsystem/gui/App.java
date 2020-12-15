@@ -1,15 +1,12 @@
 package at.jku.softengws20.group1.controlsystem.gui;
 
-import at.jku.softengws20.group1.controlsystem.gui.viewmodel.CityTrafficMap;
 import javafx.application.Application;
-import javafx.geometry.Orientation;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.SplitPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 
 /**
@@ -18,20 +15,13 @@ import javafx.stage.Stage;
 public class App extends Application {
 
     @Override
-    public void start(Stage stage) {
-        CityTrafficMap m = new CityTrafficMap();
+    public void start(Stage stage) throws IOException {
 
-        SplitPane s = new SplitPane();
-        s.setOrientation(Orientation.HORIZONTAL);
-        s.getItems().add(m.getPane());
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("/mainView.fxml"));
+        Pane root = fxmlLoader.load();
 
-        m.setOnRoadSegmentSelected(rs -> {
-            if (rs != null) {
-                //System.out.println(rs.getRoad().getName() + "  " + rs.getId());
-            }
-        });
-
-        var scene = new Scene(m.getPane(), 1000, 800);
+        var scene = new Scene(root, 1000, 800);
         stage.setScene(scene);
         stage.show();
     }

@@ -1,4 +1,4 @@
-package at.jku.softengws20.group1.controlsystem.gui.viewmodel;
+package at.jku.softengws20.group1.controlsystem.gui.citymap;
 
 import javafx.scene.canvas.GraphicsContext;
 
