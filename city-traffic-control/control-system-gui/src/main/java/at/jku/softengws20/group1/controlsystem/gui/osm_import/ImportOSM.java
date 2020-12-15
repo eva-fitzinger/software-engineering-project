@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class ImportOSM {
 
-    private static final String MAP_NAME = "barcelona";
+    private static final String MAP_NAME = "urfahr";
 
     public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException {
         OSMImporter importer = new OSMImporter();

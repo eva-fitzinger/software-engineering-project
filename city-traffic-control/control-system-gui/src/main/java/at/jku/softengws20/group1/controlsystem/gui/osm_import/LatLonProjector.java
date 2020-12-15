@@ -14,7 +14,7 @@ public class LatLonProjector {
         double dLat = lat - frame.latMin;
         double dLon = lon - frame.lonMin;
 
-        double y = dLat * 110.571;
+        double y = -dLat * 110.571;
         double x = dLon * 111.320 * Math.cos(frame.avgLat() * Math.PI / 180.0);
         return new Position(x, y);
     }
