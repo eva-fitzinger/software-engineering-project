@@ -19,11 +19,6 @@ public class LatLonProjector {
         return new Position(x, y);
     }
 
-    private double mercY(double lon) {
-        lon = lon * Math.PI / 180.0;
-        return Math.log(Math.tan(lon / 2.0 + Math.PI / 4.0));
-    }
-
     private class Frame {
         double latMin = 90;
         double latMax = -90;

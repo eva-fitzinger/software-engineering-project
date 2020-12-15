@@ -160,9 +160,11 @@ class ImportedRoadNetwork {
             y = dx;
             x = -dy;
             double l = Math.sqrt(x * x + y * y);
-            y *= LANE_DIST / l;
-            x *= LANE_DIST / l;
-            newPath.add(new Position(last.getX() + x, last.getY() + y));
+            if (l > 0.000001) {
+                y *= LANE_DIST / l;
+                x *= LANE_DIST / l;
+                newPath.add(new Position(last.getX() + x, last.getY() + y));
+            }
             last = p;
         }
         if (last != null) {
@@ -175,7 +177,7 @@ class ImportedRoadNetwork {
         ImportedRoadSegment segment = new ImportedRoadSegment();
         segment.setId(road.getId() + "_" + road.getRoadSegments().size());
         segment.setRoadType(RoadType.fromOSMName(way.getRoadType()));
-        segment.setSpeedLimit(way.getSpeedLimit());
+        segment.setSpeedLimit(way.getSpeedLimit() > 0 ? way.getSpeedLimit() : segment.getRoadType().getMaxSpeed());
         segment.setRoad(road);
         return segment;
     }

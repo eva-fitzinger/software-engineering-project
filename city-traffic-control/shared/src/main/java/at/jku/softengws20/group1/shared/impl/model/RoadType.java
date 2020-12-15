@@ -3,24 +3,31 @@ package at.jku.softengws20.group1.shared.impl.model;
 import java.util.Arrays;
 
 public enum RoadType {
-    MOTORWAY("motorway"),
-    TRUNK("trunk"),
-    PRIMARY("primary"),
-    SECONDARY("secondary"),
-    TERTIARY("tertiary"),
-    UNCLASSIFIED("unclassified"),
-    RESIDENTIAL("residential"),
-    MOTORWAY_LINK("motorway_link"),
-    TRUNK_LINK("trunk_link"),
-    PRIMARY_LINK("primary_link"),
-    SECONDARY_LINK("secondary_link"),
-    TERTIARY_LINK("tertiary_link"),
-    LIVING_STREET("living_street");
+    MOTORWAY("motorway", 130),
+    TRUNK("trunk", 130),
+    PRIMARY("primary", 100),
+    SECONDARY("secondary", 100),
+    TERTIARY("tertiary", 100),
+    UNCLASSIFIED("unclassified", 100),
+    RESIDENTIAL("residential", 100),
+    MOTORWAY_LINK("motorway_link", 130),
+    TRUNK_LINK("trunk_link", 130),
+    PRIMARY_LINK("primary_link", 100),
+    SECONDARY_LINK("secondary_link", 100),
+    TERTIARY_LINK("tertiary_link", 100),
+    LIVING_STREET("living_street", 30);
 
     private final String osmName;
 
-    RoadType(String osmName) {
+    private final int maxSpeed;
+
+    RoadType(String osmName, int maxSpeed) {
         this.osmName = osmName;
+        this.maxSpeed = maxSpeed;
+    }
+
+    public int getMaxSpeed() {
+        return maxSpeed;
     }
 
     public static RoadType fromOSMName(String name) {
