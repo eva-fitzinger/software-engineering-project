@@ -1,7 +1,4 @@
 package at.jku.softengws20.group1.detection.Map;
-
-import at.jku.softengws20.group1.shared.impl.model.TrafficLoad;
-
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,18 +14,14 @@ public class Crossroad {
         this.id = id;
     }
 
-    public List<TrafficLoad> getNumberOfVehicles() {
-        List<TrafficLoad> trafficLoad = new LinkedList<>();
-        for (int i = 0; i < trafficLight.getNumberOfVehicles().size(); i++) {
-            for(Map.Entry<String, HashSet<String>> entry : trafficLight.getNumberOfVehicles().entrySet()) {
-                trafficLoad.add(new TrafficLoad(entry.getKey(), id, entry.getValue().size()));
+    public void start() {
+        final Map<String, Street> toCrossings = new HashMap<>();
+        for(Map.Entry<String, Street> entry : streets.entrySet()) {
+            if(entry.getValue().getToCrossing().equals(id)) {
+                toCrossings.put(entry.getKey(), entry.getValue());
             }
         }
-        return trafficLoad;
-    }
-
-    public void start() {
-        trafficLight = new TrafficLights(streets, id);
+        trafficLight = new TrafficLights(toCrossings, id);
         executor.submit(trafficLight);
     }
 
@@ -56,9 +49,6 @@ public class Crossroad {
     public void resetInformationSign() {
         informationSign.resetText();
     }
-
-
-
 
     /*For further Implementation if more time:
         - block roads possible
