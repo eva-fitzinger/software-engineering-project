@@ -12,8 +12,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Simulation implements Runnable {
-    private static final double TIME_FACTOR = 10;
-    private static final double MAX_COUNT_PER_TICK = 0.5;
+    private static final double TIME_FACTOR = 1;
+    private static final double MAX_COUNT_PER_TICK = 100;
     private final Navigation navigation;
     private final HashSet<Participant> participants = new HashSet<>();
     private Random random = new Random();
@@ -39,7 +39,7 @@ public class Simulation implements Runnable {
         final int maxCount = 20;
         int count = 0;
         do {
-            if(count ++ > maxCount) return;
+            if (count++ > maxCount) return;
             start = navigation.getRoadNetwork().roads[random.nextInt(navigation.getRoadNetwork().roads.length)];
             end = navigation.getRoadNetwork().roads[random.nextInt(navigation.getRoadNetwork().roads.length)];
         } while (navigation.getNext(start.getEnd(), new Position(end, 0)) == null);
@@ -70,10 +70,14 @@ public class Simulation implements Runnable {
         double elapsed = 1;
 
         participants.parallelStream().forEach(participant -> {
-            if (participant.updatePosition(elapsed)) {
-                synchronized (toRemove) {
-                    toRemove.add(participant);
+            try {
+                if (participant.updatePosition(elapsed)) {
+                    synchronized (toRemove) {
+                        toRemove.add(participant);
+                    }
                 }
+            }catch(Exception e) {
+                e.printStackTrace();
             }
         });
         Arrays.stream(navigation.getRoadNetwork().roads).parallel().forEach(Road::sortParticipants);
@@ -81,17 +85,18 @@ public class Simulation implements Runnable {
             participants.remove(participant);
         }
         toRemove.clear();
-        System.out.println("Elapsed: "+(System.nanoTime()-ts)+"ns ("+participants.size()+"#)");
+        System.out.println("Elapsed: " + (System.nanoTime() - ts) + "ns (" + participants.size() + "#)");
     }
 
     @Override
     public void run() {
         while (true) {
-            tick();
             try {
-                if(TIME_FACTOR != 0) Thread.sleep((int) (1000 / TIME_FACTOR));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                tick();
+                if (TIME_FACTOR != 0) Thread.sleep((int) (1000 / TIME_FACTOR));
+            } catch (Exception e) {
+                System.out.println(e.toString());
+                //e.printStackTrace();
             }
         }
     }

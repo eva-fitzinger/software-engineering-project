@@ -56,7 +56,7 @@ public class Road {
     }
 
     public Coordinate getScreenOffset() {
-        final double length = 0.25;
+        final double length = 0.1;
         double x = start.getPosition().getX() - end.getPosition().getX();
         double y = start.getPosition().getY() - end.getPosition().getY();
         double l = Math.sqrt(x * x + y * y);
