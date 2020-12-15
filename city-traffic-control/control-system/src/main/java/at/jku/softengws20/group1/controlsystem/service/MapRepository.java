@@ -64,8 +64,8 @@ public class MapRepository {
 
     @PostConstruct
     public void loadMap() {
-        //loadJsonMap();
-        loadDummyMap();
+        loadJsonMap();
+        //loadDummyMap();
     }
 
     public RoadNetwork getRoadNetwork() {

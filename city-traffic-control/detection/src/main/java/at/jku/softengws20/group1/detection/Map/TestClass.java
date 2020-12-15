@@ -2,7 +2,7 @@ package at.jku.softengws20.group1.detection.Map;
 
 import at.jku.softengws20.group1.shared.impl.model.RoadNetwork;
 
-public class TestClass {
+public class TestClass {        //########################################   Test Class ###############################
     private static CityMap cityMap = new CityMap();
 
     public static void main(String[] args) {

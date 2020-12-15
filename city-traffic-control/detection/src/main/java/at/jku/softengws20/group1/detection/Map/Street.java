@@ -42,8 +42,6 @@ public class Street {
         return new TrafficLoad(id, null, numberOfCars);
     }
 
-
-
     /*For further Implementation if more time:
         - block roads possible
      */

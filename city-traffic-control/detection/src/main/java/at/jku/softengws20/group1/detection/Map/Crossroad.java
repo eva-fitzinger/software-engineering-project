@@ -15,6 +15,8 @@ public class Crossroad {
     }
 
     public void start() {
+
+        //starts traffic lights
         final Map<String, Street> toCrossings = new HashMap<>();
         for(Map.Entry<String, Street> entry : streets.entrySet()) {
             if(entry.getValue().getToCrossing().equals(id)) {
@@ -23,10 +25,6 @@ public class Crossroad {
         }
         trafficLight = new TrafficLights(toCrossings, id);
         executor.submit(trafficLight);
-    }
-
-    public void deleteStreet(String id) {
-        streets.remove(id);
     }
 
     //Getter und Setter and reset
@@ -42,12 +40,12 @@ public class Crossroad {
         return streets.get(streetID);
     }
 
-    public void setInformationSign(final String text) {
-        informationSign.setText(text);
+    public InformationSign getInformationSign() {
+        return informationSign;
     }
 
-    public void resetInformationSign() {
-        informationSign.resetText();
+    public void setInformationSign(final InformationSign informationSign) {
+        this.informationSign = informationSign;
     }
 
     /*For further Implementation if more time:
