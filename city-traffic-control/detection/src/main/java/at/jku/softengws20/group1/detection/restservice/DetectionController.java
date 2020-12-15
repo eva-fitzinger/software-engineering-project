@@ -1,7 +1,7 @@
 package at.jku.softengws20.group1.detection.restservice;
 
 import at.jku.softengws20.group1.detection.Map.CityMap;
-import at.jku.softengws20.group1.detection.Map.Crossroad;
+import at.jku.softengws20.group1.detection.Map.Street;
 import at.jku.softengws20.group1.shared.detection.CarPosition;
 import at.jku.softengws20.group1.shared.detection.DetectionInterface;
 import at.jku.softengws20.group1.shared.detection.TrafficLightRule;
@@ -27,8 +27,8 @@ public class DetectionController implements DetectionInterface {
     @Autowired
     private ControlSystemService controlSystemService;
 
-    private CityMap cityMap = new CityMap();
-    private HashMap<String, CrossingPosition> carPositions = new HashMap<>();
+    private final CityMap cityMap = new CityMap();
+    private final HashMap<String, String> carPosition = new HashMap<>();
 
     @PostConstruct
     public void init() {
@@ -53,8 +53,8 @@ public class DetectionController implements DetectionInterface {
         }
 
         List<TrafficLoad> trafficLoad = new LinkedList<>();
-        for (Map.Entry<String, Crossroad> entry : cityMap.getCrossroads().entrySet()) {
-            trafficLoad.addAll(entry.getValue().getNumberOfVehicles());
+        for (Map.Entry<String, Street> entry : cityMap.getStreets().entrySet()) {
+            trafficLoad.add(entry.getValue().getTrafficLoad());
         }
         return trafficLoad.toArray(new TrafficLoad[trafficLoad.size()]);
     }
@@ -70,27 +70,14 @@ public class DetectionController implements DetectionInterface {
     @Override       //set from Participants
     @PostMapping(DetectionInterface.SET_CAR_POSITION)
     public void setCarPosition(CarPosition position) {
-        CrossingPosition old = carPositions.get(position.getCarId());
-        if(old != null) {
-            cityMap.getCrossroad(old.CrossingId).getTrafficLight().outgoingVehicle(old.RoadSegmentId, position.getCarId());
+        if (carPosition.containsKey(position.getCarId())) {
+            cityMap.getStreet(carPosition.get(position.getIncomingRoadSegmentId())).outgoingVehicle();
         }
-        carPositions.put(position.getCarId(), new CrossingPosition(position.getCrossingId(), position.getIncomingRoadSegmentId()));
-    }
-
-    @Override
-    @PostMapping(DetectionInterface.SET_WAITING)
-    public void setWaiting(String carId) {
-        CrossingPosition position = carPositions.get(carId);
-        if(position != null) cityMap.getCrossroad(position.CrossingId).getTrafficLight().incomingVehicle(position.RoadSegmentId, carId);
-    }
-
-    private static class CrossingPosition {
-        public final String CrossingId;
-        public final String RoadSegmentId;
-
-        public CrossingPosition(String crossingId, String roadSegmentId) {
-            CrossingId = crossingId;
-            RoadSegmentId = roadSegmentId;
+        if(position.getIncomingRoadSegmentId() == null) {
+            carPosition.remove(position.getCarId());
+        } else {
+            cityMap.getStreet(position.getIncomingRoadSegmentId()).incomingVehicle();
+            carPosition.put(position.getCarId(), position.getIncomingRoadSegmentId());
         }
     }
 }

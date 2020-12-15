@@ -33,13 +33,13 @@ public class Navigation {
         }
         while (!queue.isEmpty()) {
             Node n = queue.poll();
-            if(visited.contains(n.road)) continue;
+            if (visited.contains(n.road)) continue;
             visited.add(n.road);
             if (n.road.getId() == destination.getRoad().getId()) {
                 return n.getFirst();
             }
             for (Road road : n.road.getEnd().getRoads()) {
-                queue.add(new Node(n.cost+road.getLength() / road.getEstimatedSpeed(), road, n));
+                queue.add(new Node(n.cost + road.getLength() / road.getEstimatedSpeed() + 1, road, n));
             }
         }
         return null;
@@ -62,7 +62,7 @@ public class Navigation {
         }
 
         public Road getFirst() {
-            if(previous == null) return road;
+            if (previous == null) return road;
             else return previous.getFirst();
         }
 
