@@ -28,7 +28,13 @@ public class Crossroad {
     }
 
     public void start() {
-        trafficLight = new TrafficLights(streets, id);
+        final Map<String, Street> toCrossings = new HashMap<>();
+        for(Map.Entry<String, Street> entry : streets.entrySet()) {
+            if(entry.getValue().getToCrossing().equals(id)) {
+                toCrossings.put(entry.getKey(), entry.getValue());
+            }
+        }
+        trafficLight = new TrafficLights(toCrossings, id);
         executor.submit(trafficLight);
     }
 

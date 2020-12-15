@@ -14,7 +14,8 @@ public class CityMap {
     public void createCityMap(RoadNetwork roadNetwork) {
         for (int i = 0; i < roadNetwork.getRoadSegments().length ; i++) {
             String id = roadNetwork.getRoadSegments()[i].getId();
-            streets.put(id, new Street(id));
+            String toCrossroad = roadNetwork.getRoadSegments()[i].getCrossingBId();
+            streets.put(id, new Street(id, toCrossroad));
             streets.get(id).getSpeedLimit().setStandardSpeedLimit(roadNetwork.getRoadSegments()[i].getDefaultSpeedLimit());
         }
 
@@ -35,8 +36,8 @@ public class CityMap {
 
     //Streets and Crossroads
     public void putStreet(String id) {
-        streets.put(id, new Street(id));
-    }
+        streets.put(id, new Street(id, "all"));
+    }   //needed for testing
 
     public Street getStreet(String id) {
         return streets.get(id);
