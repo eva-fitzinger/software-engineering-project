@@ -90,7 +90,9 @@ public class CityTrafficMap extends Group {
     public void selectCrossing(Crossing crossing) {
         deselectCrossing();
         CrossingDrawable drawable = crossings.get(crossing);
-        drawable.select();
+        if(drawable != null) {
+            drawable.select();
+        }
         selectedCrossing = drawable;
     }
 

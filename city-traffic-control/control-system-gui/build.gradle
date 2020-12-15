@@ -7,7 +7,6 @@ javafx {
     version = "11"
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
-
 mainClassName = "at.jku.softengws20.group1.controlsystem.gui.App"
 //mainClassName = "at.jku.softengws20.group1.controlsystem.gui.osm_import.ImportOSM"
 

@@ -1,17 +1,22 @@
 package at.jku.softengws20.group1.controlsystem.gui.osm_import;
 
 import at.jku.softengws20.group1.shared.controlsystem.*;
+import com.fasterxml.jackson.core.json.JsonWriteFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class ImportOSM {
 
+    private static final String MAP_NAME = "barcelona";
+
     public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException {
         OSMImporter importer = new OSMImporter();
-        OSMStreetNetwork network = importer.parse("E:\\myFiles\\JKU\\WS20\\SoftwareEngineering\\osmosis\\highways.osm");
+        OSMStreetNetwork network = importer.parse("E:\\myFiles\\JKU\\WS20\\SoftwareEngineering\\osmosis\\"
+                + MAP_NAME + "-highways.osm");
         importer.combineWays(network);
         ImportedRoadNetwork rn = ImportedRoadNetwork.fromOSMModel(network, new LatLonProjector());
 
@@ -109,8 +114,12 @@ public class ImportOSM {
                 return null;
             }
         };
-        ObjectMapper obj = new ObjectMapper();
-        String result = obj.writeValueAsString(export);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.getFactory().configure(JsonWriteFeature.ESCAPE_NON_ASCII.mappedFeature(), true);
+        String result = mapper.writeValueAsString(export);
         System.out.println(result);
+        FileWriter w = new FileWriter(MAP_NAME + ".json");
+        w.write(result);
+        w.close();
     }
 }

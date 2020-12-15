@@ -51,6 +51,10 @@ class ImportedRoadSegment {
         return path;
     }
 
+    public void setPath(List<Position> path) {
+        this.path = path;
+    }
+
     RoadType getRoadType() {
         return roadType;
     }
@@ -92,6 +96,10 @@ class ImportedRoadSegment {
     private static double getDist(Position p1, Position p2) {
         double x = Math.abs(p2.getX() - p1.getX());
         double y = Math.abs(p2.getY() - p1.getY());
-        return Math.sqrt(x * x + y * y);
+        double dist = Math.sqrt(x * x + y * y);
+        if (!Double.isFinite(dist) || Double.isNaN(dist)) {
+            return 0.0;
+        }
+        return dist;
     }
 }

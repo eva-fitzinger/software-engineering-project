@@ -124,7 +124,7 @@ public class MainViewController implements Initializable {
             lblRoadNumber.setText(selectedRoadSegment.getRoad().getNumber());
             lblRoadType.setText(selectedRoadSegment.getRoadType());
             lblMaxSpeed.setText(selectedRoadSegment.getDefaultSpeedLimit() + " km/h");
-            lblSegmentLength.setText(selectedRoadSegment.getLength() + " km");
+            lblSegmentLength.setText(String.format("%.2f km", selectedRoadSegment.getLength()));
             btnCrossingA.setText(selectedRoadSegment.getCrossingAId());
             btnCrossingB.setText(selectedRoadSegment.getCrossingBId());
         } else {

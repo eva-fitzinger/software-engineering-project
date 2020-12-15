@@ -9,7 +9,9 @@ public enum RoadType {
     SECONDARY("secondary"),
     TERTIARY("tertiary"),
     UNCLASSIFIED("unclassified"),
-    RESIDENTIAL("residential");
+    RESIDENTIAL("residential"),
+    MOTORWAY_LINK("motorway_link"),
+    LIVING_STREET("living_street");
 
     private final String osmName;
 

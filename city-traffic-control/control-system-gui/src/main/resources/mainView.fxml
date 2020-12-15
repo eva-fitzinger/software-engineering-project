@@ -54,7 +54,7 @@
                         <HBox alignment="CENTER" prefHeight="49.0" prefWidth="574.0" style="-fx-spacing: 150;" styleClass="border-pane">
                            <children>
                               <Button fx:id="btnCrossingA" mnemonicParsing="false" onAction="#onSelectCrossingA" text="X" />
-                              <Label text="&lt; - &gt;" />
+                              <Label text="---&gt;" />
                               <Button fx:id="btnCrossingB" mnemonicParsing="false" onAction="#onSelectCrossingB" text="Y" />
                            </children>
                         </HBox>

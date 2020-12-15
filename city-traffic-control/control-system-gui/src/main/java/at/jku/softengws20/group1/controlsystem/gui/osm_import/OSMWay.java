@@ -14,6 +14,7 @@ class OSMWay {
     private static final String TAG_HIGHWAY = "highway";
     private static final String TAG_ROAD_REF = "ref";
     private static final String TAG_SPEED_LIMIT = "maxspeed";
+    private static final String TAG_ONEWAY = "oneway";
 
     String getName() {
         return tags.getOrDefault(TAG_NAME, null);
@@ -29,6 +30,10 @@ class OSMWay {
 
     int getSpeedLimit() {
         return Integer.parseInt(tags.getOrDefault(TAG_SPEED_LIMIT, "0"));
+    }
+
+    boolean isOneWay() {
+        return tags.getOrDefault(TAG_ONEWAY, "").equals("yes");
     }
 
     String getId() {

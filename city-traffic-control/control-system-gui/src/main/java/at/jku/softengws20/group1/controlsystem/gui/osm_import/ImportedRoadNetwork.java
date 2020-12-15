@@ -1,11 +1,13 @@
 package at.jku.softengws20.group1.controlsystem.gui.osm_import;
 
+import at.jku.softengws20.group1.shared.impl.model.Position;
 import at.jku.softengws20.group1.shared.impl.model.RoadType;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 class ImportedRoadNetwork {
+
+    private final double LANE_DIST = 0.005;
 
     private Map<String, ImportedRoad> roads = new HashMap<>();
     private Map<String, ImportedCrossing> crossings = new HashMap<>();
@@ -38,7 +40,7 @@ class ImportedRoadNetwork {
         return roads;
     }
 
-    public Map<String, ImportedCrossing> getCrossings() {
+    Map<String, ImportedCrossing> getCrossings() {
         return crossings;
     }
 
@@ -60,9 +62,52 @@ class ImportedRoadNetwork {
             }
             currentSegment.setCrossingB(getOrCreateCrossing(node, proj));
             r.getRoadSegments().add(currentSegment);
+            if (!way.isOneWay()) {
+                r.getRoadSegments().add(createDirectedLane(currentSegment, way));
+            }
             currentSegment = createRoadData(r, way);
             currentSegment.setCrossingA(getOrCreateCrossing(node, proj));
         }
+    }
+
+    private ImportedRoadSegment createDirectedLane(ImportedRoadSegment s1, OSMWay way) {
+        ImportedRoadSegment s2 = createRoadData(s1.getRoad(), way);
+
+        s2.setCrossingA(s1.getCrossingB());
+        s2.setCrossingB(s1.getCrossingA());
+
+        List<Position> path = new ArrayList<>(s1.getPath());
+        Collections.reverse(path);
+
+        s1.setPath(movePathToRight(s1.getPath()));
+        s2.setPath(movePathToRight(path));
+        return s2;
+    }
+
+    private List<Position> movePathToRight(Collection<Position> path) {
+        var newPath = new ArrayList<Position>();
+        Position last = null;
+        double x = 0;
+        double y = 0;
+        for (var p : path) {
+            if (last == null) {
+                last = p;
+                continue;
+            }
+            double dx = p.getX() - last.getX();
+            double dy = p.getY() - last.getY();
+            y = dx;
+            x = -dy;
+            double l = Math.sqrt(x * x + y * y);
+            y *= LANE_DIST / l;
+            x *= LANE_DIST / l;
+            newPath.add(new Position(last.getX() + x, last.getY() + y));
+            last = p;
+        }
+        if (last != null) {
+            newPath.add(new Position(last.getX() + x, last.getY() + y));
+        }
+        return newPath;
     }
 
     private ImportedRoadSegment createRoadData(ImportedRoad road, OSMWay way) {

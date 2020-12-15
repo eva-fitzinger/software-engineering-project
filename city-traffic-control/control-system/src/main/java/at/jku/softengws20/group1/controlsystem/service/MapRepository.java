@@ -2,6 +2,7 @@ package at.jku.softengws20.group1.controlsystem.service;
 
 import at.jku.softengws20.group1.shared.impl.model.*;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.json.JsonWriteFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Repository;
 
@@ -53,7 +54,8 @@ public class MapRepository {
 
     private void loadJsonMap() {
         ObjectMapper mapper = new ObjectMapper();
-        try (JsonParser parser = mapper.createParser(getClass().getClassLoader().getResourceAsStream("map.json"))) {
+        mapper.getFactory().configure(JsonWriteFeature.ESCAPE_NON_ASCII.mappedFeature(), true);
+        try (JsonParser parser = mapper.createParser(getClass().getClassLoader().getResourceAsStream("linz.json"))) {
             roadNetwork = parser.readValueAs(RoadNetwork.class);
         } catch (IOException e) {
             e.printStackTrace();
