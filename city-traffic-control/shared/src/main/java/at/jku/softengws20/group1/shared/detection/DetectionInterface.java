@@ -11,7 +11,4 @@ public interface DetectionInterface<T extends TrafficLoad> {
 
     String SET_CAR_POSITION = "setCarPosition";
     void setCarPosition(CarPosition position);
-
-    String SET_WAITING = "setWaiting";
-    void setWaiting(String carId);
 }

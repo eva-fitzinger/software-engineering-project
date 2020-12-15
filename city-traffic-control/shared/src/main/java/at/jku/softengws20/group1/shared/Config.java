@@ -13,7 +13,6 @@ public static final float REAL_TIME_FACTOR = 0.8f;       //0 = realtime ?? (wies
 
 //Detection---------------------------------------------------------------------------------------------------------
 public static final float MINUTES_FOR_FULL_TRAFFIC_LIGHT_RUN = 1;
-public static final int PASSED_CAR_PER_MINUTE = 10;
 public static final String STANDARD_TEST_INFO_SIGN = "good ride";
 
 

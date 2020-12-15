@@ -10,7 +10,7 @@ public class TrafficLoad implements at.jku.softengws20.group1.shared.detection.T
 
     public TrafficLoad(String roadSegmentId, String crossingId, int carsWaiting) {
         this.roadSegmentId = roadSegmentId;
-        this.crossingId = crossingId;
+        this.crossingId = crossingId;       //TODO delete? discuss with Werner
         this.carsWaiting = carsWaiting;
     }
 

@@ -13,7 +13,7 @@ public class TrafficLights implements Runnable {
     private final float minutesForFullRun = Config.MINUTES_FOR_FULL_TRAFFIC_LIGHT_RUN * Config.REAL_TIME_FACTOR;
     Map<String, HashSet<String>> streets = new HashMap<>();
     Map<String, Double> priority = new HashMap<>();
-    private ParticipantsService participantsService = new ParticipantsService();
+    private final ParticipantsService participantsService = new ParticipantsService();
     private boolean standardPriority = true;
 
     public TrafficLights(final Map<String, Street> streets, final String crossroadId) {
@@ -30,18 +30,6 @@ public class TrafficLights implements Runnable {
             priority.put(entry.getKey(), time);
         }
         standardPriority = true;
-    }
-
-    public synchronized Map<String, HashSet<String>> getNumberOfVehicles() {
-        return streets;
-    }
-
-    public synchronized void incomingVehicle(String StreetID, String CarID) {
-        streets.get(StreetID).add(CarID);
-    }
-
-    public synchronized void outgoingVehicle(String StreetID, String CarID) {
-        streets.get(StreetID).remove(CarID);
     }
 
     public synchronized void setPriority(String StreetID, double prio) {

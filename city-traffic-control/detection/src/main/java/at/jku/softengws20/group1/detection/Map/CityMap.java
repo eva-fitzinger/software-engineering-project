@@ -43,6 +43,10 @@ public class CityMap {
         return streets.get(id);
     }
 
+    public Map<String, Street> getStreets() {
+        return streets;
+    }
+
     public void putCrossroad(String id) {
         crossroads.put(id, new Crossroad(id));
     }
