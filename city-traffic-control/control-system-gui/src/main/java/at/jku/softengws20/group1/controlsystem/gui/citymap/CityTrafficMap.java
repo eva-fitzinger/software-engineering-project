@@ -36,7 +36,7 @@ public class CityTrafficMap extends Group {
 
     public void setDataRepository(LocalDataRepository dataRepository) {
         this.dataRepository = dataRepository;
-        Transform globalTransform = position -> new Position(position.getX()*500.0, position.getY()*500.0);
+        Transform globalTransform = position -> new Position(position.getX() * 500.0, position.getY() * 500.0);
         createGraph(globalTransform);
     }
 
@@ -90,13 +90,13 @@ public class CityTrafficMap extends Group {
     public void selectCrossing(Crossing crossing) {
         deselectCrossing();
         CrossingDrawable drawable = crossings.get(crossing);
-        if(drawable != null) {
+        if (drawable != null) {
             drawable.select();
         }
         selectedCrossing = drawable;
     }
 
-    public void deselectCrossing(){
+    public void deselectCrossing() {
         if (selectedCrossing != null) {
             selectedCrossing.deselect();
             selectedCrossing = null;

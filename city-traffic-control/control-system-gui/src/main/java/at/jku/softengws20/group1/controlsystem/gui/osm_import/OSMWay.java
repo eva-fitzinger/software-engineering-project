@@ -15,6 +15,9 @@ class OSMWay {
     private static final String TAG_ROAD_REF = "ref";
     private static final String TAG_SPEED_LIMIT = "maxspeed";
     private static final String TAG_ONEWAY = "oneway";
+    private static final String TAG_LANES = "lanes";
+    private static final String TAG_LANES_FORWARD = "lanes:forward";
+    private static final String TAG_LANES_BACKWARD = "lanes:backward";
 
     String getName() {
         return tags.getOrDefault(TAG_NAME, null);
@@ -36,6 +39,22 @@ class OSMWay {
         return tags.getOrDefault(TAG_ONEWAY, "").equals("yes");
     }
 
+    int getForwardLaneCount() {
+        int lc = Integer.parseInt(tags.getOrDefault(TAG_LANES, "1"));
+        if (isOneWay()) {
+            return lc;
+        }
+        return Integer.parseInt(tags.getOrDefault(TAG_LANES_FORWARD, Integer.toString(Math.max(1, lc / 2))));
+    }
+
+    int getBackwardLaneCount() {
+        if (isOneWay()) {
+            return 0;
+        }
+        int lc = Integer.parseInt(tags.getOrDefault(TAG_LANES, "1"));
+        return Integer.parseInt(tags.getOrDefault(TAG_LANES_BACKWARD, Integer.toString(Math.max(1, lc / 2))));
+    }
+
     String getId() {
         return id;
     }
@@ -50,5 +69,12 @@ class OSMWay {
 
     Map<String, String> getTags() {
         return tags;
+    }
+
+    void merge(OSMWay other) {
+        // remove turn lanes
+        if (getForwardLaneCount() + getBackwardLaneCount() > other.getForwardLaneCount() + other.getBackwardLaneCount()) {
+            tags = other.tags;
+        }
     }
 }

@@ -34,6 +34,22 @@ public class ImportOSM {
                         return c.getPosition();
                     }
 
+                    /*
+                    public boolean isCrossing() {
+                        Set<ImportedCrossing> incomingLanesFromCrossing = new HashSet<>();
+                        for (ImportedRoad r : rn.getRoads().values()) {
+                            for (ImportedRoadSegment s : r.getRoadSegments()) {
+                                if (s.getCrossingB() == c && !s.getRoadType().isLink()) {
+                                    incomingLanesFromCrossing.add(s.getCrossingA());
+                                    if (s.getRoadType() == RoadType.MOTORWAY) {
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                        return incomingLanesFromCrossing.size() >= 2;
+                    }*/
+
                     @Override
                     public String[] getRoadSegmentIds() {
                         return rn.getRoads().values().stream()
@@ -86,6 +102,11 @@ public class ImportOSM {
                     public Position[] getPath() {
                         return s.getPath().toArray(Position[]::new);
                     }
+
+                    /*
+                    public int getLaneCount() {
+                        return s.getLaneCount();
+                    }*/
                 }).toArray(RoadSegment[]::new);
             }
 
@@ -111,7 +132,7 @@ public class ImportOSM {
 
             @Override
             public String getMaintenanceCenterRoadSegmentId() {
-                return null;
+                return rn.getRoads().values().iterator().next().getRoadSegments().get(0).getId();
             }
         };
         ObjectMapper mapper = new ObjectMapper();

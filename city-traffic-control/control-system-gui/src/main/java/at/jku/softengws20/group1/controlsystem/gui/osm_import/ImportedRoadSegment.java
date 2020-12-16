@@ -14,6 +14,7 @@ class ImportedRoadSegment {
     private RoadType roadType;
     private int speedLimit;
     private List<Position> path = new LinkedList<>();
+    private int laneCount;
 
     String getId() {
         return id;
@@ -69,6 +70,14 @@ class ImportedRoadSegment {
 
     void setSpeedLimit(int speedLimit) {
         this.speedLimit = speedLimit;
+    }
+
+    public int getLaneCount() {
+        return laneCount;
+    }
+
+    public void setLaneCount(int laneCount) {
+        this.laneCount = laneCount;
     }
 
     double calculateLength() {

@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 class ImportedRoadNetwork {
 
-    private final double LANE_DIST = 0.005;
+    private final double LANE_DIST = 0.007;
 
     private Map<String, ImportedRoad> roads = new HashMap<>();
     private Map<String, ImportedCrossing> crossings = new HashMap<>();
@@ -48,8 +48,8 @@ class ImportedRoadNetwork {
 
     private void removeIslands() {
         Map<ImportedCrossing, Collection<ImportedRoadSegment>> edges = new HashMap<>();
-        for(var r : roads.values()) {
-            for(var rs: r.getRoadSegments()) {
+        for (var r : roads.values()) {
+            for (var rs : r.getRoadSegments()) {
                 var l = edges.getOrDefault(rs.getCrossingA(), new ArrayList<>());
                 l.add(rs);
                 edges.put(rs.getCrossingA(), l);
@@ -62,26 +62,26 @@ class ImportedRoadNetwork {
                 continue;
             }
             Set<ImportedCrossing> visited = new HashSet<>();
-            if(isIsland(c, visited, edges, 20)) {
+            if (isIsland(c, visited, edges, 20)) {
                 toDelete.addAll(visited);
             }
         }
 
         for (var c : toDelete) {
-            for(var rs : edges.getOrDefault(c, new ArrayList<>())) {
+            for (var rs : edges.getOrDefault(c, new ArrayList<>())) {
                 rs.getRoad().getRoadSegments().remove(rs);
             }
             crossings.remove(c.getId());
         }
 
-        for(var rs : roads.values().stream().flatMap(r -> r.getRoadSegments().stream()).collect(Collectors.toList())) {
-                if(!crossings.containsKey(rs.getCrossingA().getId()) || !crossings.containsKey(rs.getCrossingB().getId())) {
-                    rs.getRoad().getRoadSegments().remove(rs);
-                }
+        for (var rs : roads.values().stream().flatMap(r -> r.getRoadSegments().stream()).collect(Collectors.toList())) {
+            if (!crossings.containsKey(rs.getCrossingA().getId()) || !crossings.containsKey(rs.getCrossingB().getId())) {
+                rs.getRoad().getRoadSegments().remove(rs);
+            }
         }
 
         for (var r : new ArrayList<>(roads.values())) {
-            if(r.getRoadSegments().isEmpty()) {
+            if (r.getRoadSegments().isEmpty()) {
                 roads.remove(r.getId());
             }
         }
@@ -89,13 +89,13 @@ class ImportedRoadNetwork {
 
     private boolean isIsland(ImportedCrossing crossing, Set<ImportedCrossing> visited, Map<ImportedCrossing, Collection<ImportedRoadSegment>> edges, int maxDepth) {
         visited.add(crossing);
-        if(maxDepth == 0) {
+        if (maxDepth == 0) {
             return false;
         }
 
-        for(var rs : edges.getOrDefault(crossing, new ArrayList<>())) {
-            if(!visited.contains(rs.getCrossingB())) {
-                if (!isIsland(rs.getCrossingB(), visited, edges, maxDepth-1)) {
+        for (var rs : edges.getOrDefault(crossing, new ArrayList<>())) {
+            if (!visited.contains(rs.getCrossingB())) {
+                if (!isIsland(rs.getCrossingB(), visited, edges, maxDepth - 1)) {
                     return false;
                 }
             }
@@ -110,42 +110,50 @@ class ImportedRoadNetwork {
                 currentSegment = createRoadData(r, way);
                 if (node.isCrossing()) {
                     currentSegment.setCrossingA(getOrCreateCrossing(node, proj));
-                } else {
-                    currentSegment.getPath().add(proj.project(node.getLat(), node.getLon()));
                 }
-                continue;
-            }
-            if (!node.isCrossing()) {
                 currentSegment.getPath().add(proj.project(node.getLat(), node.getLon()));
                 continue;
             }
+            currentSegment.getPath().add(proj.project(node.getLat(), node.getLon()));
+            if (!node.isCrossing()) {
+                continue;
+            }
             currentSegment.setCrossingB(getOrCreateCrossing(node, proj));
-            if(currentSegment.getCrossingA() != null && currentSegment.getCrossingB() != null) {
-                r.getRoadSegments().add(currentSegment);
-                if (!way.isOneWay()) {
-                    r.getRoadSegments().add(createDirectedLane(currentSegment, way));
+            if (currentSegment.getCrossingA() != null && currentSegment.getCrossingB() != null) {
+                int fLanes = way.getForwardLaneCount();
+                if (way.isOneWay()) {
+                    r.getRoadSegments().add(createDirectedLane(currentSegment, way, false, 0, fLanes));
+                } else {
+                    r.getRoadSegments().add(createDirectedLane(currentSegment, way, false, LANE_DIST / 2.0, fLanes));
+                    int bLanes = way.getBackwardLaneCount();
+                    r.getRoadSegments().add(createDirectedLane(currentSegment, way, true,  LANE_DIST / 2.0, bLanes));
                 }
             }
             currentSegment = createRoadData(r, way);
             currentSegment.setCrossingA(getOrCreateCrossing(node, proj));
+            currentSegment.getPath().add(proj.project(node.getLat(), node.getLon()));
         }
     }
 
-    private ImportedRoadSegment createDirectedLane(ImportedRoadSegment s1, OSMWay way) {
-        ImportedRoadSegment s2 = createRoadData(s1.getRoad(), way);
+    private ImportedRoadSegment createDirectedLane(ImportedRoadSegment original, OSMWay way, boolean reverse, double displace, int lanes) {
+        ImportedRoadSegment s = createRoadData(original.getRoad(), way);
+        s.setLaneCount(lanes);
 
-        s2.setCrossingA(s1.getCrossingB());
-        s2.setCrossingB(s1.getCrossingA());
+        List<Position> path = new ArrayList<>(original.getPath());
+        if (reverse) {
+            s.setCrossingA(original.getCrossingB());
+            s.setCrossingB(original.getCrossingA());
+            Collections.reverse(path);
+        } else {
+            s.setCrossingA(original.getCrossingA());
+            s.setCrossingB(original.getCrossingB());
+        }
 
-        List<Position> path = new ArrayList<>(s1.getPath());
-        Collections.reverse(path);
-
-        s1.setPath(movePathToRight(s1.getPath()));
-        s2.setPath(movePathToRight(path));
-        return s2;
+        s.setPath(movePathToRight(path, displace));
+        return s;
     }
 
-    private List<Position> movePathToRight(Collection<Position> path) {
+    private List<Position> movePathToRight(Collection<Position> path, double displace) {
         var newPath = new ArrayList<Position>();
         Position last = null;
         double x = 0;
@@ -161,15 +169,14 @@ class ImportedRoadNetwork {
             x = -dy;
             double l = Math.sqrt(x * x + y * y);
             if (l > 0.000001) {
-                y *= LANE_DIST / l;
-                x *= LANE_DIST / l;
+                y *= displace / l;
+                x *= displace / l;
                 newPath.add(new Position(last.getX() + x, last.getY() + y));
             }
             last = p;
         }
-        if (last != null) {
-            newPath.add(new Position(last.getX() + x, last.getY() + y));
-        }
+        assert last != null;
+        newPath.add(new Position(last.getX() + x, last.getY() + y));
         return newPath;
     }
 

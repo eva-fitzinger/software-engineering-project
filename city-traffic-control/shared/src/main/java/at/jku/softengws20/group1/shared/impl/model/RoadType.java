@@ -18,16 +18,22 @@ public enum RoadType {
     LIVING_STREET("living_street", 30);
 
     private final String osmName;
-
     private final int maxSpeed;
+    private final boolean isLink;
+
 
     RoadType(String osmName, int maxSpeed) {
         this.osmName = osmName;
         this.maxSpeed = maxSpeed;
+        this.isLink = osmName.endsWith("_link");
     }
 
     public int getMaxSpeed() {
         return maxSpeed;
+    }
+
+    public boolean isLink() {
+        return isLink;
     }
 
     public static RoadType fromOSMName(String name) {

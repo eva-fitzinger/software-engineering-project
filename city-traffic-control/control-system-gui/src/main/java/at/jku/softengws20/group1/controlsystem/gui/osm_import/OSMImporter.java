@@ -98,6 +98,7 @@ class OSMImporter {
             n.getStreets().remove(b.getId());
             n.getStreets().put(a.getId(), a);
         });
+        a.merge(b);
         streetNetwork.getWays().remove(b.getId());
     }
 

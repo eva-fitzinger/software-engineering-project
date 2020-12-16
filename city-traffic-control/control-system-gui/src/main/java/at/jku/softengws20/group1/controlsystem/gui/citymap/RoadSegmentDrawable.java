@@ -18,21 +18,21 @@ public class RoadSegmentDrawable {
         this.roadSegment = segment;
         path = new Path();
         path.setStrokeWidth(4);
-        if (ca != null) {
+        /*if (ca != null) {
             Position pos = globalTransform.transform(ca.getPosition());
             path.getElements().add(new MoveTo(pos.getX(), pos.getY()));
-        } else {
-            Position pos = globalTransform.transform(roadSegment.getPath()[0]);
-            path.getElements().add(new MoveTo(pos.getX(), pos.getY()));
-        }
+        } else {*/
+        Position pos = globalTransform.transform(roadSegment.getPath()[0]);
+        path.getElements().add(new MoveTo(pos.getX(), pos.getY()));
+        //}
         for (Position p : roadSegment.getPath()) {
-            Position pos = globalTransform.transform(p);
+            pos = globalTransform.transform(p);
             path.getElements().add(new LineTo(pos.getX(), pos.getY()));
-        }
+        }/*
         if (cb != null) {
             Position pos = globalTransform.transform(cb.getPosition());
             path.getElements().add(new LineTo(pos.getX(), pos.getY()));
-        }
+        }*/
 
         setStyle(RoadStyle.road(roadSegment.getRoadTypeEnum()));
     }
@@ -92,11 +92,11 @@ public class RoadSegmentDrawable {
         }
 
         static RoadStyle highway() {
-            return new RoadStyle(Color.BLACK, BASE_LINE_WIDTH*2);
+            return new RoadStyle(Color.BLACK, BASE_LINE_WIDTH * 2.0);
         }
 
         static RoadStyle primary() {
-            return new RoadStyle(Color.BLACK, BASE_LINE_WIDTH*1.5);
+            return new RoadStyle(Color.BLACK, BASE_LINE_WIDTH * 1.5);
         }
 
         RoadStyle blocked() {
