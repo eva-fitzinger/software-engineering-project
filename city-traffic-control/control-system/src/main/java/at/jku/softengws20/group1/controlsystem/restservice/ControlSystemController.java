@@ -3,23 +3,17 @@ package at.jku.softengws20.group1.controlsystem.restservice;
 import at.jku.softengws20.group1.controlsystem.internal.TrafficScenario;
 import at.jku.softengws20.group1.controlsystem.service.*;
 import at.jku.softengws20.group1.shared.controlsystem.ControlSystemInterface;
-import at.jku.softengws20.group1.shared.controlsystem.MaintenanceRequest;
 import at.jku.softengws20.group1.shared.controlsystem.RoadNetwork;
 import at.jku.softengws20.group1.shared.controlsystem.RoadSegmentStatus;
-import at.jku.softengws20.group1.shared.impl.model.RoadSegment;
+import at.jku.softengws20.group1.shared.impl.model.MaintenanceRequest;
 import at.jku.softengws20.group1.shared.impl.model.TrafficLightRule;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
 
 
 @RestController
 @RequestMapping(ControlSystemInterface.URL)
-public class ControlSystemController implements ControlSystemInterface {
+public class ControlSystemController implements ControlSystemInterface<MaintenanceRequest>, ControlSystemGUIInterface<MaintenanceRequest> {
 
     @Autowired
     private MapRepository mapRepository;
@@ -57,7 +51,7 @@ public class ControlSystemController implements ControlSystemInterface {
     @Override
     @PostMapping(ControlSystemInterface.REQUEST_ROAD_CLOSING_URL)
     public void requestRoadClosing (@RequestBody MaintenanceRequest request) {
-        maintenanceRepository.pushMaintenanceRequestToApprove((at.jku.softengws20.group1.shared.impl.model.MaintenanceRequest) request);
+        maintenanceRepository.pushMaintenanceRequestToApprove(request);
     }
 
     @Override
@@ -66,37 +60,41 @@ public class ControlSystemController implements ControlSystemInterface {
         trafficStatusRepository.openRoadSegment(mapRepository.getRoadSegment(roadSegmentId));
     }
 
-    private final String GET_ENABLED_TRAFFIC_SCENARIOS_URL = "getEnabledTrafficScenarios";
+    public static final String GET_ENABLED_TRAFFIC_SCENARIOS_URL = "getEnabledTrafficScenarios";
+    @Override
     @GetMapping(GET_ENABLED_TRAFFIC_SCENARIOS_URL)
     public TrafficScenario[] getEnabledTrafficScenarios() {
        return  trafficScenarioRepository.getEnabledTrafficScenarios();
     }
 
-    private final String GET_TRAFFIC_CAPACITY_URL = "getTrafficCapacity";
+    private static final String GET_TRAFFIC_CAPACITY_URL = "getTrafficCapacity";
     @GetMapping(GET_TRAFFIC_CAPACITY_URL)
     public String[] getTrafficCapacity() {
         return  trafficCapacityRepository.getCapacityString();
     }
 
-    private final String GET_TRAFFIC_SCENARIOS_URL = "getScenarios";
+    public static final String GET_TRAFFIC_SCENARIOS_URL = "getScenarios";
+    @Override
     @GetMapping(GET_TRAFFIC_SCENARIOS_URL)
     public TrafficScenario[] getTrafficScenarios() {
         return trafficScenarioRepository.getTrafficScenarios();
     }
 
-    private final String SET_APPROVED_MAINTENANCE_URL = "setApprovedMaintenance";
+    public static final String SET_APPROVED_MAINTENANCE_URL = "setApprovedMaintenance";
+    @Override
     @PostMapping (SET_APPROVED_MAINTENANCE_URL)
     public void setApprovedMaintenance(@RequestBody MaintenanceRequest maintenanceRequest) {
         maintenanceRepository.pushApprovedMaintenanceRequests((at.jku.softengws20.group1.shared.impl.model.MaintenanceRequest) maintenanceRequest);
     }
 
-    private final String GET_MAINENANCE_REQUESTS_URL = "getMaintenanceRequests";
+    public static final String GET_MAINENANCE_REQUESTS_URL = "getMaintenanceRequests";
+    @Override
     @GetMapping(GET_MAINENANCE_REQUESTS_URL)
     public MaintenanceRequest[] getMaintenanceRequests() {
         return maintenanceRepository.getMaintenanceRequestsToApprove();
     }
 
-    private final String GET_ENABLED_TRAFFICLIGHT_RULES_URL = "getEnabledTrafficLightRules";
+    private static final String GET_ENABLED_TRAFFICLIGHT_RULES_URL = "getEnabledTrafficLightRules";
     @GetMapping(GET_ENABLED_TRAFFICLIGHT_RULES_URL)
     public TrafficLightRule[] getEnabledTrafficLightRules() {
         return trafficScenarioRepository.getEnabledTrafficLightRules();

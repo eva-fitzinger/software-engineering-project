@@ -1,8 +1,8 @@
 package at.jku.softengws20.group1.controlsystem.gui.model;
 
 import at.jku.softengws20.group1.controlsystem.gui.ControlSystemService;
-import at.jku.softengws20.group1.shared.detection.TrafficLoad;
 import at.jku.softengws20.group1.shared.impl.model.Crossing;
+import at.jku.softengws20.group1.shared.impl.model.RoadSegmentStatus;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,10 +14,10 @@ public class LocalDataRepository {
     private HashMap<String, Crossing> crossingsById = new HashMap<>();
     private HashMap<String, RoadSegment> roadSegmentsById = new HashMap<>();
 
-    private HashMap<TrafficInformationId, ObservableTrafficLoad> trafficInformation = new HashMap<>();
+    private HashMap<String, ObservableTrafficLoad> trafficInformation = new HashMap<>();
     private HashMap<Crossing, Collection<ObservableTrafficLoad>> trafficInfoByCrossing = new HashMap<>();
 
-    private Collection<DummyScenario> activeScenarios = new ArrayList<>();
+    private HashMap<String, RoadSegmentStatus> statusByRoadSegmentId = new HashMap<>();
 
     public LocalDataRepository() {
         loadRoadNetwork();
@@ -42,25 +42,28 @@ public class LocalDataRepository {
         }
     }
 
-    public void updateTrafficInformation(TrafficLoad[] trafficLoadArray) {
-        for(var trafficLoad : trafficLoadArray) {
-            var key = new TrafficInformationId(trafficLoad.getCrossingId(), trafficLoad.getRoadSegmentId());
+    public void updateTrafficInformation(RoadSegmentStatus[] statusArray) {
+        for(var trafficStatus : statusArray) {
+            var key = trafficStatus.getRoadSegmentId();
             var ti = trafficInformation.getOrDefault(key, null);
             if(ti == null) {
-                ti = new ObservableTrafficLoad(getRoadSegmentById(trafficLoad.getRoadSegmentId()), getCrossingById(trafficLoad.getCrossingId()), trafficLoad.getCarsWaiting());
+                var rs = getRoadSegmentById(trafficStatus.getRoadSegmentId());
+                ti = new ObservableTrafficLoad(rs, trafficStatus);
                 trafficInformation.put(key, ti);
-                var infoList = trafficInfoByCrossing.getOrDefault(ti.getCrossing(), null);
+                var infoList = trafficInfoByCrossing.getOrDefault(rs.getCrossingB(), null);
                 if (infoList == null) {
                     infoList = new ArrayList<>();
-                    trafficInfoByCrossing.put(ti.getCrossing(), infoList);
+                    trafficInfoByCrossing.put(rs.getCrossingB(), infoList);
                 }
                 infoList.add(ti);
+            } else {
+                ti.update(trafficStatus);
             }
         }
     }
 
 
-    public RoadSegment getRoadSegmentById(String roadSegmentId) {
+    RoadSegment getRoadSegmentById(String roadSegmentId) {
         return roadSegmentsById.getOrDefault(roadSegmentId, null);
     }
 
@@ -78,5 +81,9 @@ public class LocalDataRepository {
 
     public Collection<ObservableTrafficLoad> getTrafficInformation(Crossing crossing) {
         return trafficInfoByCrossing.getOrDefault(crossing, new ArrayList<>());
+    }
+
+    public RoadSegmentStatus getStatusByRoadSegmentId(String roadSegmentId) {
+        return statusByRoadSegmentId.getOrDefault(roadSegmentId, null);
     }
 }

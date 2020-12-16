@@ -45,6 +45,10 @@ public class RoadSegmentStatus implements at.jku.softengws20.group1.shared.contr
         return isOpen;
     }
 
+    public void setOpen(boolean isOpen) {
+        this.isOpen = isOpen;
+    }
+
     public void close() { isOpen=false; }
 
     public void open() { isOpen=true; }

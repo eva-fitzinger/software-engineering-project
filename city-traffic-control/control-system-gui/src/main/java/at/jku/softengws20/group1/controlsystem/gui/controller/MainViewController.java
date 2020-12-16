@@ -13,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -79,6 +80,9 @@ public class MainViewController implements Initializable {
 
         localDataRepository = new LocalDataRepository();
         cityTrafficMap.setDataRepository(localDataRepository);
+        UpdateService updateService = new UpdateService(localDataRepository);
+        updateService.setPeriod(Duration.seconds(3));
+        updateService.start();
     }
 
     private void initTables() {
@@ -87,7 +91,7 @@ public class MainViewController implements Initializable {
         tblTrafficInformation.getColumns().add(colSegment);
 
         var colTraffic = new TableColumn<ObservableTrafficLoad, Number>("Cars / minute");
-        colTraffic.setCellValueFactory(cellData -> cellData.getValue().carsWaitingProperty());
+        colTraffic.setCellValueFactory(cellData -> cellData.getValue().trafficLoadProperty());
         tblTrafficInformation.getColumns().add(colTraffic);
         tblTrafficInformation.setItems(trafficInformationData);
     }

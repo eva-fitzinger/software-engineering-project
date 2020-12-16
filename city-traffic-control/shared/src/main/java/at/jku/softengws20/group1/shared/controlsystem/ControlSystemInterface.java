@@ -1,6 +1,6 @@
 package at.jku.softengws20.group1.shared.controlsystem;
 
-public interface ControlSystemInterface {
+public interface ControlSystemInterface<T extends MaintenanceRequest> {
     String URL = "/controlsystem";
 
     String GET_ROAD_NETWORK_URL = "roadNetwork";
@@ -10,7 +10,7 @@ public interface ControlSystemInterface {
     RoadSegmentStatus[] getStatus();
 
     String REQUEST_ROAD_CLOSING_URL = "requestRoadBlocking";
-    void requestRoadClosing(MaintenanceRequest request);
+    void requestRoadClosing(T request);
 
     String SET_ROAD_AVAILABLE_URL = "setRoadAvailable";
     void setRoadAvailable(String roadSegmentId);

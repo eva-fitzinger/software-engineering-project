@@ -1,23 +1,20 @@
 package at.jku.softengws20.group1.controlsystem.gui.model;
 
+import at.jku.softengws20.group1.shared.controlsystem.RoadSegmentStatus;
 import at.jku.softengws20.group1.shared.detection.TrafficLoad;
-import at.jku.softengws20.group1.shared.impl.model.Crossing;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 
-public class ObservableTrafficLoad implements TrafficLoad {
+public class ObservableTrafficLoad implements RoadSegmentStatus {
 
     private RoadSegment roadSegment;
-    private Crossing crossing;
-    private IntegerProperty carsWaitingProperty;
     private StringProperty roadSegmentName;
+    private DoubleProperty trafficLoad;
+    private BooleanProperty isOpen;
 
-    public ObservableTrafficLoad(RoadSegment roadSegment, Crossing crossing, int carsWaiting) {
+    public ObservableTrafficLoad(RoadSegment roadSegment, RoadSegmentStatus status) {
         this.roadSegment = roadSegment;
-        this.crossing = crossing;
-        this.carsWaitingProperty = new SimpleIntegerProperty(carsWaiting);
+        this.trafficLoad = new SimpleDoubleProperty(status.getTrafficLoad());
+        this.isOpen = new SimpleBooleanProperty(status.isOpen());
         this.roadSegmentName = new SimpleStringProperty(roadSegment.getDisplayName());
     }
 
@@ -27,29 +24,24 @@ public class ObservableTrafficLoad implements TrafficLoad {
     }
 
     @Override
-    public String getCrossingId() {
-        return crossing.getId();
+    public boolean isOpen() {
+        return isOpen.get();
     }
 
     @Override
-    public int getCarsWaiting() {
-        return carsWaitingProperty.get();
+    public double getTrafficLoad() {
+        return trafficLoad.get();
     }
 
-    public void setCarsWaiting(int carsWaiting) {
-        carsWaitingProperty.set(carsWaiting);
+    public void update(RoadSegmentStatus status) {
+        if (getRoadSegmentId().equals(status.getRoadSegmentId())) {
+            trafficLoad.set(status.getTrafficLoad());
+            isOpen.set(status.isOpen());
+        }
     }
 
     public RoadSegment getRoadSegment() {
         return roadSegment;
-    }
-
-    public Crossing getCrossing() {
-        return crossing;
-    }
-
-    public IntegerProperty carsWaitingProperty() {
-        return carsWaitingProperty;
     }
 
     public String getRoadSegmentName() {
@@ -58,5 +50,13 @@ public class ObservableTrafficLoad implements TrafficLoad {
 
     public StringProperty roadSegmentNameProperty() {
         return roadSegmentName;
+    }
+
+    public DoubleProperty trafficLoadProperty() {
+        return trafficLoad;
+    }
+
+    public BooleanProperty isOpenProperty() {
+        return isOpen;
     }
 }
