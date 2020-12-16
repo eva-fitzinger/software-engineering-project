@@ -5,6 +5,8 @@ import at.jku.softengws20.group1.shared.impl.model.*;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
+import java.util.Arrays;
+import java.util.Optional;
 
 @Repository
 public class MapRepository {
@@ -21,7 +23,7 @@ public class MapRepository {
 
         RoadSegment[] roadSegments = new RoadSegment[]{
                 new RoadSegment("rs1", "ring", "1", "2", RoadType.RESIDENTIAL,
-                        2, 50, new Position[0]),
+                        2, 100, new Position[0]),
                 new RoadSegment("rs2", "horizontal", "2", "3", RoadType.RESIDENTIAL,
                         2, 50, new Position[0]),
                 new RoadSegment("rs3", "ring", "4", "5", RoadType.RESIDENTIAL,
@@ -51,4 +53,10 @@ public class MapRepository {
     public RoadNetwork getRoadNetwork() {
         return roadNetwork;
     }
+
+    public RoadSegment getRoadSegment(String roadSegmentId) {
+        Optional<RoadSegment> roadSegment = Arrays.stream(roadNetwork.getRoadSegments()).filter(r -> r.getId().equals(roadSegmentId)).findAny();
+        return roadSegment.orElse(null);
+    }
+
 }
