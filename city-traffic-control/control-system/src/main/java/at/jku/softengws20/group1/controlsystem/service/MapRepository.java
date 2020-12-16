@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Optional;
 
 @Repository
 public class MapRepository {
@@ -71,4 +73,10 @@ public class MapRepository {
     public RoadNetwork getRoadNetwork() {
         return roadNetwork;
     }
+
+    public RoadSegment getRoadSegment(String roadSegmentId) {
+        Optional<RoadSegment> roadSegment = Arrays.stream(roadNetwork.getRoadSegments()).filter(r -> r.getId().equals(roadSegmentId)).findAny();
+        return roadSegment.orElse(null);
+    }
+
 }
