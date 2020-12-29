@@ -17,8 +17,6 @@ public class LocalDataRepository {
     private HashMap<String, ObservableTrafficLoad> trafficInformation = new HashMap<>();
     private HashMap<Crossing, Collection<ObservableTrafficLoad>> trafficInfoByCrossing = new HashMap<>();
 
-    private HashMap<String, RoadSegmentStatus> statusByRoadSegmentId = new HashMap<>();
-
     public LocalDataRepository() {
         loadRoadNetwork();
     }
@@ -39,26 +37,22 @@ public class LocalDataRepository {
             rs.setRoad(roadsById.get(rs.getRoadId()));
             rs.setCrossingA(crossingsById.get(rs.getCrossingAId()));
             rs.setCrossingB(crossingsById.get(rs.getCrossingBId()));
+            var ti = new ObservableTrafficLoad(rs, new RoadSegmentStatus(rs.getId()));
+            trafficInformation.put(rs.getId(), ti);
+            var infoList = trafficInfoByCrossing.getOrDefault(rs.getCrossingB(), null);
+            if (infoList == null) {
+                infoList = new ArrayList<>();
+                trafficInfoByCrossing.put(rs.getCrossingB(), infoList);
+            }
+            infoList.add(ti);
         }
     }
 
     public void updateTrafficInformation(RoadSegmentStatus[] statusArray) {
         for(var trafficStatus : statusArray) {
             var key = trafficStatus.getRoadSegmentId();
-            var ti = trafficInformation.getOrDefault(key, null);
-            if(ti == null) {
-                var rs = getRoadSegmentById(trafficStatus.getRoadSegmentId());
-                ti = new ObservableTrafficLoad(rs, trafficStatus);
-                trafficInformation.put(key, ti);
-                var infoList = trafficInfoByCrossing.getOrDefault(rs.getCrossingB(), null);
-                if (infoList == null) {
-                    infoList = new ArrayList<>();
-                    trafficInfoByCrossing.put(rs.getCrossingB(), infoList);
-                }
-                infoList.add(ti);
-            } else {
-                ti.update(trafficStatus);
-            }
+            var ti = trafficInformation.get(key);
+            ti.update(trafficStatus);
         }
     }
 
@@ -83,7 +77,11 @@ public class LocalDataRepository {
         return trafficInfoByCrossing.getOrDefault(crossing, new ArrayList<>());
     }
 
-    public RoadSegmentStatus getStatusByRoadSegmentId(String roadSegmentId) {
-        return statusByRoadSegmentId.getOrDefault(roadSegmentId, null);
+    public ObservableTrafficLoad getTrafficInformation(String roadSegmentId) {
+        return trafficInformation.get(roadSegmentId);
+    }
+
+    public Collection<ObservableTrafficLoad> getTrafficInformation() {
+        return trafficInformation.values();
     }
 }

@@ -1,9 +1,11 @@
 package at.jku.softengws20.group1.controlsystem.gui.citymap;
 
 import at.jku.softengws20.group1.controlsystem.gui.model.RoadSegment;
+import at.jku.softengws20.group1.controlsystem.gui.model.RoadState;
 import at.jku.softengws20.group1.shared.impl.model.Crossing;
 import at.jku.softengws20.group1.shared.impl.model.Position;
 import at.jku.softengws20.group1.shared.impl.model.RoadType;
+import javafx.application.Platform;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 
@@ -13,6 +15,8 @@ public class RoadSegmentDrawable {
 
     private at.jku.softengws20.group1.controlsystem.gui.model.RoadSegment roadSegment;
     private Path path;
+    private boolean isSelected = false;
+    private boolean isSelectedSecondary = false;
 
     RoadSegmentDrawable(RoadSegment segment, Crossing ca, Crossing cb, Transform globalTransform) {
         this.roadSegment = segment;
@@ -35,29 +39,53 @@ public class RoadSegmentDrawable {
         }*/
 
         setStyle(RoadStyle.road(roadSegment.getRoadTypeEnum()));
+        path.setViewOrder(0.0);
     }
 
     public Path getPath() {
         return path;
     }
 
-    public void setStyle(RoadStyle style) {
-        path.setStrokeWidth(style.lineWidth);
-        path.setStroke(style.strokeColor);
-        path.setStrokeLineJoin(StrokeLineJoin.ROUND);
-        path.setStrokeLineCap(StrokeLineCap.ROUND);
+    public void setState(RoadState state) {
+        if(isSelected) {
+            return;
+        }
+        var style = RoadStyle.road(roadSegment.getRoadTypeEnum());
+        if(state == RoadState.BLOCKED)
+            style = style.blocked();
+        else if (state == RoadState.WARN)
+            style = style.warn();
+        else if (state == RoadState.WARN_LIGHT)
+            style = style.warnLight();
+        setStyle(style);
+    }
+
+    private void setStyle(RoadStyle style) {
+        Platform.runLater(() -> {
+            path.setStrokeWidth(style.lineWidth);
+            path.setStroke(style.strokeColor);
+            path.setStrokeLineJoin(StrokeLineJoin.ROUND);
+            path.setStrokeLineCap(StrokeLineCap.ROUND);
+        });
     }
 
     public void select() {
         setStyle(RoadStyle.road(roadSegment.getRoadTypeEnum()).select());
+        isSelected = true;
+        path.setViewOrder(-1.0);
     }
 
     public void selectSecondary() {
         setStyle(RoadStyle.road(roadSegment.getRoadTypeEnum()).selectSecondary());
+        isSelectedSecondary = true;
+        path.setViewOrder(-0.5);
     }
 
     public void deselect() {
         setStyle(RoadStyle.road(roadSegment.getRoadTypeEnum()));
+        isSelected = false;
+        isSelectedSecondary = false;
+        path.setViewOrder(0.0);
     }
 
     public RoadSegment getRoadSegment() {

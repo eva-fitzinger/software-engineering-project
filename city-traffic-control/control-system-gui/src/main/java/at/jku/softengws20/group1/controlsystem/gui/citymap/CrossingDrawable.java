@@ -18,6 +18,8 @@ public class CrossingDrawable {
         this.crossing = crossing;
         Position p = globalTransform.transform(crossing.getPosition());
         circle = new Circle(p.getX(), p.getY(), DEFAULT_RADIUS, DEFAULT_COLOR);
+        circle.setOpacity(0.5);
+        circle.setViewOrder(-2.0);
     }
 
     public Shape getShape() {
@@ -26,10 +28,12 @@ public class CrossingDrawable {
 
     public void select() {
         circle.setFill(Color.BLUE);
+        circle.setViewOrder(-3.0);
     }
 
     public void deselect() {
         circle.setFill(DEFAULT_COLOR);
+        circle.setViewOrder(-2.0);
     }
 
     public Crossing getCrossing() {
