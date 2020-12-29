@@ -94,6 +94,12 @@ public class MainViewController implements Initializable {
         colTraffic.setCellValueFactory(cellData -> cellData.getValue().trafficLoadProperty());
         tblTrafficInformation.getColumns().add(colTraffic);
         tblTrafficInformation.setItems(trafficInformationData);
+
+        tblTrafficInformation.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue != null) {
+                select(newValue.getRoadSegment());
+            }
+        });
     }
 
     private void select(Crossing crossing) {
