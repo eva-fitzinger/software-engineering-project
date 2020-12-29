@@ -22,21 +22,12 @@ public class RoadSegmentDrawable {
         this.roadSegment = segment;
         path = new Path();
         path.setStrokeWidth(4);
-        /*if (ca != null) {
-            Position pos = globalTransform.transform(ca.getPosition());
-            path.getElements().add(new MoveTo(pos.getX(), pos.getY()));
-        } else {*/
         Position pos = globalTransform.transform(roadSegment.getPath()[0]);
         path.getElements().add(new MoveTo(pos.getX(), pos.getY()));
-        //}
         for (Position p : roadSegment.getPath()) {
             pos = globalTransform.transform(p);
             path.getElements().add(new LineTo(pos.getX(), pos.getY()));
-        }/*
-        if (cb != null) {
-            Position pos = globalTransform.transform(cb.getPosition());
-            path.getElements().add(new LineTo(pos.getX(), pos.getY()));
-        }*/
+        }
 
         setStyle(RoadStyle.road(roadSegment.getRoadTypeEnum()));
         path.setViewOrder(0.0);
@@ -47,7 +38,7 @@ public class RoadSegmentDrawable {
     }
 
     public void setState(RoadState state) {
-        if(isSelected) {
+        if(isSelected || isSelectedSecondary) {
             return;
         }
         var style = RoadStyle.road(roadSegment.getRoadTypeEnum());
