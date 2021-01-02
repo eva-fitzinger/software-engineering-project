@@ -31,14 +31,8 @@ public class SchedulingSystem { // TODO: enhance in Milestone 3.2
     private List<Repair> schedule;
 
     public SchedulingSystem() {
-        initCalendar();
     }
 
-    private void initCalendar() {
-        for (int i = 0; i < 5; i++) {
-            addRegularRepair(); // employees needed
-        }
-    }
 
     public void printSchedule() {
         System.out.println("-------- Time Table for this Week ---------");
@@ -105,6 +99,9 @@ public class SchedulingSystem { // TODO: enhance in Milestone 3.2
         currentRepairApproval.setTime(approvedTimeslot.getFrom(), approvedTimeslot.getTo());
     }
 
+    public static RegularRepair getCurrentRepairApproval() {
+        return currentRepairApproval;
+    }
 
     public void addEmergencyRepair(EmergencyRepair emergencyRepair) { //TODO: in Milestone 3.2
         //add right away
@@ -116,7 +113,7 @@ public class SchedulingSystem { // TODO: enhance in Milestone 3.2
                 repair.setTime(new Date(repair.getFrom().getTime() + difference),
                         new Date(repair.getFrom().getTime() + difference));
             }
-            getSchedule().add(emergencyRepair);
+            //no add to schedule, because car will be sent right away by MaintenanceController
         }
     }
 }

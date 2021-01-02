@@ -24,6 +24,7 @@ public class DummyRegularRepair {
                 rand.nextInt(VehicleCenter.MAX_EMPLOYEES));
     }
 
+    //for simplicity reasons: this maintenance company is a 24/7 service
     public static Timeslot getDummyTimeSlot(RegularRepair regularRepair) {
         Random rand = new Random();
         at.jku.softengws20.group1.shared.impl.model.Timeslot timeslot;
@@ -32,10 +33,6 @@ public class DummyRegularRepair {
 
         Date from = new Date(dateTime + rand.nextLong());
         Date to = new Date(from.getTime() + regularRepair.getDuration());
-        //TODO calculate again if out of bounds of working hours
-
-        from = new Date(dateTime + rand.nextLong());
-        to = new Date(from.getTime() + regularRepair.getDuration());
         timeslot = new at.jku.softengws20.group1.shared.impl.model.Timeslot(from, to);
 
         return timeslot;

@@ -7,7 +7,7 @@ import java.util.Random;
 
 import static at.jku.softengws20.group1.maintenance.dummy.data.DummyRegularRepair.MAX_DURATION;
 
-public class DummyEmergencyRepair { // TODO: Milestone 3.2
+public class DummyEmergencyRepair {
 
     public static EmergencyRepair getEmergencyRepair(Date currentDate) {
         Random rand = new Random();
