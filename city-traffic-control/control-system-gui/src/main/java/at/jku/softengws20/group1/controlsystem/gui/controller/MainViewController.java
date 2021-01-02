@@ -3,10 +3,10 @@ package at.jku.softengws20.group1.controlsystem.gui.controller;
 import at.jku.softengws20.group1.controlsystem.gui.citymap.CityTrafficMap;
 import at.jku.softengws20.group1.controlsystem.gui.citymap.ZoomableScrollPane;
 import at.jku.softengws20.group1.controlsystem.gui.model.LocalDataRepository;
+import at.jku.softengws20.group1.controlsystem.gui.model.ObservableRule;
 import at.jku.softengws20.group1.controlsystem.gui.model.ObservableTrafficLoad;
 import at.jku.softengws20.group1.controlsystem.gui.model.RoadSegment;
 import at.jku.softengws20.group1.shared.impl.model.Crossing;
-import at.jku.softengws20.group1.shared.impl.model.TrafficLightRule;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -35,7 +35,7 @@ public class MainViewController implements Initializable {
     private TableView<ObservableTrafficLoad> tblTrafficInformation;
 
     @FXML
-    private TableView<TrafficLightRule> tblActiveRules;
+    private TableView<ObservableRule> tblActiveRules;
 
     @FXML
     private Button btnCrossingA;
@@ -69,6 +69,7 @@ public class MainViewController implements Initializable {
     private Crossing selectedCrossing;
     private RoadSegment selectedRoadSegment;
     private ObservableList<ObservableTrafficLoad> trafficInformationData = FXCollections.observableArrayList();
+    private ObservableList<ObservableRule> activeRules = FXCollections.observableArrayList();
     private ControlSystemApi controlSystemApi = new ControlSystemApi();
 
     @Override
@@ -116,6 +117,20 @@ public class MainViewController implements Initializable {
                 select(newValue.getRoadSegment());
             }
         });
+
+        var colRoadSegment = new TableColumn<ObservableRule, String>("Road segment");
+        colRoadSegment.setCellValueFactory(cellData -> cellData.getValue().getRoadSegment().displayNameProperty());
+        var colPriority = new TableColumn<ObservableRule, Double>("Green light priority");
+        colPriority.setCellValueFactory(cellData -> cellData.getValue().priorityProperty().asObject());
+        tblActiveRules.getColumns().add(colRoadSegment);
+        tblActiveRules.getColumns().add(colPriority);
+
+        tblActiveRules.setItems(activeRules);
+        tblActiveRules.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->{
+            if(newValue != null) {
+                select(newValue.getRoadSegment());
+            }
+        });
     }
 
     void select(Crossing crossing) {
@@ -133,10 +148,12 @@ public class MainViewController implements Initializable {
 
     private void updateCrossingView() {
         trafficInformationData.clear();
+        activeRules.clear();
         if (selectedCrossing != null) {
             // todo show view
             lblCrossingId.setText(selectedCrossing.getId());
             trafficInformationData.addAll(localDataRepository.getTrafficInformation(selectedCrossing));
+            activeRules.addAll(localDataRepository.getActiveRules(selectedCrossing));
             // todo lblCarsWaiting.setText();
         } else {
             // todo hide view

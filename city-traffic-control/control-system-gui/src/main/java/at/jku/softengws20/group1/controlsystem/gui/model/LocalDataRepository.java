@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -21,6 +22,8 @@ public class LocalDataRepository {
     private HashMap<Crossing, Collection<ObservableTrafficLoad>> trafficInfoByCrossing = new HashMap<>();
 
     private ObservableList<ObservableMaintenanceRequest> openRequests = FXCollections.observableArrayList();
+
+    private Collection<TrafficScenarioModel> enabledTrafficScenarios = new ArrayList<>();
 
     public LocalDataRepository() {
         loadRoadNetwork();
@@ -68,6 +71,10 @@ public class LocalDataRepository {
         }
     }
 
+    public void updateEnabledTrafficScenarios(TrafficScenarioModel[] enabledTrafficScenarios) {
+        this.enabledTrafficScenarios.clear();
+        this.enabledTrafficScenarios.addAll(Arrays.asList(enabledTrafficScenarios));
+    }
 
     RoadSegment getRoadSegmentById(String roadSegmentId) {
         return roadSegmentsById.getOrDefault(roadSegmentId, null);
@@ -98,4 +105,17 @@ public class LocalDataRepository {
     }
 
     public ObservableList<ObservableMaintenanceRequest> getOpenRequests() { return openRequests; }
+
+    public Collection<ObservableRule> getActiveRules(Crossing selectedCrossing) {
+        ArrayList<ObservableRule> rules = new ArrayList<>();
+        for(var s : enabledTrafficScenarios) {
+            for(var r : s.getTrafficLightRules()) {
+                var rs = getRoadSegmentById(r.getIncomingRoadSegmentId());
+                if (selectedCrossing.getId().equals(rs.getCrossingB().getId())) {
+                    rules.add(new ObservableRule(rs, r.getPriority()));
+                }
+            }
+        }
+        return rules;
+    }
 }

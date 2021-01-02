@@ -23,6 +23,9 @@ public class UpdateService extends ScheduledService<Void> {
 
                 var maintenanceRequests = controlSystemApi.getMaintenanceRequests();
                 repository.updateMaintenanceRequests(maintenanceRequests);
+
+                var enabledTrafficScenarios = controlSystemApi.getEnabledTrafficScenarios();
+                repository.updateEnabledTrafficScenarios(enabledTrafficScenarios);
                 return null;
             }
         };
