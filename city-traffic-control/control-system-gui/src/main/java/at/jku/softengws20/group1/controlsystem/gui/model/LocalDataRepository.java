@@ -2,7 +2,10 @@ package at.jku.softengws20.group1.controlsystem.gui.model;
 
 import at.jku.softengws20.group1.controlsystem.gui.ControlSystemService;
 import at.jku.softengws20.group1.shared.impl.model.Crossing;
+import at.jku.softengws20.group1.shared.impl.model.MaintenanceRequest;
 import at.jku.softengws20.group1.shared.impl.model.RoadSegmentStatus;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,6 +19,8 @@ public class LocalDataRepository {
 
     private HashMap<String, ObservableTrafficLoad> trafficInformation = new HashMap<>();
     private HashMap<Crossing, Collection<ObservableTrafficLoad>> trafficInfoByCrossing = new HashMap<>();
+
+    private ObservableList<ObservableMaintenanceRequest> openRequests = FXCollections.observableArrayList();
 
     public LocalDataRepository() {
         loadRoadNetwork();
@@ -56,6 +61,13 @@ public class LocalDataRepository {
         }
     }
 
+    public void updateMaintenanceRequests(MaintenanceRequest[] maintenanceRequests) {
+        openRequests.clear();
+        for(var mr : maintenanceRequests) {
+            openRequests.add(new ObservableMaintenanceRequest(getRoadSegmentById(mr.getRoadSegmentId()), mr.getTimeSlots(), mr.getRequestType()));
+        }
+    }
+
 
     RoadSegment getRoadSegmentById(String roadSegmentId) {
         return roadSegmentsById.getOrDefault(roadSegmentId, null);
@@ -84,4 +96,6 @@ public class LocalDataRepository {
     public Collection<ObservableTrafficLoad> getTrafficInformation() {
         return trafficInformation.values();
     }
+
+    public ObservableList<ObservableMaintenanceRequest> getOpenRequests() { return openRequests; }
 }

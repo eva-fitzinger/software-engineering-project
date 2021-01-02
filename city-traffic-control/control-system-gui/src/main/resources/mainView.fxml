@@ -102,7 +102,7 @@
                 <Menu mnemonicParsing="false" text="Views">
                   <items>
                     <MenuItem mnemonicParsing="false" text="Scenario window" />
-                        <MenuItem mnemonicParsing="false" text="Maintenance requests" />
+                        <MenuItem mnemonicParsing="false" onAction="#onOpenMaintenanceRequestsClick" text="Maintenance requests" />
                         <MenuItem mnemonicParsing="false" text="Notification window" />
                   </items>
                 </Menu>

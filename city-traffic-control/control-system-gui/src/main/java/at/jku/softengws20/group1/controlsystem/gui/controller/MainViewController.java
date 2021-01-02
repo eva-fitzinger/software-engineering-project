@@ -118,13 +118,13 @@ public class MainViewController implements Initializable {
         });
     }
 
-    private void select(Crossing crossing) {
+    void select(Crossing crossing) {
         selectedCrossing = crossing;
         cityTrafficMap.selectCrossing(crossing);
         updateCrossingView();
     }
 
-    private void select(RoadSegment roadSegment) {
+    void select(RoadSegment roadSegment) {
         selectedRoadSegment = roadSegment;
         btnCloseRoad.setText(localDataRepository.getTrafficInformation(roadSegment.getId()).isOpen() ? "Close road" : "Open road");
         cityTrafficMap.selectRoadSegment(roadSegment);
@@ -182,6 +182,11 @@ public class MainViewController implements Initializable {
                 controlSystemApi.setRoadAvailable(selectedRoadSegment.getId());
             }
         }
+    }
+
+    @FXML
+    void onOpenMaintenanceRequestsClick(ActionEvent event) {
+        MaintenanceRequestsController.open(this, localDataRepository);
     }
 
     @FXML
