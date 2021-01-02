@@ -40,14 +40,14 @@ public class TrafficStatusRepository {
             RoadSegment roadSegment = mapRepository.getRoadSegment(t.getRoadSegmentId());
             setTrafficLoad(
                     roadSegment,
-                    t.getCarsWaiting(),
-                    trafficCapacityRepository.getCapacity(roadSegment)
+                    trafficCapacityRepository.getCapacity(roadSegment),
+                    t.getCarsWaiting()
             );
         }
     }
 
     private void setTrafficLoad(RoadSegment roadSegment, double capacity, double carsWaiting) {
-        // traffic load can only be calulated of capacity > 0
+        // traffic load can only be calculated of capacity > 0
         if (capacity != 0 ) {
             double trafficLoad = Math.min(carsWaiting / capacity, 1.0);
             if (roadSegmentStatusHashMap.containsKey(roadSegment)) {

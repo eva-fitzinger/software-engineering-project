@@ -37,7 +37,10 @@ public class AutomaticTrafficControl {
 
     @Scheduled(fixedRate = 1000)
     private void processTrafficLoad() {
-        trafficStatusRepository.processTrafficLoad(detectionService.getTrafficLoad());
+        TrafficLoad[] trafficLoad = detectionService.getTrafficLoad();
+        if (trafficLoad.length > 0) {
+            trafficStatusRepository.processTrafficLoad(trafficLoad);
+        }
     }
 
     @Scheduled(fixedRate = 1000)
