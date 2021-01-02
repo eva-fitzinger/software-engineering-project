@@ -4,10 +4,12 @@ import at.jku.softengws20.group1.controlsystem.internal.TrafficScenario;
 import at.jku.softengws20.group1.controlsystem.service.*;
 import at.jku.softengws20.group1.shared.controlsystem.ControlSystemInterface;
 import at.jku.softengws20.group1.shared.controlsystem.RoadNetwork;
-import at.jku.softengws20.group1.shared.controlsystem.RoadSegmentStatus;
+import at.jku.softengws20.group1.shared.impl.model.RoadSegmentStatus;
 import at.jku.softengws20.group1.shared.impl.model.MaintenanceRequest;
+import at.jku.softengws20.group1.shared.impl.model.RoadSegment;
 import at.jku.softengws20.group1.shared.impl.model.TrafficLightRule;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -60,6 +62,19 @@ public class ControlSystemController implements ControlSystemInterface<Maintenan
         trafficStatusRepository.openRoadSegment(mapRepository.getRoadSegment(roadSegmentId));
     }
 
+    public static final String SET_ROAD_CLOSE = "setRoadClose";
+    @PostMapping(SET_ROAD_CLOSE)
+    public void setRoadClose(@RequestBody String roadSegmentId) {
+        trafficStatusRepository.closeRoadSegment(mapRepository.getRoadSegment(roadSegmentId));
+    }
+
+    public static final String GET_CLOSED_ROADSEGMENTS_URL = "getClosedRoadSegments";
+    @GetMapping(GET_CLOSED_ROADSEGMENTS_URL)
+    public RoadSegmentStatus[] getClosedRoadSegments() {
+        return  trafficStatusRepository.getClosedRoadSegments();
+    }
+
+
     public static final String GET_ENABLED_TRAFFIC_SCENARIOS_URL = "getEnabledTrafficScenarios";
     @Override
     @GetMapping(GET_ENABLED_TRAFFIC_SCENARIOS_URL)
@@ -99,5 +114,11 @@ public class ControlSystemController implements ControlSystemInterface<Maintenan
     public TrafficLightRule[] getEnabledTrafficLightRules() {
         return trafficScenarioRepository.getEnabledTrafficLightRules();
     }
+
+//    @Scheduled(fixedRate = 1000)
+//    private void testRoadClose() {
+//        System.out.println("##### Close RoadSegment 10761352_80");
+//        setRoadClose("10761352_80");
+//    }
 
 }

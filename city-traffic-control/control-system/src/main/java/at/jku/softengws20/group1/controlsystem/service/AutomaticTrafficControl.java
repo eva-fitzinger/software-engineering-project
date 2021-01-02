@@ -1,6 +1,7 @@
 package at.jku.softengws20.group1.controlsystem.service;
 
 import at.jku.softengws20.group1.controlsystem.restservice.MaintenanceService;
+import at.jku.softengws20.group1.shared.detection.TrafficLightRule;
 import at.jku.softengws20.group1.shared.detection.TrafficLoad;
 import at.jku.softengws20.group1.shared.impl.model.*;
 
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 @Service
@@ -46,20 +48,24 @@ public class AutomaticTrafficControl {
     @Scheduled(fixedRate = 1000)
     private void processApprovedMaintenanceRequests() {
         // read actual closed roadSegments
-        ArrayList<RoadSegmentStatus> closedRoadSegments = trafficStatusRepository.getClosedRoadSegments();
+        ArrayList<RoadSegmentStatus> closedRoadSegments = new ArrayList<>(Arrays.asList(trafficStatusRepository.getClosedRoadSegments()));
         for (MaintenanceRequest m: maintenanceRepository.getCurrentMaintenanceRequests()) {
             trafficStatusRepository.closeRoadSegment(mapRepository.getRoadSegment(m.getRoadSegmentId()));
             closedRoadSegments.removeIf(r -> r.getRoadSegmentId() == m.getRoadSegmentId());
         }
 
-        //open remaining
-        for (at.jku.softengws20.group1.shared.impl.model.RoadSegmentStatus s: closedRoadSegments) {
-            s.open();
-        }
+//        //open remaining
+//        for (RoadSegmentStatus s: closedRoadSegments) {
+//            s.open();
+//        }
     }
 
     @Scheduled(fixedRate = 1000)
     private void setEnabledTrafficLightRules() {
-        detectionService.setTrafficLightRules(trafficScenarioRepository.getEnabledTrafficLightRules());
+        TrafficLightRule[] trafficLightRules = trafficScenarioRepository.getEnabledTrafficLightRules();
+        if (trafficLightRules != null ) {
+            detectionService.setTrafficLightRules(trafficScenarioRepository.getEnabledTrafficLightRules());
+        }
     }
+
 }

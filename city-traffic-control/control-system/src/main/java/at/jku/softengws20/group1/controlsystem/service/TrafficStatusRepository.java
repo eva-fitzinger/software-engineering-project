@@ -66,8 +66,14 @@ public class TrafficStatusRepository {
         return roadSegmentStatusHashMap.values().toArray(new RoadSegmentStatus[0]);
     }
 
-    public ArrayList<RoadSegmentStatus> getClosedRoadSegments() {
-        return new ArrayList<RoadSegmentStatus>(Arrays.stream(getRoadSegmentStatus()).filter(r -> !r.isOpen()).collect(Collectors.toList()));
+    public RoadSegmentStatus[] getClosedRoadSegments() {
+        ArrayList<RoadSegmentStatus> result = new ArrayList<RoadSegmentStatus>();
+        for (RoadSegmentStatus roadSegmentStatus : getRoadSegmentStatus()) {
+            if (!roadSegmentStatus.isOpen()) {
+                result.add(roadSegmentStatus);
+            }
+        }
+        return result.toArray(new RoadSegmentStatus[0]);
     }
 
 }
