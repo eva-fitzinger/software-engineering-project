@@ -2,10 +2,11 @@ package at.jku.softengws20.group1.participants.restservice;
 
 import at.jku.softengws20.group1.participants.navigation.Navigation;
 import at.jku.softengws20.group1.participants.roadNetwork.*;
-
 import at.jku.softengws20.group1.participants.simulation.Participant;
 import at.jku.softengws20.group1.participants.simulation.Simulation;
+import at.jku.softengws20.group1.shared.Config;
 import at.jku.softengws20.group1.shared.controlsystem.RoadSegment;
+import at.jku.softengws20.group1.shared.impl.model.RoadSegmentStatus;
 import at.jku.softengws20.group1.shared.impl.model.TrafficLightChange;
 import at.jku.softengws20.group1.shared.maintenance.CarPath;
 import at.jku.softengws20.group1.shared.participants.ParticipantsInterface;
@@ -16,13 +17,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-
-import java.util.HashSet;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @RestController
 @RequestMapping(ParticipantsInterface.URL)
@@ -44,7 +42,7 @@ public class ParticipantsController implements ParticipantsInterface, Applicatio
     @PostMapping(ParticipantsInterface.SEND_CAR)
     public synchronized void sendCar(@RequestBody CarPath request) {
         simulation.addParticipant(new Participant(new Position(roads.get(request.getStartRoadSegmentId()), request.getStartRoadPosition()),
-                new Position(roads.get(request.getDestinationRoadSegmentId()), request.getDestinationRoadPosition()), navigation));
+                new Position(roads.get(request.getDestinationRoadSegmentId()), request.getDestinationRoadPosition()), navigation, request.getCallbackUri()));
     }
 
     @RequestMapping("participantPositions")
@@ -58,7 +56,8 @@ public class ParticipantsController implements ParticipantsInterface, Applicatio
             Coordinate c = participant.getPosition().getCoordinate();
             Coordinate screenOffset = participant.getPosition().getRoad().getScreenOffset();
             res.append("<circle cx=").append((c.getX() - minX) / (maxX - minX) * 90 + 5 + screenOffset.getX())
-                    .append("% cy=").append((c.getY() - minY) / (maxY - minY) * 90 + 5 + screenOffset.getY()).append("% r=3").append(" fill='red'/>");
+                    .append("% cy=").append((c.getY() - minY) / (maxY - minY) * 90 + 5 + screenOffset.getY()).append("% r=2").append(" fill='")
+                    .append(participant.getAcceleration() >= -0.1 && participant.getVelocity() > 0 ? "green" : "red").append("'/>");
         }
         return res.toString();
     }
@@ -78,14 +77,14 @@ public class ParticipantsController implements ParticipantsInterface, Applicatio
             Coordinate screenOffset = road.getScreenOffset();
             gui.append("<line x1=").append(x1 + screenOffset.getX()).append("% y1=").append(y1 + screenOffset.getY())
                     .append("% x2=").append(x2 + screenOffset.getX()).append("% y2=").append(y2 + screenOffset.getY())
-                    .append("% style='stroke:rgb(0,0,0);stroke-width:2'/>");
+                    .append("% style='stroke:rgb(0,0,0);stroke-width:1'/>");
             //gui.append("<text x=").append((x1 + x2) / 2 + 1).append("% y=").append((y1 + y2) / 2 - 1).append("% class='small'>").append(road.getId()).append("</text>");
         }
         for (Crossing crossing : roadNetwork.crossings) {
             double x = (crossing.getPosition().getX() - minX) / (maxX - minX) * 90 + 5;
             double y = (crossing.getPosition().getY() - minY) / (maxY - minY) * 90 + 5;
             //gui.append("<text x=").append(x + 1).append("% y=").append(y - 1).append("% class='small'>").append(crossing.getId()).append("</text>");
-            gui.append("<circle cx=").append(x).append("% cy=").append(y).append("% r=5").append(" fill='black'/>");
+            gui.append("<circle cx=").append(x).append("% cy=").append(y).append("% r=2").append(" fill='black'/>");
         }
         gui.append("</svg>");
         gui.append("<svg id='participants' width=100% height=100% style='position:absolute'></svg>");
@@ -108,17 +107,37 @@ public class ParticipantsController implements ParticipantsInterface, Applicatio
     @Override
     @PostMapping(ParticipantsInterface.NOTIFY_TRAFFIC_LIGHT_CHANGED)
     public void notifyTrafficLightChanged(@RequestBody TrafficLightChange change) {
-
+        Crossing crossing = crossings.get(change.getCrossingId());
+        crossing.getGreenRoads().clear();
+        for (String roadID : change.getGreenForRoads()) {
+            crossing.getGreenRoads().add(roads.get(roadID));
+        }
     }
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         initNavigation();
-        simulation.addParticipant(new Participant(new Position(roadNetwork.roads[0], 0), new Position(roadNetwork.roads[5], 1), navigation));
-        simulation.addParticipant(new Participant(new Position(roadNetwork.roads[0], 300), new Position(roadNetwork.roads[5], 1), navigation));
         Thread t = new Thread(simulation);
         t.setName("simulator");
+        t.setPriority(1);
         t.start();
+        Timer pollStatusTimer = new Timer(true);
+        pollStatusTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                pollRoadNetworkState();
+            }
+        }, 0, (long)(60 * 1000 / Config.REAL_TIME_FACTOR));
+    }
+
+    public void pollRoadNetworkState() {
+        //RoadSegmentStatus[] status = controlSystemService.getStatus();
+        //for (RoadSegmentStatus s : status) {
+        //    Road road = roads.get(s.getRoadSegmentId());
+        //    road.setClosed(!s.isOpen());
+        //    road.setEstimatedSpeed(Math.min(road.getSpeedLimit(), Math.max(3, road.getSpeedLimit() * (1 - s.getTrafficLoad()))));
+        //}
+        roadNetwork.incVersion();
     }
 
 
@@ -132,8 +151,6 @@ public class ParticipantsController implements ParticipantsInterface, Applicatio
         for (RoadSegment roadSource : roadNetworkSource.getRoadSegments()) {
             roads.put(roadSource.getId(), new Road(roadSource.getId(), crossings.get(roadSource.getCrossingAId()), crossings.get(roadSource.getCrossingBId()),
                     roadSource.getLength() * 1000, Math.max(roadSource.getDefaultSpeedLimit(), 30) / 3.6));
-            //roads.put(new Road(roadSource.getId(), crossings.get(roadSource.getCrossingBId()), crossings.get(roadSource.getCrossingAId()),
-            //       roadSource.getLength() * 1000, roadSource.getDefaultSpeedLimit() / 3.6));
         }
         navigation.setRoadNetwork(roadNetwork = new RoadNetwork(crossings.values().toArray(Crossing[]::new), roads.values().toArray(Road[]::new)));
     }

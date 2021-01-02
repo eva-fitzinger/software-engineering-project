@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 public class TrafficLights implements Runnable {
     public static boolean stop = false;
     private final String crossroadId;
-    private final float minutesForFullRun = Config.MINUTES_FOR_FULL_TRAFFIC_LIGHT_RUN * Config.REAL_TIME_FACTOR;
+    private final float minutesForFullRun = Config.MINUTES_FOR_FULL_TRAFFIC_LIGHT_RUN / Config.REAL_TIME_FACTOR;
     Map<String, HashSet<String>> streets = new HashMap<>();
     Map<String, Double> priority = new HashMap<>();
     private final ParticipantsService participantsService = new ParticipantsService();

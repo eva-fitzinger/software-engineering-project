@@ -6,15 +6,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Road {
-    private final String id; //not unique, as this graph has to be represented as directed
+    private final String id;
     private final Crossing start;
     private final Crossing end;
     private final double length;
+    private final double speedLimit;
+    private final ArrayList<Participant> participants = new ArrayList<>();
+    private final HashMap<Participant, Integer> participantIndizes = new HashMap<>();
     private boolean isClosed;
-    private double speedLimit;
     private double estimatedSpeed;
-    private ArrayList<Participant> participants = new ArrayList<>();
-    private HashMap<Participant, Integer> participantIndizes = new HashMap<>();
 
     public Road(String id, Crossing start, Crossing end, double length, double defaultSpeedLimit) {
         this.id = id;
@@ -47,12 +47,20 @@ public class Road {
         return isClosed;
     }
 
+    public void setClosed(boolean closed) {
+        isClosed = closed;
+    }
+
     public double getSpeedLimit() {
         return speedLimit;
     }
 
     public double getEstimatedSpeed() {
         return estimatedSpeed;
+    }
+
+    public void setEstimatedSpeed(double estimatedSpeed) {
+        this.estimatedSpeed = estimatedSpeed;
     }
 
     public Coordinate getScreenOffset() {
@@ -87,7 +95,7 @@ public class Road {
 
     public synchronized Participant getNext(Participant participant) {
         Integer index = participantIndizes.get(participant);
-        if(index == null) {
+        if (index == null) {
             int l = 0;
             int r = participants.size();
             while (l < r - 1) {

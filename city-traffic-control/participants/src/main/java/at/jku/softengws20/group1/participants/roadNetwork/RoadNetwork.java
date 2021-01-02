@@ -3,6 +3,7 @@ package at.jku.softengws20.group1.participants.roadNetwork;
 public class RoadNetwork {
     public final Crossing[] crossings;
     public final Road[] roads;
+    private int version = 0;
     private double MinX = Double.POSITIVE_INFINITY;
     private double MinY = Double.POSITIVE_INFINITY;
     private double MaxX = Double.NEGATIVE_INFINITY;
@@ -17,6 +18,14 @@ public class RoadNetwork {
             if (crossing.getPosition().getX() > this.MaxX) this.MaxX = crossing.getPosition().getX();
             if (crossing.getPosition().getY() > this.MaxY) this.MaxY = crossing.getPosition().getY();
         }
+    }
+
+    public void incVersion() {
+        version++;
+    }
+
+    public int getVersion() {
+        return version;
     }
 
     public double getMinX() {

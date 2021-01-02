@@ -1,8 +1,11 @@
 package at.jku.softengws20.group1.participants.simulation;
 
 import at.jku.softengws20.group1.participants.navigation.Navigation;
+import at.jku.softengws20.group1.participants.restservice.ParticipantsDetectionSystemService;
 import at.jku.softengws20.group1.participants.roadNetwork.Position;
 import at.jku.softengws20.group1.participants.roadNetwork.Road;
+import at.jku.softengws20.group1.shared.Config;
+import at.jku.softengws20.group1.shared.impl.model.CarPosition;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,14 +15,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Simulation implements Runnable {
-    private static final double TIME_FACTOR = 1;
+    private static final double TIME_FACTOR = Config.REAL_TIME_FACTOR;
     private static final double MAX_COUNT_PER_TICK = 100;
     private final Navigation navigation;
     private final HashSet<Participant> participants = new HashSet<>();
     private Random random = new Random();
     private double currentNewCount = 0;
-    private int targetCount = 1000;
-    private final ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    private int targetCount = 50;
+    private final ParticipantsDetectionSystemService detectionService = new ParticipantsDetectionSystemService();
 
     public Simulation(Navigation navigation) {
         this.navigation = navigation;
@@ -42,9 +45,9 @@ public class Simulation implements Runnable {
             if (count++ > maxCount) return;
             start = navigation.getRoadNetwork().roads[random.nextInt(navigation.getRoadNetwork().roads.length)];
             end = navigation.getRoadNetwork().roads[random.nextInt(navigation.getRoadNetwork().roads.length)];
-        } while (navigation.getNext(start.getEnd(), new Position(end, 0)) == null);
+        } while (navigation.getNext(start.getEnd(), end) == null);
         addParticipant(new Participant(new Position(start, random.nextDouble() * start.getLength()),
-                new Position(end, random.nextDouble() * end.getLength()), navigation));
+                new Position(end, random.nextDouble() * end.getLength()), navigation, null));
     }
 
     private void updateCount() {
@@ -80,6 +83,13 @@ public class Simulation implements Runnable {
                 e.printStackTrace();
             }
         });
+        //for (Participant participant : participants) {
+        //    detectionService.setCarPosition(new CarPosition(Integer.toString(participant.getId()),
+        //            participant.getPosition().getRoad().getEnd().getId(), participant.getPosition().getRoad().getId()));
+        //}
+        //participants.parallelStream().forEach(participant -> {
+//
+        //});
         Arrays.stream(navigation.getRoadNetwork().roads).parallel().forEach(Road::sortParticipants);
         for (Participant participant : toRemove) {
             participants.remove(participant);

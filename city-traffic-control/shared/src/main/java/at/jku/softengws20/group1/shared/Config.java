@@ -8,7 +8,7 @@ user with: import at.jku.softengws20.group1.shared.Config;
 
 public class Config {
 //General-----------------------------------------------------------------------------------------------------------
-public static final float REAL_TIME_FACTOR = 0.8f;       //0 = realtime ?? (wieso nicht 1?)
+public static final float REAL_TIME_FACTOR = 10;       //0 = realtime ?? (wieso nicht 1?)
 
 
 //Detection---------------------------------------------------------------------------------------------------------

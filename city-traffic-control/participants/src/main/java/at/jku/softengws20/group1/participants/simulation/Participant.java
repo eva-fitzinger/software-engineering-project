@@ -4,6 +4,10 @@ import at.jku.softengws20.group1.participants.navigation.Navigation;
 import at.jku.softengws20.group1.participants.roadNetwork.Position;
 import at.jku.softengws20.group1.participants.roadNetwork.Road;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Participant {
@@ -18,16 +22,22 @@ public class Participant {
     private Participant nextParticipant;
     private double nextParticipantPos;
     private Road nextParticipantRoad;
+    private String callback;
 
-    public Participant(Position position, Position destination, Navigation navigation) {
+    public Participant(Position position, Position destination, Navigation navigation, String callback) {
         id = sequence.getAndIncrement();
         this.position = position;
         this.destination = destination;
         this.navigation = navigation;
+        this.callback = callback;
     }
 
     public int getId() {
         return id;
+    }
+
+    public double getAcceleration() {
+        return acceleration;
     }
 
     public Position getDestination() {
@@ -45,7 +55,7 @@ public class Participant {
     public void updateAcceleration() {
         nextParticipant = position.getRoad().getNext(this);
         if (nextParticipant == null) {
-            Road nextRoad = navigation.getNext(position.getRoad().getEnd(), destination);
+            Road nextRoad = navigation.getNext(position.getRoad().getEnd(), destination.getRoad());
             if (nextRoad != null) nextParticipant = nextRoad.getNext(this);
         }
         final double minSafetySec = 2;
@@ -54,27 +64,39 @@ public class Participant {
         final double maxAcceleration = 4;
         final double notAccelerateEndBuffer = 100;
 
+        double breakPath = velocity * velocity / (-minAcceleration * 2);
+
+        //enforce distance to next participant
         if (nextParticipant != null) {
             nextParticipantPos = nextParticipant.position.getRoadPosition();
             nextParticipantRoad = nextParticipant.position.getRoad();
             double otherRoadPosCompensation = nextParticipantRoad != position.getRoad() ? position.getRoad().getLength() : 0;
             double safetyDist = minSafetySec * velocity + 4;
             double nextPosAfterBreak = otherRoadPosCompensation + nextParticipantPos + nextParticipant.velocity * nextParticipant.velocity / (-minAcceleration * 2);
-            double posAfterBreak = position.getRoadPosition() + velocity * velocity / (-minAcceleration * 2);
+            double posAfterBreak = position.getRoadPosition() + breakPath;
             if (posAfterBreak + safetyDist > nextPosAfterBreak) {
                 acceleration = minAcceleration * (1 - (nextPosAfterBreak - posAfterBreak) / safetyDist);
             } else
                 acceleration = Math.min(maxAcceleration, maxAcceleration * (nextPosAfterBreak - posAfterBreak - safetyDist) / (50));
-            if (Double.isNaN(acceleration)) {
-                int x = 0;
-            }
         } else if (position.getRoadPosition() > position.getRoad().getLength() - notAccelerateEndBuffer)
             acceleration = (0.5 - velocity / position.getRoad().getSpeedLimit()) * maxAcceleration; //accelerate slower when at end of road
         else acceleration = maxAcceleration;
-        double velLimit = false ? 5 : position.getRoad().getSpeedLimit();
+
+        //enforce speed limit
+        double velLimit = position.getRoad().getSpeedLimit();
         double velDiff = velocity - velLimit;
         if (velDiff > 0 && velocity > velLimit * 0.5)
             acceleration = Math.min(acceleration, -velDiff / bufferSec); //geschwindigkeit an das maximum anpassen
+
+        //enforce traffic lights
+        if (!position.getRoad().getEnd().getGreenRoads().contains(position.getRoad())) {
+            double distToEnd = position.getRoad().getLength() - position.getRoadPosition();
+            if (distToEnd < 2 * breakPath || distToEnd < 10) {
+                acceleration = Math.min(acceleration, -(velocity * velocity) / (2 * distToEnd) - 1);
+            }
+        }
+
+        //enforce physical limits
         if (acceleration < minAcceleration) acceleration = minAcceleration;
         else if (acceleration > maxAcceleration) acceleration = maxAcceleration;
         if (Double.isNaN(acceleration) || Double.isNaN(velocity)) {
@@ -93,19 +115,27 @@ public class Participant {
         if (position.getRoad().getId().equals(destination.getRoad().getId())) {
             double targetPos = position.getRoad() == destination.getRoad() ? destination.getRoadPosition() : position.getRoad().getLength() - destination.getRoadPosition();
             if (newPos >= targetPos) {
+                if (callback != null) {
+                    var client = HttpClient.newHttpClient();
+                    var request = HttpRequest.newBuilder(URI.create(callback)).build();
+                    client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+                }
                 //System.out.println("Participant " + id + " arrived");
                 return true;
             }
         }
         int cnt = 0;
         while (newPos > position.getRoad().getLength()) {
-            if(cnt++ > 100) {
+            if (!position.getRoad().getEnd().getGreenRoads().contains(position.getRoad())) {
+                int deb = 0;
+            }
+            if (cnt++ > 100) {
                 System.out.println("navigation loop");
                 return true;
             }
-            if(position.getRoad() == destination.getRoad()) return true;
+            if (position.getRoad() == destination.getRoad()) return true;
             newPos -= position.getRoad().getLength();
-            Road nextRoad = navigation.getNext(position.getRoad().getEnd(), destination);
+            Road nextRoad = navigation.getNext(position.getRoad().getEnd(), destination.getRoad());
             if (nextRoad == null) return true; //destination not reachable
             position.setRoad(nextRoad);
         }
