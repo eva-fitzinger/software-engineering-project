@@ -30,10 +30,12 @@
                               <Label fx:id="lblCrossingId" styleClass="header" text="Id" />
                            </children>
                         </HBox>
-                        <VBox prefHeight="200.0" prefWidth="100.0" styleClass="border-pane">
+                        <VBox prefHeight="303.0" prefWidth="556.0" styleClass="border-pane">
                            <children>
-                              <Label styleClass="header" text="Traffic information" />
+                              <Label styleClass="header" text="Inbound traffic information" />
                               <TableView fx:id="tblTrafficInformation" prefHeight="200.0" prefWidth="200.0" />
+                              <Label styleClass="header" text="Outbound traffic information" />
+                              <TableView fx:id="tblOutTrafficInformation" prefHeight="200.0" prefWidth="200.0" />
                            </children>
                         </VBox>
                         <VBox prefHeight="200.0" prefWidth="100.0" styleClass="border-pane">

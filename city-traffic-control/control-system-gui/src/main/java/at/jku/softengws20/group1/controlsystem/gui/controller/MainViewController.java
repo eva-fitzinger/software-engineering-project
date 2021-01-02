@@ -35,6 +35,9 @@ public class MainViewController implements Initializable {
     private TableView<ObservableTrafficLoad> tblTrafficInformation;
 
     @FXML
+    private TableView<ObservableTrafficLoad> tblOutTrafficInformation;
+
+    @FXML
     private TableView<ObservableRule> tblActiveRules;
 
     @FXML
@@ -69,6 +72,7 @@ public class MainViewController implements Initializable {
     private Crossing selectedCrossing;
     private RoadSegment selectedRoadSegment;
     private ObservableList<ObservableTrafficLoad> trafficInformationData = FXCollections.observableArrayList();
+    private ObservableList<ObservableTrafficLoad> outTrafficInformationData = FXCollections.observableArrayList();
     private ObservableList<ObservableRule> activeRules = FXCollections.observableArrayList();
     private ControlSystemApi controlSystemApi = new ControlSystemApi();
 
@@ -102,14 +106,22 @@ public class MainViewController implements Initializable {
         updateService.start();
     }
 
-    private void initTables() {
+    private TableColumn<ObservableTrafficLoad, Number> createTrafficColumn() {
+        var colTraffic = new TableColumn<ObservableTrafficLoad, Number>("Traffic");
+        colTraffic.setCellValueFactory(cellData -> cellData.getValue().trafficLoadProperty());
+        return colTraffic;
+    }
+
+    private TableColumn<ObservableTrafficLoad, String> createRoadSegmentColumn(){
         var colSegment = new TableColumn<ObservableTrafficLoad, String>("Road segment");
         colSegment.setCellValueFactory(cellData -> cellData.getValue().roadSegmentNameProperty());
-        tblTrafficInformation.getColumns().add(colSegment);
+        colSegment.setPrefWidth(300);
+        return colSegment;
+    }
 
-        var colTraffic = new TableColumn<ObservableTrafficLoad, Number>("Cars / minute");
-        colTraffic.setCellValueFactory(cellData -> cellData.getValue().trafficLoadProperty());
-        tblTrafficInformation.getColumns().add(colTraffic);
+    private void initTables() {
+        tblTrafficInformation.getColumns().add(createRoadSegmentColumn());
+        tblTrafficInformation.getColumns().add(createTrafficColumn());
         tblTrafficInformation.setItems(trafficInformationData);
 
         tblTrafficInformation.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -118,8 +130,19 @@ public class MainViewController implements Initializable {
             }
         });
 
+        tblOutTrafficInformation.getColumns().add(createRoadSegmentColumn());
+        tblOutTrafficInformation.getColumns().add(createTrafficColumn());
+        tblOutTrafficInformation.setItems(outTrafficInformationData);
+
+        tblOutTrafficInformation.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                select(newValue.getRoadSegment());
+            }
+        });
+
         var colRoadSegment = new TableColumn<ObservableRule, String>("Road segment");
         colRoadSegment.setCellValueFactory(cellData -> cellData.getValue().getRoadSegment().displayNameProperty());
+        colRoadSegment.setPrefWidth(300);
         var colPriority = new TableColumn<ObservableRule, Double>("Green light priority");
         colPriority.setCellValueFactory(cellData -> cellData.getValue().priorityProperty().asObject());
         tblActiveRules.getColumns().add(colRoadSegment);
@@ -148,11 +171,13 @@ public class MainViewController implements Initializable {
 
     private void updateCrossingView() {
         trafficInformationData.clear();
+        outTrafficInformationData.clear();
         activeRules.clear();
         if (selectedCrossing != null) {
             // todo show view
             lblCrossingId.setText(selectedCrossing.getId());
             trafficInformationData.addAll(localDataRepository.getTrafficInformation(selectedCrossing));
+            outTrafficInformationData.addAll(localDataRepository.getOutTrafficInformation(selectedCrossing));
             activeRules.addAll(localDataRepository.getActiveRules(selectedCrossing));
             // todo lblCarsWaiting.setText();
         } else {
