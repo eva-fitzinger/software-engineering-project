@@ -23,6 +23,10 @@ public class ControlSystemApi implements ControlSystemInterface<MaintenanceReque
     private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder().build();
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
+    public void setRoadClose(String roadSegmentId){
+        doPost(ControlSystemController.SET_ROAD_CLOSE, roadSegmentId);
+    }
+
     public TrafficScenarioModel[] getEnabledTrafficScenarios() {
         return doGet(ControlSystemController.GET_ENABLED_TRAFFIC_SCENARIOS_URL, TrafficScenarioModel[].class);
     }
@@ -83,9 +87,15 @@ public class ControlSystemApi implements ControlSystemInterface<MaintenanceReque
 
     private void doPost(String url, Object data) {
         try {
+            String d = null;
+            if(data instanceof String) {
+                d = (String)data;
+            } else {
+                d = MAPPER.writeValueAsString(data);
+            }
             var req = HttpRequest.newBuilder()
-                    .uri(new URI(url))
-                    .POST(HttpRequest.BodyPublishers.ofString(MAPPER.writeValueAsString(data)))
+                    .uri(new URI(BASE_URL + url))
+                    .POST(HttpRequest.BodyPublishers.ofString(d))
                     .header("Content-Type", "application/json")
                     .build();
             HTTP_CLIENT.send(req, HttpResponse.BodyHandlers.ofString());

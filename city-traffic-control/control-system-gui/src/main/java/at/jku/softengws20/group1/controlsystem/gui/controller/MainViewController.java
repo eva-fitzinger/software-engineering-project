@@ -194,7 +194,7 @@ public class MainViewController implements Initializable {
     void onBtnCloseRoadClicked(ActionEvent event) {
         if (selectedRoadSegment != null) {
             if (localDataRepository.getTrafficInformation(selectedRoadSegment.getId()).isOpen()) {
-                //todo close roadSegment
+                controlSystemApi.setRoadClose(selectedRoadSegment.getId());
             } else {
                 controlSystemApi.setRoadAvailable(selectedRoadSegment.getId());
             }
