@@ -1,5 +1,6 @@
 package at.jku.softengws20.group1.maintenance.restservice;
 
+import at.jku.softengws20.group1.maintenance.dummy.data.DummyEmergencyRepair;
 import at.jku.softengws20.group1.maintenance.impl.Repair;
 import at.jku.softengws20.group1.maintenance.impl.SchedulingSystem;
 import at.jku.softengws20.group1.maintenance.impl.VehicleCenter;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
+import javax.swing.plaf.DimensionUIResource;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -48,7 +50,7 @@ public class MaintenanceController implements MaintenanceInterface {
 
             try {
                 Thread.sleep(200);
-                schedulingSystem = new SchedulingSystem(2020,12,16, 20);
+                schedulingSystem = new SchedulingSystem();
                 schedulingSystem.printSchedule();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -60,7 +62,7 @@ public class MaintenanceController implements MaintenanceInterface {
                 timePassed = (startDateTime - currentDate.getTime()) * TIME_CONSTANT;
                 currentDate = new Date(startDateTime + timePassed);
 
-                if(i % 3000 == 0) schedulingSystem.addEmergencyRepair();
+                if(i % 3000 == 0) schedulingSystem.addEmergencyRepair(DummyEmergencyRepair.getEmergencyRepair(currentDate));//todo change to random long
                 if(i % 45000 == 0) {
                     schedulingSystem.addRegularRepair();
                     try {

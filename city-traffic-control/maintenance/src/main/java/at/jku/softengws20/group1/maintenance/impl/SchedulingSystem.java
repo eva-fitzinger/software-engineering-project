@@ -6,7 +6,7 @@ import at.jku.softengws20.group1.shared.controlsystem.Timeslot;
 import at.jku.softengws20.group1.shared.impl.model.*;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
@@ -30,26 +30,11 @@ public class SchedulingSystem { // TODO: enhance in Milestone 3.2
 
     private List<Repair> schedule;
 
-    public SchedulingSystem(int year, int month, int dayOfMonth, int hourOfDay) {
-//        this.calendar = new GregorianCalendar(year, month, dayOfMonth, hourOfDay, 0);
-//
-//        this.weekNr = calendar.get(Calendar.WEEK_OF_YEAR);
-//        this.calendar.set(year, month, dayOfMonth, hourOfDay, 0);
-//        this.dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-//        this.calendar.set(year, month, dayOfMonth, hourOfDay, 0);
-//        this.hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
-//        this.calendar.set(year, month, dayOfMonth, hourOfDay, 0);
-//        this.schedule = new String[MAX_WEEKS - weekNr][MAX_DAYS_OF_WEEK][MAX_HOURS][2];
+    public SchedulingSystem() {
         initCalendar();
     }
 
-    private void initCalendar() { // Todo maybe change to unittest instead of hardcoded stuff
-//        for (int day = 0; day < schedule[weekNr].length; day++) {
-//            for (int hour = 0; hour < schedule[weekNr][day].length; hour++) {
-//                schedule[weekNr][day][hour][0] = "Week Nr.:" + weekNr + 1 + "; Day of Week: " + (day + 1) + "; working hour: " + (hour + 1);
-//            }
-//        }
-        Random rand = new Random();
+    private void initCalendar() {
         for (int i = 0; i < 5; i++) {
             addRegularRepair(); // employees needed
         }
@@ -57,12 +42,6 @@ public class SchedulingSystem { // TODO: enhance in Milestone 3.2
 
     public void printSchedule() {
         System.out.println("-------- Time Table for this Week ---------");
-//        for (int day = 0; day < schedule[weekNr].length; day++) {
-//            for (int hour = 0; hour < schedule[weekNr][day].length; hour++) {
-//                System.out.print(schedule[weekNr][day][hour][0] + ": ");
-//                System.out.println(schedule[weekNr][day][hour][1] == null ? "no repair" : schedule[weekNr][day][hour][1]);
-//            }
-//        }
         for (Repair repair : schedule) {
             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             System.out.println(formatter.format(repair.getFrom()) + "-"
@@ -82,24 +61,24 @@ public class SchedulingSystem { // TODO: enhance in Milestone 3.2
         at.jku.softengws20.group1.shared.impl.model.Timeslot timeslot;
         at.jku.softengws20.group1.shared.impl.model.Timeslot[] approvedTimeslots = new at.jku.softengws20.group1.shared.impl.model.Timeslot[3];
 
-        for (int i = 0; i < 3;) {
+        for (int i = 0; i < 3; ) {
             //TODO delivers a timeslot in the bounds of the working hours
             timeslot = DummyRegularRepair.getDummyTimeSlot(regularRepair);
 
             for (int j = 0; schedule.get(j) != null && timeslot.getTo().before(schedule.get(j).getTo()); j++) { //as long as the timeSlot end is before the end of the current schedule
                 //if at beginning
-                if(timeslot.getTo().before(schedule.get(0).getFrom())){
+                if (timeslot.getTo().before(schedule.get(0).getFrom())) {
                     approvedTimeslots[i] = timeslot;
                     i++;
                 }
                 //if at end
-                if(schedule.get(j+1) == null){
+                if (schedule.get(j + 1) == null) {
                     approvedTimeslots[i] = timeslot;
                     i++;
                 }
 
                 //if between to scheduled dates
-                if (schedule.get(j).getTo().before(timeslot.getFrom()) && timeslot.getTo().before(schedule.get(j+1).getFrom())) {
+                if (schedule.get(j).getTo().before(timeslot.getFrom()) && timeslot.getTo().before(schedule.get(j + 1).getFrom())) {
                     approvedTimeslots[i] = timeslot;
                     i++;
                 }
@@ -127,9 +106,17 @@ public class SchedulingSystem { // TODO: enhance in Milestone 3.2
     }
 
 
-    public void addEmergencyRepair() { //TODO: in Milestone 3.2
+    public void addEmergencyRepair(EmergencyRepair emergencyRepair) { //TODO: in Milestone 3.2
         //add right away
-//        EmergencyRepair emergencyRepair = new EmergencyRepair(...);
-        //reschedule rest?
+        if (emergencyRepair.getTo().before(getSchedule().get(0).getFrom())) {// time is free anyways
+            getSchedule().add(emergencyRepair);
+        } else { // reschedule
+            long difference = emergencyRepair.getTo().getTime() - getSchedule().get(0).getFrom().getTime();
+            for (Repair repair : getSchedule()) {
+                repair.setTime(new Date(repair.getFrom().getTime() + difference),
+                        new Date(repair.getFrom().getTime() + difference));
+            }
+            getSchedule().add(emergencyRepair);
+        }
     }
 }
