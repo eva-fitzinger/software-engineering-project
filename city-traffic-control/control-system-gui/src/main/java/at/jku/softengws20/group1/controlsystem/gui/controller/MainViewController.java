@@ -1,8 +1,10 @@
 package at.jku.softengws20.group1.controlsystem.gui.controller;
 
-import at.jku.softengws20.group1.controlsystem.gui.model.*;
 import at.jku.softengws20.group1.controlsystem.gui.citymap.CityTrafficMap;
 import at.jku.softengws20.group1.controlsystem.gui.citymap.ZoomableScrollPane;
+import at.jku.softengws20.group1.controlsystem.gui.model.LocalDataRepository;
+import at.jku.softengws20.group1.controlsystem.gui.model.ObservableTrafficLoad;
+import at.jku.softengws20.group1.controlsystem.gui.model.RoadSegment;
 import at.jku.softengws20.group1.shared.impl.model.Crossing;
 import at.jku.softengws20.group1.shared.impl.model.TrafficLightRule;
 import javafx.collections.FXCollections;
@@ -10,7 +12,10 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
@@ -39,6 +44,9 @@ public class MainViewController implements Initializable {
     private Button btnCrossingB;
 
     @FXML
+    private Button btnCloseRoad;
+
+    @FXML
     private Label lblRoadName;
 
     @FXML
@@ -61,6 +69,7 @@ public class MainViewController implements Initializable {
     private Crossing selectedCrossing;
     private RoadSegment selectedRoadSegment;
     private ObservableList<ObservableTrafficLoad> trafficInformationData = FXCollections.observableArrayList();
+    private ControlSystemApi controlSystemApi = new ControlSystemApi();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -73,6 +82,13 @@ public class MainViewController implements Initializable {
         pane.setOnMouseClicked(mouseEvent -> {
             cityTrafficMap.deselectCrossing();
             cityTrafficMap.deselectRoadSegment();
+        });
+        pane.setOnKeyTyped(event -> {
+            if ("+".equals(event.getCharacter())) {
+                pane.zoomIn();
+            } else if ("-".equals(event.getCharacter())) {
+                pane.zoomOut();
+            }
         });
 
         cityTrafficMap.setOnRoadSegmentClicked(this::select);
@@ -96,7 +112,7 @@ public class MainViewController implements Initializable {
         tblTrafficInformation.setItems(trafficInformationData);
 
         tblTrafficInformation.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue != null) {
+            if (newValue != null) {
                 select(newValue.getRoadSegment());
             }
         });
@@ -110,6 +126,7 @@ public class MainViewController implements Initializable {
 
     private void select(RoadSegment roadSegment) {
         selectedRoadSegment = roadSegment;
+        btnCloseRoad.setText(localDataRepository.getTrafficInformation(roadSegment.getId()).isOpen() ? "Close road" : "Open road");
         cityTrafficMap.selectRoadSegment(roadSegment);
         updateRoadSegmentView();
     }
@@ -144,28 +161,39 @@ public class MainViewController implements Initializable {
 
     @FXML
     void onSelectCrossingA(ActionEvent event) {
-        if(selectedRoadSegment != null) {
+        if (selectedRoadSegment != null) {
             select(selectedRoadSegment.getCrossingA());
         }
     }
 
     @FXML
     void onSelectCrossingB(ActionEvent event) {
-        if(selectedRoadSegment != null) {
+        if (selectedRoadSegment != null) {
             select(selectedRoadSegment.getCrossingB());
         }
     }
 
     @FXML
+    void onBtnCloseRoadClicked(ActionEvent event) {
+        if (selectedRoadSegment != null) {
+            if (localDataRepository.getTrafficInformation(selectedRoadSegment.getId()).isOpen()) {
+                //todo close roadSegment
+            } else {
+                controlSystemApi.setRoadAvailable(selectedRoadSegment.getId());
+            }
+        }
+    }
+
+    @FXML
     void onCrossingViewClicked(MouseEvent event) {
-        if(selectedCrossing != null) {
+        if (selectedCrossing != null) {
             cityTrafficMap.selectCrossing(selectedCrossing);
         }
     }
 
     @FXML
     void onRoadSegmentViewClicked(MouseEvent event) {
-        if(selectedRoadSegment != null) {
+        if (selectedRoadSegment != null) {
             cityTrafficMap.selectRoadSegment(selectedRoadSegment);
         }
     }

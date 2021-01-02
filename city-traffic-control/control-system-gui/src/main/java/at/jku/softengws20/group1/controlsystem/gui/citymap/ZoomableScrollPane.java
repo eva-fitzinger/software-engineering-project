@@ -16,13 +16,28 @@ public class ZoomableScrollPane extends ScrollPane {
         contentGroup.getChildren().add(zoomGroup);
         zoomGroup.getChildren().add(content);
         setContent(contentGroup);
-        scaleTransform = new Scale(zoom, zoom, 0, 0);
+        scaleTransform = new Scale(zoom, zoom);
         zoomGroup.getTransforms().add(scaleTransform);
     }
 
     public void zoom(double value) {
+        var oldZoom = zoom;
         zoom += value;
-        scaleTransform.setX(zoom);
-        scaleTransform.setY(zoom);
+        zoom = Math.min(1.8, Math.max(0.2, zoom));
+        // very bad approximation...
+        if(Math.abs(zoom - oldZoom) > 0.0001) {
+            setHvalue(getHvalue() +Math.sqrt(getHvalue()) *2.0 * (zoom-oldZoom)/(zoom*zoom));
+            setVvalue(getVvalue() +Math.sqrt(getVvalue()) *2.0 * (zoom-oldZoom)/(zoom*zoom));
+            scaleTransform.setX(zoom);
+            scaleTransform.setY(zoom);
+        }
+    }
+
+    public void zoomIn() {
+        zoom(0.05);
+    }
+
+    public void zoomOut() {
+        zoom(-0.05);
     }
 }
