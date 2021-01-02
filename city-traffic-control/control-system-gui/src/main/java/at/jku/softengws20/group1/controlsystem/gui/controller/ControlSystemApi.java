@@ -1,8 +1,8 @@
 package at.jku.softengws20.group1.controlsystem.gui.controller;
 
+import at.jku.softengws20.group1.controlsystem.gui.model.TrafficScenarioModel;
 import at.jku.softengws20.group1.controlsystem.internal.TrafficScenario;
 import at.jku.softengws20.group1.controlsystem.restservice.ControlSystemController;
-import at.jku.softengws20.group1.controlsystem.restservice.ControlSystemGUIInterface;
 import at.jku.softengws20.group1.shared.controlsystem.ControlSystemInterface;
 import at.jku.softengws20.group1.shared.controlsystem.RoadNetwork;
 import at.jku.softengws20.group1.shared.impl.model.MaintenanceRequest;
@@ -17,28 +17,24 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-public class ControlSystemApi implements ControlSystemInterface<MaintenanceRequest>, ControlSystemGUIInterface {
+public class ControlSystemApi implements ControlSystemInterface<MaintenanceRequest> {
 
     private static final String BASE_URL = "http://localhost:8080" + ControlSystemInterface.URL + "/";
     private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder().build();
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    @Override
-    public TrafficScenario[] getEnabledTrafficScenarios() {
-        return doGet(ControlSystemController.GET_ENABLED_TRAFFIC_SCENARIOS_URL, TrafficScenario[].class);
+    public TrafficScenarioModel[] getEnabledTrafficScenarios() {
+        return doGet(ControlSystemController.GET_ENABLED_TRAFFIC_SCENARIOS_URL, TrafficScenarioModel[].class);
     }
 
-    @Override
     public TrafficScenario[] getTrafficScenarios() {
         return doGet(ControlSystemController.GET_TRAFFIC_SCENARIOS_URL, TrafficScenario[].class);
     }
 
-    @Override
     public void setApprovedMaintenance(MaintenanceRequest maintenanceRequest) {
         doPost(ControlSystemController.SET_APPROVED_MAINTENANCE_URL, maintenanceRequest);
     }
 
-    @Override
     public MaintenanceRequest[] getMaintenanceRequests() {
         return doGet(ControlSystemController.GET_MAINENANCE_REQUESTS_URL, MaintenanceRequest[].class);
     }

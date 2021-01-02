@@ -86,6 +86,7 @@
                               <Label fx:id="lblSegmentId" text="Label" GridPane.columnIndex="1" />
                            </children>
                         </GridPane>
+                        <Button fx:id="btnCloseRoad" mnemonicParsing="false" onAction="#onBtnCloseRoadClicked" text="Close road" />
                      </children>
                      <styleClass>
                         <String fx:value="border-pane" />
@@ -101,7 +102,7 @@
                 <Menu mnemonicParsing="false" text="Views">
                   <items>
                     <MenuItem mnemonicParsing="false" text="Scenario window" />
-                        <MenuItem mnemonicParsing="false" text="Maintenance requests" />
+                        <MenuItem mnemonicParsing="false" onAction="#onOpenMaintenanceRequestsClick" text="Maintenance requests" />
                         <MenuItem mnemonicParsing="false" text="Notification window" />
                   </items>
                 </Menu>

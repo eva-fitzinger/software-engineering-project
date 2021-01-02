@@ -1,16 +1,21 @@
 package at.jku.softengws20.group1.controlsystem.gui.controller;
 
-import at.jku.softengws20.group1.controlsystem.gui.model.*;
 import at.jku.softengws20.group1.controlsystem.gui.citymap.CityTrafficMap;
 import at.jku.softengws20.group1.controlsystem.gui.citymap.ZoomableScrollPane;
+import at.jku.softengws20.group1.controlsystem.gui.model.LocalDataRepository;
+import at.jku.softengws20.group1.controlsystem.gui.model.ObservableRule;
+import at.jku.softengws20.group1.controlsystem.gui.model.ObservableTrafficLoad;
+import at.jku.softengws20.group1.controlsystem.gui.model.RoadSegment;
 import at.jku.softengws20.group1.shared.impl.model.Crossing;
-import at.jku.softengws20.group1.shared.impl.model.TrafficLightRule;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
@@ -30,13 +35,16 @@ public class MainViewController implements Initializable {
     private TableView<ObservableTrafficLoad> tblTrafficInformation;
 
     @FXML
-    private TableView<TrafficLightRule> tblActiveRules;
+    private TableView<ObservableRule> tblActiveRules;
 
     @FXML
     private Button btnCrossingA;
 
     @FXML
     private Button btnCrossingB;
+
+    @FXML
+    private Button btnCloseRoad;
 
     @FXML
     private Label lblRoadName;
@@ -61,6 +69,8 @@ public class MainViewController implements Initializable {
     private Crossing selectedCrossing;
     private RoadSegment selectedRoadSegment;
     private ObservableList<ObservableTrafficLoad> trafficInformationData = FXCollections.observableArrayList();
+    private ObservableList<ObservableRule> activeRules = FXCollections.observableArrayList();
+    private ControlSystemApi controlSystemApi = new ControlSystemApi();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -73,6 +83,13 @@ public class MainViewController implements Initializable {
         pane.setOnMouseClicked(mouseEvent -> {
             cityTrafficMap.deselectCrossing();
             cityTrafficMap.deselectRoadSegment();
+        });
+        pane.setOnKeyTyped(event -> {
+            if ("+".equals(event.getCharacter())) {
+                pane.zoomIn();
+            } else if ("-".equals(event.getCharacter())) {
+                pane.zoomOut();
+            }
         });
 
         cityTrafficMap.setOnRoadSegmentClicked(this::select);
@@ -94,26 +111,49 @@ public class MainViewController implements Initializable {
         colTraffic.setCellValueFactory(cellData -> cellData.getValue().trafficLoadProperty());
         tblTrafficInformation.getColumns().add(colTraffic);
         tblTrafficInformation.setItems(trafficInformationData);
+
+        tblTrafficInformation.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                select(newValue.getRoadSegment());
+            }
+        });
+
+        var colRoadSegment = new TableColumn<ObservableRule, String>("Road segment");
+        colRoadSegment.setCellValueFactory(cellData -> cellData.getValue().getRoadSegment().displayNameProperty());
+        var colPriority = new TableColumn<ObservableRule, Double>("Green light priority");
+        colPriority.setCellValueFactory(cellData -> cellData.getValue().priorityProperty().asObject());
+        tblActiveRules.getColumns().add(colRoadSegment);
+        tblActiveRules.getColumns().add(colPriority);
+
+        tblActiveRules.setItems(activeRules);
+        tblActiveRules.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->{
+            if(newValue != null) {
+                select(newValue.getRoadSegment());
+            }
+        });
     }
 
-    private void select(Crossing crossing) {
+    void select(Crossing crossing) {
         selectedCrossing = crossing;
         cityTrafficMap.selectCrossing(crossing);
         updateCrossingView();
     }
 
-    private void select(RoadSegment roadSegment) {
+    void select(RoadSegment roadSegment) {
         selectedRoadSegment = roadSegment;
+        btnCloseRoad.setText(localDataRepository.getTrafficInformation(roadSegment.getId()).isOpen() ? "Close road" : "Open road");
         cityTrafficMap.selectRoadSegment(roadSegment);
         updateRoadSegmentView();
     }
 
     private void updateCrossingView() {
         trafficInformationData.clear();
+        activeRules.clear();
         if (selectedCrossing != null) {
             // todo show view
             lblCrossingId.setText(selectedCrossing.getId());
             trafficInformationData.addAll(localDataRepository.getTrafficInformation(selectedCrossing));
+            activeRules.addAll(localDataRepository.getActiveRules(selectedCrossing));
             // todo lblCarsWaiting.setText();
         } else {
             // todo hide view
@@ -138,28 +178,44 @@ public class MainViewController implements Initializable {
 
     @FXML
     void onSelectCrossingA(ActionEvent event) {
-        if(selectedRoadSegment != null) {
+        if (selectedRoadSegment != null) {
             select(selectedRoadSegment.getCrossingA());
         }
     }
 
     @FXML
     void onSelectCrossingB(ActionEvent event) {
-        if(selectedRoadSegment != null) {
+        if (selectedRoadSegment != null) {
             select(selectedRoadSegment.getCrossingB());
         }
     }
 
     @FXML
+    void onBtnCloseRoadClicked(ActionEvent event) {
+        if (selectedRoadSegment != null) {
+            if (localDataRepository.getTrafficInformation(selectedRoadSegment.getId()).isOpen()) {
+                //todo close roadSegment
+            } else {
+                controlSystemApi.setRoadAvailable(selectedRoadSegment.getId());
+            }
+        }
+    }
+
+    @FXML
+    void onOpenMaintenanceRequestsClick(ActionEvent event) {
+        MaintenanceRequestsController.open(this, localDataRepository);
+    }
+
+    @FXML
     void onCrossingViewClicked(MouseEvent event) {
-        if(selectedCrossing != null) {
+        if (selectedCrossing != null) {
             cityTrafficMap.selectCrossing(selectedCrossing);
         }
     }
 
     @FXML
     void onRoadSegmentViewClicked(MouseEvent event) {
-        if(selectedRoadSegment != null) {
+        if (selectedRoadSegment != null) {
             cityTrafficMap.selectRoadSegment(selectedRoadSegment);
         }
     }

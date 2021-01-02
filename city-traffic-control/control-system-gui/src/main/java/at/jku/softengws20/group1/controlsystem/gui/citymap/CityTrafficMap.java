@@ -1,8 +1,6 @@
 package at.jku.softengws20.group1.controlsystem.gui.citymap;
 
-import at.jku.softengws20.group1.controlsystem.gui.model.LocalDataRepository;
-import at.jku.softengws20.group1.controlsystem.gui.model.Road;
-import at.jku.softengws20.group1.controlsystem.gui.model.RoadSegment;
+import at.jku.softengws20.group1.controlsystem.gui.model.*;
 import at.jku.softengws20.group1.shared.impl.model.Crossing;
 import at.jku.softengws20.group1.shared.impl.model.Position;
 import javafx.scene.Group;
@@ -10,6 +8,7 @@ import javafx.scene.Group;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 public class CityTrafficMap extends Group {
     private LocalDataRepository dataRepository;
@@ -38,6 +37,16 @@ public class CityTrafficMap extends Group {
         this.dataRepository = dataRepository;
         Transform globalTransform = position -> new Position(position.getX() * 500.0, position.getY() * 500.0);
         createGraph(globalTransform);
+        dataRepository.getTrafficInformation().forEach(this::setupTrafficListeners);
+    }
+
+    private void setupTrafficListeners(ObservableTrafficLoad trafficLoad) {
+        trafficLoad.roadStateProperty().addListener((observable, oldValue, newValue) -> {
+            if (!Objects.equals(oldValue, newValue)) {
+                var state = RoadState.of((int) newValue);
+                roadSegments.get(trafficLoad.getRoadSegment()).setState(state);
+            }
+        });
     }
 
     public void setOnRoadSegmentClicked(SelectionListener<RoadSegment> e) {
@@ -105,7 +114,11 @@ public class CityTrafficMap extends Group {
 
     public void deselectRoadSegment() {
         if (selectedSegment != null) {
-            selectedSegment.getRoadSegment().getRoad().getRoadSegments().forEach(rs -> roadSegments.get(rs).deselect());
+            selectedSegment.getRoadSegment().getRoad().getRoadSegments().forEach(rs -> {
+                var drs = roadSegments.get(rs);
+                drs.deselect();
+                drs.setState(dataRepository.getTrafficInformation(rs.getId()).getRoadState());
+            });
             selectedSegment = null;
         }
     }

@@ -23,6 +23,7 @@ public class App extends Application {
 
         var scene = new Scene(root, 1000, 800);
         stage.setScene(scene);
+        stage.setMaximized(true);
         stage.show();
     }
 
