@@ -35,7 +35,7 @@ public class Street {
     }
 
     public void outgoingVehicle() {
-        numberOfCars++;
+        numberOfCars--;
     }
 
     public TrafficLoad getTrafficLoad() {
