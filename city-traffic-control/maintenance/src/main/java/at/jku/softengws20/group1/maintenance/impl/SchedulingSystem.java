@@ -78,7 +78,7 @@ public class SchedulingSystem {
         return approvedTimeslots;
     }
 
-    public void addRegularRepair(RegularRepair regularRepair) {//TODO comment on/out
+    public void addRegularRepair(RegularRepair regularRepair) {
         currentRepairApproval = regularRepair;
         //TODO Jakob what is this warning?
         MaintenanceRequest<at.jku.softengws20.group1.shared.impl.model.Timeslot> maintenanceRequest = new MaintenanceRequest("close road",

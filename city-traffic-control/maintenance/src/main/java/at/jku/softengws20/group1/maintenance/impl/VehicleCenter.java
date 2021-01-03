@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class VehicleCenter {
@@ -35,6 +36,7 @@ public class VehicleCenter {
 
     public @Nullable
     Vehicle sendCar(Repair repair) {
+        Random rand = new Random();
         int localNumVehicles = nrVehicles;
         localNumVehicles -= repair.getNrVehiclesNeeded();
         if (localNumVehicles >= 0) {
@@ -44,7 +46,7 @@ public class VehicleCenter {
                         new at.jku.softengws20.group1.shared.impl.model.CarPath(
                                 cityMapService.getRoadNetwork().getMaintenanceCenterRoadSegmentId(),
                                 0,
-                                repair.getLocation(),
+                                cityMapService.getRoadNetwork().getRoads()[rand.nextInt(cityMapService.getRoadNetwork().getRoads().length)].getId(),
                                 0,
                                 getMaintenanceUriString(vehicles.get(i))); //TODO
                 participantServiceMaintenance.sendCar(carPath);
@@ -69,7 +71,7 @@ public class VehicleCenter {
     }
 
     private String getMaintenanceUriString(Vehicle vehicle) {
-        return servletContext.getContextPath() + MaintenanceInterface.URL + "/" + MaintenanceInterface.NOTIFY_APPROVED_MAINTENANCE_URL
+        return "http://localhost:8080"+servletContext.getContextPath() + MaintenanceInterface.URL + "/" + MaintenanceInterface.NOTIFY_APPROVED_MAINTENANCE_URL
                 + "/" + vehicle.getId();
     }
 }
