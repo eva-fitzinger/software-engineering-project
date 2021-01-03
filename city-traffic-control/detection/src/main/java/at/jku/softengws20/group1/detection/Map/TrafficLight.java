@@ -3,7 +3,6 @@ package at.jku.softengws20.group1.detection.Map;
 import at.jku.softengws20.group1.detection.restservice.ParticipantsService;
 import at.jku.softengws20.group1.shared.Config;
 import at.jku.softengws20.group1.shared.impl.model.TrafficLightChange;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -14,21 +13,22 @@ public class TrafficLight implements Runnable {
     private final String crossroadId;
     private final float minutesForFullRun = Config.MINUTES_FOR_FULL_TRAFFIC_LIGHT_RUN / Config.REAL_TIME_FACTOR;
     private final ParticipantsService participantsService = new ParticipantsService();
-    Map<String, HashSet<String>> streets = new HashMap<>();
+    //Map<String, Street> streets = new HashMap<>();
     final Map<String, Double> priority = new HashMap<>();
     private boolean standardPriority = true;
 
     public TrafficLight(final Map<String, Street> streets, final String crossroadId) {     //Constructor
         this.crossroadId = crossroadId;
+        double time = minutesForFullRun / streets.size();
         for (Map.Entry<String, Street> entry : streets.entrySet()) {
-            this.streets.put(entry.getKey(), new HashSet<>());
+            this.priority.put(entry.getKey(), time);
         }
         standardPriority();
     }
 
     public void standardPriority() {       //sets the time for each road-green phase
-        double time = minutesForFullRun / streets.size();
-        for (Map.Entry<String, HashSet<String>> entry : streets.entrySet()) {
+        double time = minutesForFullRun / priority.size();
+        for (Map.Entry<String, Double> entry : priority.entrySet()) {
             synchronized (priority) {
                 priority.put(entry.getKey(), time);
             }
@@ -38,8 +38,8 @@ public class TrafficLight implements Runnable {
 
     public void setPriority(String StreetWithPrioID, double prio) {        //set by control system
         double prioStreet = minutesForFullRun * prio;
-        double time = (minutesForFullRun - prioStreet) / (streets.size() - 1);
-        for (Map.Entry<String, HashSet<String>> entry : streets.entrySet()) {
+        double time = (minutesForFullRun - prioStreet) / (priority.size() - 1);
+        for (Map.Entry<String, Double> entry : priority.entrySet()) {
             synchronized (priority) {
                 if (entry.getKey().equals(StreetWithPrioID)) {
                     priority.put(entry.getKey(), prioStreet);
@@ -56,7 +56,7 @@ public class TrafficLight implements Runnable {
         long time;
         System.out.printf("start traffic light %s\n", crossroadId);
         while (!stop) {
-            for (Map.Entry<String, HashSet<String>> entry : streets.entrySet()) {
+            for (Map.Entry<String, Double> entry : priority.entrySet()) {
                 synchronized (priority) {
                     time = (long) (priority.get(entry.getKey()) * 60);
                 }
