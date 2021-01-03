@@ -19,7 +19,7 @@ public class MockitoTest {
     public void testVehicles() {
         String crossingId =  controlSystemService.getRoadNetwork().getCrossings()[1].getId();
         String incomingRoadSegmentId =  controlSystemService.getRoadNetwork().getCrossings()[1].getRoadSegmentIds()[0];
-        detectionController.setCarPosition(new CarPosition("1", crossingId,incomingRoadSegmentId));
+        //detectionController.setCarPosition(new CarPosition("1", crossingId,incomingRoadSegmentId));
     }
 
 }
