@@ -38,8 +38,10 @@ public class TrafficLight implements Runnable {
 
     public void setPriority(String StreetWithPrioID, double prio) {        //set by control system
         double prioStreet = minutesForFullRun * prio;
-        double time = (minutesForFullRun - prioStreet) / (priority.size() - 1);
-        for (Map.Entry<String, Double> entry : priority.entrySet()) {
+        //double time = (minutesForFullRun - prioStreet) / (priority.size() - 1);
+        priority.put(StreetWithPrioID, prioStreet);
+
+/*        for (Map.Entry<String, Double> entry : priority.entrySet()) {
             synchronized (priority) {
                 if (entry.getKey().equals(StreetWithPrioID)) {
                     priority.put(entry.getKey(), prioStreet);
@@ -47,7 +49,7 @@ public class TrafficLight implements Runnable {
                     priority.put(entry.getKey(), time);
                 }
             }
-        }
+        }*/
         standardPriority = false;
     }
 
