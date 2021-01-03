@@ -33,12 +33,22 @@ public class VehicleCenter {
         }
     }
 
-    public @Nullable Vehicle sendCar(Repair repair) {
+    public @Nullable
+    Vehicle sendCar(Repair repair) {
         int localNumVehicles = nrVehicles;
         localNumVehicles -= repair.getNrVehiclesNeeded();
-        if (localNumVehicles >= 0) { // todo should also send more cars //todo should find the right car
-            at.jku.softengws20.group1.shared.impl.model.CarPath carPath = new at.jku.softengws20.group1.shared.impl.model.CarPath(cityMapService.getRoadNetwork().getMaintenanceCenterRoadSegmentId(), 0, repair.getLocation(), 0, getMaintenanceUriString(vehicles.get(0))); //TODO
-            participantServiceMaintenance.sendCar(carPath);
+        if (localNumVehicles >= 0) {
+            // todo should find the right car
+            for (int i = 0; i < repair.getNrVehiclesNeeded(); i++) {
+                at.jku.softengws20.group1.shared.impl.model.CarPath carPath =
+                        new at.jku.softengws20.group1.shared.impl.model.CarPath(
+                                cityMapService.getRoadNetwork().getMaintenanceCenterRoadSegmentId(),
+                                0,
+                                repair.getLocation(),
+                                0,
+                                getMaintenanceUriString(vehicles.get(i))); //TODO
+                participantServiceMaintenance.sendCar(carPath);
+            }
             nrVehicles = localNumVehicles;
             return vehicles.stream().filter(Vehicle::isAvailable).findFirst().orElse(null);
         }
@@ -59,7 +69,7 @@ public class VehicleCenter {
     }
 
     private String getMaintenanceUriString(Vehicle vehicle) {
-        return servletContext.getContextPath()  + MaintenanceInterface.URL + "/" + MaintenanceInterface.NOTIFY_APPROVED_MAINTENANCE_URL
+        return servletContext.getContextPath() + MaintenanceInterface.URL + "/" + MaintenanceInterface.NOTIFY_APPROVED_MAINTENANCE_URL
                 + "/" + vehicle.getId();
     }
 }
