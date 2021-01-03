@@ -6,14 +6,11 @@ import at.jku.softengws20.group1.maintenance.impl.SchedulingSystem;
 import at.jku.softengws20.group1.maintenance.impl.Vehicle;
 import at.jku.softengws20.group1.maintenance.impl.VehicleCenter;
 import at.jku.softengws20.group1.shared.controlsystem.Timeslot;
-import at.jku.softengws20.group1.shared.maintenance.CarPath;
 import at.jku.softengws20.group1.shared.maintenance.MaintenanceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.PostConstruct;
 
 
 @RestController
@@ -37,6 +34,7 @@ public class MaintenanceController implements MaintenanceInterface, ApplicationL
     public void notifyMaintenanceCarArrived(@PathVariable(value = "carId") String carId) {
         // car arrived
         vehicleCenter.triggerCarArrived(carId);
+        System.out.println("Maintenance: car arrived");
     }
 
     @Override
