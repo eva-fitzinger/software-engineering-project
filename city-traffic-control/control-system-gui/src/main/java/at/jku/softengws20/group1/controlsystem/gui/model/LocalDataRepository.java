@@ -20,6 +20,7 @@ public class LocalDataRepository {
 
     private HashMap<String, ObservableTrafficLoad> trafficInformation = new HashMap<>();
     private HashMap<Crossing, Collection<ObservableTrafficLoad>> trafficInfoByCrossing = new HashMap<>();
+    private HashMap<Crossing, Collection<ObservableTrafficLoad>> outTrafficInfoByCrossing = new HashMap<>();
 
     private ObservableList<ObservableMaintenanceRequest> openRequests = FXCollections.observableArrayList();
 
@@ -51,6 +52,13 @@ public class LocalDataRepository {
             if (infoList == null) {
                 infoList = new ArrayList<>();
                 trafficInfoByCrossing.put(rs.getCrossingB(), infoList);
+            }
+            infoList.add(ti);
+
+            infoList = outTrafficInfoByCrossing.getOrDefault(rs.getCrossingA(), null);
+            if (infoList == null) {
+                infoList = new ArrayList<>();
+                outTrafficInfoByCrossing.put(rs.getCrossingA(), infoList);
             }
             infoList.add(ti);
         }
@@ -94,6 +102,10 @@ public class LocalDataRepository {
 
     public Collection<ObservableTrafficLoad> getTrafficInformation(Crossing crossing) {
         return trafficInfoByCrossing.getOrDefault(crossing, new ArrayList<>());
+    }
+
+    public Collection<ObservableTrafficLoad> getOutTrafficInformation(Crossing crossing) {
+        return outTrafficInfoByCrossing.getOrDefault(crossing, new ArrayList<>());
     }
 
     public ObservableTrafficLoad getTrafficInformation(String roadSegmentId) {
