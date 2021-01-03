@@ -2,11 +2,14 @@ package at.jku.softengws20.group1.shared.impl.model;
 
 public class CarPath implements at.jku.softengws20.group1.shared.maintenance.CarPath {
 
-    private final String startRoadSegmentId;
-    private final double startRoadPosition;
-    private final String destinationRoadSegmentId;
-    private final double destinationRoadPosition;
-    private final String callbackUri;
+    private String startRoadSegmentId;
+    private double startRoadPosition;
+    private String destinationRoadSegmentId;
+    private double destinationRoadPosition;
+    private String callbackUri;
+
+    public CarPath() {
+    }
 
     public CarPath(String startRoadSegmentId, double startRoadPosition, String destinationRoadSegmentId, double destinationRoadPosition, String callbackUri) {
         this.startRoadSegmentId = startRoadSegmentId;
