@@ -47,6 +47,7 @@ public class ParticipantsController implements ParticipantsInterface, Applicatio
 
     @RequestMapping("participantPositions")
     public String participantPositions() {
+        if(roadNetwork == null) return "";
         double minX = roadNetwork.getMinX();
         double minY = roadNetwork.getMinY();
         double maxX = roadNetwork.getMaxX();
