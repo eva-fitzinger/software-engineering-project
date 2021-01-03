@@ -37,6 +37,7 @@ public class MaintenanceController implements MaintenanceInterface, ApplicationL
     public void notifyMaintenanceCarArrived(@PathVariable(value = "carId") String carId) {
         // car arrived
         vehicleCenter.triggerCarArrived(carId);
+        System.out.println("Maintenance: car arrived");
     }
 
     @Override
