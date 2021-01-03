@@ -26,7 +26,7 @@ public abstract class DetectionRestService<T0 extends TrafficLoad, T1 extends Tr
     }
 
     @Override
-    public void setCarPosition(CarPosition position) {
+    public void setCarPosition(CarPosition[] position) {
         post(DetectionInterface.SET_CAR_POSITION, position);
     }
 }
