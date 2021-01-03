@@ -11,18 +11,18 @@ import java.net.http.HttpResponse;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Participant {
-    private static AtomicInteger sequence = new AtomicInteger();
+    private final static AtomicInteger sequence = new AtomicInteger();
     private final int id;
     private final Position destination;
     private final Navigation navigation;
-    private Position position;
+    private final Position position;
     private Road nextRoad;
     private double velocity = 0;
     private double acceleration = 0;
     private Participant nextParticipant;
     private double nextParticipantPos;
     private Road nextParticipantRoad;
-    private String callback;
+    private final String callback;
 
     public Participant(Position position, Position destination, Navigation navigation, String callback) {
         id = sequence.getAndIncrement();
@@ -51,6 +51,8 @@ public class Participant {
     public double getVelocity() {
         return velocity;
     }
+
+    public boolean hasCallback() {return callback != null;}
 
     public void updateAcceleration() {
         nextParticipant = position.getRoad().getNext(this);
