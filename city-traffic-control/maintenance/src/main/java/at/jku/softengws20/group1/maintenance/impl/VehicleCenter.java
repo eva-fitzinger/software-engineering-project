@@ -34,14 +34,14 @@ public class VehicleCenter {
     }
 
     public @Nullable Vehicle sendCar(Repair repair) {
-//        int localNumVehicles = nrVehicles;
-//        localNumVehicles -= repair.getNrVehiclesNeeded();
-//        if (localNumVehicles >= 0) { // todo should also send more cars
-//            at.jku.softengws20.group1.shared.impl.model.CarPath destination = new at.jku.softengws20.group1.shared.impl.model.CarPath(); //TODO
-//            participantServiceMaintenance.sendCar(destination);
-//            nrVehicles = localNumVehicles;
-//            return vehicles.stream().filter(Vehicle::isAvailable).findFirst().orElse(null);
-//        }
+        int localNumVehicles = nrVehicles;
+        localNumVehicles -= repair.getNrVehiclesNeeded();
+        if (localNumVehicles >= 0) { // todo should also send more cars //todo should find the right car
+            at.jku.softengws20.group1.shared.impl.model.CarPath carPath = new at.jku.softengws20.group1.shared.impl.model.CarPath(cityMapService.getRoadNetwork().getMaintenanceCenterRoadSegmentId(), 0, repair.getLocation(), 0, getMaintenanceUriString(vehicles.get(0))); //TODO
+            participantServiceMaintenance.sendCar(carPath);
+            nrVehicles = localNumVehicles;
+            return vehicles.stream().filter(Vehicle::isAvailable).findFirst().orElse(null);
+        }
         return null;
     }
 
@@ -50,15 +50,15 @@ public class VehicleCenter {
     }
 
     public void triggerCarArrived(String id) {
-//     TODO   vehicles.stream().filter(x -> x.destination.equals(destination)).findFirst().ifPresent(vehicle -> vehicle.setArrived(true));
+        vehicles.stream().filter(x -> x.getId().equals(id)).findFirst().ifPresent(vehicle -> vehicle.setArrived(true));
     }
 
     public void returnCar(Vehicle vehicle) {
         nrVehicles++;
-        participantServiceMaintenance.sendCar(new at.jku.softengws20.group1.shared.impl.model.CarPath(vehicle.destination.getStartRoadSegmentId(), 0, cityMapService.getRoadNetwork().getMaintenanceCenterRoadSegmentId(), 0, getUriString(vehicle)));
+        participantServiceMaintenance.sendCar(new at.jku.softengws20.group1.shared.impl.model.CarPath(vehicle.destination.getStartRoadSegmentId(), 0, cityMapService.getRoadNetwork().getMaintenanceCenterRoadSegmentId(), 0, getMaintenanceUriString(vehicle)));
     }
 
-    private String getUriString(Vehicle vehicle) {
+    private String getMaintenanceUriString(Vehicle vehicle) {
         return servletContext.getContextPath()  + MaintenanceInterface.URL + "/" + MaintenanceInterface.NOTIFY_APPROVED_MAINTENANCE_URL
                 + "/" + vehicle.getId();
     }

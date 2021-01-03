@@ -9,6 +9,8 @@ import at.jku.softengws20.group1.shared.controlsystem.Timeslot;
 import at.jku.softengws20.group1.shared.maintenance.CarPath;
 import at.jku.softengws20.group1.shared.maintenance.MaintenanceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
@@ -16,7 +18,7 @@ import javax.annotation.PostConstruct;
 
 @RestController
 @RequestMapping(MaintenanceInterface.URL)
-public class MaintenanceController implements MaintenanceInterface {
+public class MaintenanceController implements MaintenanceInterface, ApplicationListener<ContextRefreshedEvent> {
     private final int TIME_CONSTANT = 1;
     private SchedulingSystem schedulingSystem = new SchedulingSystem();
 
@@ -32,22 +34,16 @@ public class MaintenanceController implements MaintenanceInterface {
 
     @Override
     @PostMapping(MaintenanceInterface.NOTIFY_MAINTENANCE_CAR_ARRIVED_URL + "/{carId}")
-    public void notifyMaintenanceCarArrived(@PathVariable (value = "carId") String carId) {
+    public void notifyMaintenanceCarArrived(@PathVariable(value = "carId") String carId) {
         // car arrived
         vehicleCenter.triggerCarArrived(carId);
     }
 
-    @PostConstruct
-    public void init() {
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent event) {
 
         System.out.println("Maintenance is alive!");
         Thread sendCarsThread = new Thread(() -> {
-
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
 
             for (; ; ) {
                 // calculate current time
