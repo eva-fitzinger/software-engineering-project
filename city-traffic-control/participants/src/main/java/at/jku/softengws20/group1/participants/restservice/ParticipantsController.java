@@ -47,7 +47,7 @@ public class ParticipantsController implements ParticipantsInterface, Applicatio
 
     @RequestMapping("participantPositions")
     public String participantPositions() {
-        if(roadNetwork == null) return "";
+        if (roadNetwork == null) return "";
         double minX = roadNetwork.getMinX();
         double minY = roadNetwork.getMinY();
         double maxX = roadNetwork.getMaxX();
@@ -58,9 +58,15 @@ public class ParticipantsController implements ParticipantsInterface, Applicatio
             Coordinate screenOffset = participant.getPosition().getRoad().getScreenOffset();
             res.append("<circle cx=").append((c.getX() - minX) / (maxX - minX) * 90 + 5 + screenOffset.getX())
                     .append("% cy=").append((c.getY() - minY) / (maxY - minY) * 90 + 5 + screenOffset.getY()).append("% r=2").append(" fill='")
-                    .append(participant.getAcceleration() >= -0.1 && participant.getVelocity() > 0 ? "green" : "red").append("'/>");
+                    .append(getCarColor(participant)).append("'/>");
         }
         return res.toString();
+    }
+
+    public String getCarColor(Participant participant) {
+        if (participant.hasCallback()) return "blue";
+        if (participant.getAcceleration() >= -0.1 && participant.getVelocity() > 0) return "green";
+        else return "red";
     }
 
     @RequestMapping("gui")
@@ -128,7 +134,7 @@ public class ParticipantsController implements ParticipantsInterface, Applicatio
             public void run() {
                 pollRoadNetworkState();
             }
-        }, 0, (long)(60 * 1000 / Config.REAL_TIME_FACTOR));
+        }, 0, (long) (60 * 1000 / Config.REAL_TIME_FACTOR));
     }
 
     public void pollRoadNetworkState() {

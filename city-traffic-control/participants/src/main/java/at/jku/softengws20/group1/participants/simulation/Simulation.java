@@ -21,7 +21,7 @@ public class Simulation implements Runnable {
     private final HashSet<Participant> participants = new HashSet<>();
     private Random random = new Random();
     private double currentNewCount = 0;
-    private int targetCount = 50;
+    private int targetCount = Config.MAX_CARS;
     private final ParticipantsDetectionSystemService detectionService = new ParticipantsDetectionSystemService();
 
     public Simulation(Navigation navigation) {
@@ -83,13 +83,10 @@ public class Simulation implements Runnable {
                 e.printStackTrace();
             }
         });
-        //for (Participant participant : participants) {
-        //    detectionService.setCarPosition(new CarPosition(Integer.toString(participant.getId()),
-        //            participant.getPosition().getRoad().getEnd().getId(), participant.getPosition().getRoad().getId()));
-        //}
-        //participants.parallelStream().forEach(participant -> {
-//
-        //});
+        participants.parallelStream().forEach(participant -> {
+            detectionService.setCarPosition(new CarPosition(Integer.toString(participant.getId()),
+                    participant.getPosition().getRoad().getEnd().getId(), participant.getPosition().getRoad().getId()));
+        });
         Arrays.stream(navigation.getRoadNetwork().roads).parallel().forEach(Road::sortParticipants);
         for (Participant participant : toRemove) {
             participants.remove(participant);
