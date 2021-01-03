@@ -19,7 +19,7 @@ public class TrafficLight implements Runnable {
         this.crossroadId = crossroadId;
         double time = minutesForFullRun / streets.size();
         for (Map.Entry<String, Street> entry : streets.entrySet()) {
-            this.priority.put(entry.getKey(), time);
+            priority.put(entry.getKey(), time);
         }
         standardPriority();
     }
@@ -28,15 +28,15 @@ public class TrafficLight implements Runnable {
         double time = minutesForFullRun / priority.size();
         for (Map.Entry<String, Double> entry : priority.entrySet()) {
             synchronized (priority) {
-                priority.put(entry.getKey(), time);
+                entry.setValue(time);
             }
         }
         standardPriority = true;
     }
 
-    public void setPriority(String StreetWithPrioID, double prio) {        //set by control system
+    public void setPriority(String streetWithPrioID, double prio) {        //set by control system
         double prioStreet = minutesForFullRun * prio;
-        priority.put(StreetWithPrioID, prioStreet);     //Note, the other streets in the traffic light will not be changed because of the given Street priority. (the time expends)
+        priority.put(streetWithPrioID, prioStreet);     //Note, the other streets in the traffic light will not be changed because of the given Street priority. (the time expends)
         standardPriority = false;
     }
 
@@ -47,7 +47,7 @@ public class TrafficLight implements Runnable {
         while (!stop) {
             for (Map.Entry<String, Double> entry : priority.entrySet()) {
                 synchronized (priority) {
-                    time = (long) (priority.get(entry.getKey()) * 60);
+                    time = (long) (entry.getValue() * 60);
                 }
                 participantsService.notifyTrafficLightChanged(new TrafficLightChange(crossroadId, new String[]{entry.getKey()}));       // notify Traffic Detection about traffic light change
                 System.out.printf("TrafficLight:%s StreetSeg:%s GREEN (Standard Priority: %b)\n", crossroadId, entry.getKey(), standardPriority);
