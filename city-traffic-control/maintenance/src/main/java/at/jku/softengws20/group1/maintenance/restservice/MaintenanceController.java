@@ -14,9 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping(MaintenanceInterface.URL)
+@RequestMapping(MaintenanceInterface.URL) //todo timeconstant
 public class MaintenanceController implements MaintenanceInterface, ApplicationListener<ContextRefreshedEvent> {
-    private final int TIME_CONSTANT = 1;
     private SchedulingSystem schedulingSystem = new SchedulingSystem();
 
     @Autowired
@@ -33,8 +32,8 @@ public class MaintenanceController implements MaintenanceInterface, ApplicationL
     @PostMapping(MaintenanceInterface.NOTIFY_MAINTENANCE_CAR_ARRIVED_URL + "/{carId}")
     public void notifyMaintenanceCarArrived(@PathVariable(value = "carId") String carId) {
         // car arrived
-        vehicleCenter.triggerCarArrived(carId);
         System.out.println("Maintenance: car arrived");
+        vehicleCenter.triggerCarArrived(carId);
     }
 
     @Override
@@ -49,7 +48,7 @@ public class MaintenanceController implements MaintenanceInterface, ApplicationL
                 e.printStackTrace();
             }
 
-            for (; ; ) {
+            for (int i = 0; i < 3; i++ ) {
                 // calculate current time
                 Repair repair = DummyRegularRepair.getRegularRepair();
                 sendVehicledummy(repair);
@@ -171,16 +170,16 @@ public class MaintenanceController implements MaintenanceInterface, ApplicationL
             if (VehicleCenter.getNrVehicles() - repair.getNrVehiclesNeeded() >= 0) {
                 Vehicle vehicle = vehicleCenter.sendCar(repair);
                 //schedulingSystem.getSchedule().remove(repair);
-                while (vehicle != null && !vehicle.isArrived()) { // wait for car to arrive
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (vehicle != null && vehicle.isArrived()) {
-                    vehicleCenter.returnCar(vehicle);
-                }
+//                while (vehicle != null && !vehicle.isArrived()) { // wait for car to arrive
+//                    try {
+//                        Thread.sleep(5000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                if (vehicle != null && vehicle.isArrived()) {
+//                    vehicleCenter.returnCar(vehicle);
+//                }
             }
         });
         car.start();

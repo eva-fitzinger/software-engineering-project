@@ -17,10 +17,10 @@ public class DummyRegularRepair {
         return new RegularRepair(
                 "RR: " + Repair.nextRepairId++, //repairId
                 RepairType.ROAD_MAINTENANCE, // RepairType
-                "TODO Random location", //location
+                "", //location
                 rand.nextInt(5), //priority
                 rand.nextLong() % MAX_DURATION, //duration in milliseconds
-                rand.nextInt(VehicleCenter.MAX_VEHICLES), // vehicles needed
+                rand.nextInt(VehicleCenter.MAX_VEHICLES/2), // vehicles needed
                 rand.nextInt(VehicleCenter.MAX_EMPLOYEES));
     }
 
