@@ -9,5 +9,5 @@ public interface MaintenanceInterface {
     void notifyApprovedMaintenance(Timeslot approvedTimeslot);
 
     String NOTIFY_MAINTENANCE_CAR_ARRIVED_URL = "notifyMaintenanceCarArrived";
-    void notifyMaintenanceCarArrived(CarPath destination);
+    void notifyMaintenanceCarArrived(String carId);
 }
