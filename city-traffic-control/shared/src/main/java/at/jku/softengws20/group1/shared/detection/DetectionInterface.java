@@ -10,5 +10,5 @@ public interface DetectionInterface<T extends TrafficLoad, T1 extends TrafficLig
     void setTrafficLightRules(T1[] rules);
 
     String SET_CAR_POSITION = "setCarPosition";
-    void setCarPosition(T2 position);
+    void setCarPosition(T2[] position);
 }

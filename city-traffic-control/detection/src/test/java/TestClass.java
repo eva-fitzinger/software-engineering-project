@@ -1,4 +1,5 @@
-/*package at.jku.softengws20.group1.detection.Map;
+/*
+package at.jku.softengws20.group1.detection.Map;
 
 import at.jku.softengws20.group1.detection.restservice.DetectionController;
 import at.jku.softengws20.group1.shared.detection.TrafficLoad;
@@ -9,7 +10,7 @@ public class TestClass {        //########################################   Tes
     private CityMap cityMap;
     private DetectionController det = new DetectionController();
 
-    void init() {p
+    void init() {
         det.init();
         try {
             Thread.sleep(250);
@@ -47,9 +48,9 @@ public class TestClass {        //########################################   Tes
 
         cityMap.start();
     }
-}*/
+}
 
-/*    public static void createCityMap(RoadNetwork roadNetwork) {
+    public static void createCityMap(RoadNetwork roadNetwork) {
         //create roads
         for (int i = 0; i < roadNetwork.getRoadSegments().length ; i++) {
             String id = roadNetwork.getRoadSegments()[i].getId();
@@ -69,9 +70,9 @@ public class TestClass {        //########################################   Tes
 
         //start traffic lights (running in thread´s)
         cityMap.start();
-    }*/
+    }
 
-/*        cityMap.putStreetToCrossroad("1","1");
+        cityMap.putStreetToCrossroad("1","1");
         cityMap.putStreetToCrossroad("1","7");
         cityMap.putStreetToCrossroad("1","5");
         cityMap.putStreetToCrossroad("2","1");
@@ -84,4 +85,5 @@ public class TestClass {        //########################################   Tes
         cityMap.putStreetToCrossroad("4","5");
         cityMap.putStreetToCrossroad("4","3");
         cityMap.putStreetToCrossroad("5","4");
-        cityMap.putStreetToCrossroad("5","3");*/
+        cityMap.putStreetToCrossroad("5","3");
+*/

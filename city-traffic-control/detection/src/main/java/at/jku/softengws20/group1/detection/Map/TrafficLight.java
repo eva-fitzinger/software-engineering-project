@@ -4,7 +4,6 @@ import at.jku.softengws20.group1.detection.restservice.ParticipantsService;
 import at.jku.softengws20.group1.shared.Config;
 import at.jku.softengws20.group1.shared.impl.model.TrafficLightChange;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -13,7 +12,6 @@ public class TrafficLight implements Runnable {
     private final String crossroadId;
     private final float minutesForFullRun = Config.MINUTES_FOR_FULL_TRAFFIC_LIGHT_RUN / Config.REAL_TIME_FACTOR;
     private final ParticipantsService participantsService = new ParticipantsService();
-    //Map<String, Street> streets = new HashMap<>();
     final Map<String, Double> priority = new HashMap<>();
     private boolean standardPriority = true;
 
@@ -38,18 +36,7 @@ public class TrafficLight implements Runnable {
 
     public void setPriority(String StreetWithPrioID, double prio) {        //set by control system
         double prioStreet = minutesForFullRun * prio;
-        //double time = (minutesForFullRun - prioStreet) / (priority.size() - 1);
-        priority.put(StreetWithPrioID, prioStreet);
-
-/*        for (Map.Entry<String, Double> entry : priority.entrySet()) {
-            synchronized (priority) {
-                if (entry.getKey().equals(StreetWithPrioID)) {
-                    priority.put(entry.getKey(), prioStreet);
-                } else {
-                    priority.put(entry.getKey(), time);
-                }
-            }
-        }*/
+        priority.put(StreetWithPrioID, prioStreet);     //Note, the other streets in the traffic light will not be changed because of the given Street priority. (the time expends)
         standardPriority = false;
     }
 

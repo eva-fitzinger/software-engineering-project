@@ -39,6 +39,7 @@ public class Street {
     }
 
     public TrafficLoad getTrafficLoad() {
+        if (numberOfCars <= 0) {numberOfCars = 0;} //failed notify
         return new TrafficLoad(id, numberOfCars);
     }
 
