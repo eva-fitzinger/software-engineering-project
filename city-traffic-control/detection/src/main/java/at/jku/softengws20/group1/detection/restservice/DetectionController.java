@@ -2,7 +2,6 @@ package at.jku.softengws20.group1.detection.restservice;
 
 import at.jku.softengws20.group1.detection.Map.CityMap;
 import at.jku.softengws20.group1.detection.Map.Street;
-import at.jku.softengws20.group1.shared.Config;
 import at.jku.softengws20.group1.shared.detection.DetectionInterface;
 import at.jku.softengws20.group1.shared.impl.model.CarPosition;
 import at.jku.softengws20.group1.shared.impl.model.TrafficLightRule;
@@ -11,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.PostConstruct;
 import java.util.*;
 
 
