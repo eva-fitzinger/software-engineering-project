@@ -21,7 +21,7 @@ public class Simulation implements Runnable {
     private final HashSet<Participant> participants = new HashSet<>();
     private Random random = new Random();
     private double currentNewCount = 0;
-    private int targetCount = 50;
+    private int targetCount = Config.MAX_CARS;
     private final ParticipantsDetectionSystemService detectionService = new ParticipantsDetectionSystemService();
 
     public Simulation(Navigation navigation) {

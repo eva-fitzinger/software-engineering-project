@@ -14,7 +14,7 @@ public abstract class BaseService {
     }
 
     protected void post(String url, Object object) {
-        restTemplate.postForEntity(concatUrl(baseUrl, url), object, null);
+        restTemplate.postForEntity(concatUrl(baseUrl, url), object, void.class);
     }
 
     protected <T> T successBodyOrNull(String url, Class<T> type) {
