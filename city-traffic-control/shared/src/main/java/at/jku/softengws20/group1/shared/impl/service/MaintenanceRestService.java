@@ -15,7 +15,7 @@ public abstract class MaintenanceRestService extends BaseService implements Main
     }
 
     @Override
-    public void notifyMaintenanceCarArrived(CarPath destination) {
-        post(MaintenanceInterface.NOTIFY_MAINTENANCE_CAR_ARRIVED_URL, destination);
-    }
+    public void notifyMaintenanceCarArrived(String id) {
+        post(MaintenanceInterface.NOTIFY_MAINTENANCE_CAR_ARRIVED_URL + "/" + id, null);
+    } // shouldn't be used
 }

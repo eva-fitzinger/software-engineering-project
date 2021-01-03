@@ -83,13 +83,10 @@ public class Simulation implements Runnable {
                 e.printStackTrace();
             }
         });
-        //for (Participant participant : participants) {
-        //    detectionService.setCarPosition(new CarPosition(Integer.toString(participant.getId()),
-        //            participant.getPosition().getRoad().getEnd().getId(), participant.getPosition().getRoad().getId()));
-        //}
-        //participants.parallelStream().forEach(participant -> {
-//
-        //});
+        participants.parallelStream().forEach(participant -> {
+            detectionService.setCarPosition(new CarPosition(Integer.toString(participant.getId()),
+                    participant.getPosition().getRoad().getEnd().getId(), participant.getPosition().getRoad().getId()));
+        });
         Arrays.stream(navigation.getRoadNetwork().roads).parallel().forEach(Road::sortParticipants);
         for (Participant participant : toRemove) {
             participants.remove(participant);
