@@ -7,7 +7,7 @@ public class Crossroad {
     private final String id;
     private final Map<String, Street> streets = new HashMap<>();
     private InformationSign informationSign;
-    private TrafficLights trafficLight;
+    private TrafficLight trafficLight;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public Crossroad(String id) {
@@ -23,12 +23,12 @@ public class Crossroad {
                 toCrossings.put(entry.getKey(), entry.getValue());
             }
         }
-        trafficLight = new TrafficLights(toCrossings, id);
+        trafficLight = new TrafficLight(toCrossings, id);
         executor.submit(trafficLight);
     }
 
     //Getter und Setter and reset
-    public TrafficLights getTrafficLight() {
+    public TrafficLight getTrafficLight() {
         return trafficLight;
     }
 

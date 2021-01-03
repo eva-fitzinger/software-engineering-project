@@ -6,9 +6,9 @@ import at.jku.softengws20.group1.participants.simulation.Participant;
 import at.jku.softengws20.group1.participants.simulation.Simulation;
 import at.jku.softengws20.group1.shared.Config;
 import at.jku.softengws20.group1.shared.controlsystem.RoadSegment;
+import at.jku.softengws20.group1.shared.impl.model.CarPath;
 import at.jku.softengws20.group1.shared.impl.model.RoadSegmentStatus;
 import at.jku.softengws20.group1.shared.impl.model.TrafficLightChange;
-import at.jku.softengws20.group1.shared.maintenance.CarPath;
 import at.jku.softengws20.group1.shared.participants.ParticipantsInterface;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -40,7 +40,7 @@ public class ParticipantsController implements ParticipantsInterface, Applicatio
 
     @Override
     @PostMapping(ParticipantsInterface.SEND_CAR)
-    public synchronized void sendCar(@RequestBody CarPath request) {
+    public void sendCar(@RequestBody CarPath request) {
         simulation.addParticipant(new Participant(new Position(roads.get(request.getStartRoadSegmentId()), request.getStartRoadPosition()),
                 new Position(roads.get(request.getDestinationRoadSegmentId()), request.getDestinationRoadPosition()), navigation, request.getCallbackUri()));
     }
