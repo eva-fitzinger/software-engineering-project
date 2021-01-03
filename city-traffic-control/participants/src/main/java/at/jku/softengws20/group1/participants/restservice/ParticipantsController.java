@@ -41,7 +41,7 @@ public class ParticipantsController implements ParticipantsInterface, Applicatio
     @Override
     @PostMapping(ParticipantsInterface.SEND_CAR)
     public void sendCar(@RequestBody CarPath request) throws Exception {
-        if(roads.isEmpty()) throw new Exception("called sendCar too early");
+        if (roads.isEmpty()) throw new Exception("called sendCar too early");
         simulation.addParticipant(new Participant(new Position(roads.get(request.getStartRoadSegmentId()), request.getStartRoadPosition()),
                 new Position(roads.get(request.getDestinationRoadSegmentId()), request.getDestinationRoadPosition()), navigation, request.getCallbackUri()));
     }
@@ -97,7 +97,7 @@ public class ParticipantsController implements ParticipantsInterface, Applicatio
         for (Crossing crossing : roadNetwork.crossings) {
             double x = (crossing.getPosition().getX() - minX) / (maxX - minX) * 90 + 5;
             double y = (crossing.getPosition().getY() - minY) / (maxY - minY) * 90 + 5;
-            //gui.append("<text x=").append(x + 1).append("% y=").append(y - 1).append("% class='small'>").append(crossing.getId()).append("</text>");
+            gui.append("<text x=").append(x).append("% y=").append(y).append("% class='small'>").append(crossing.getId()).append("</text>");
             gui.append("<circle cx=").append(x).append("% cy=").append(y).append("% r=2").append(" fill='black'/>");
         }
         gui.append("</svg>");

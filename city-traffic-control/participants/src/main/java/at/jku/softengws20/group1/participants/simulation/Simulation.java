@@ -11,18 +11,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class Simulation implements Runnable {
     private static final double TIME_FACTOR = Config.REAL_TIME_FACTOR;
     private static final double MAX_COUNT_PER_TICK = 10000;
     private final Navigation navigation;
     private final HashSet<Participant> participants = new HashSet<>();
+    private final ParticipantsDetectionSystemService detectionService = new ParticipantsDetectionSystemService();
     private Random random = new Random();
     private double currentNewCount = 0;
     private int targetCount = Config.MAX_CARS;
-    private final ParticipantsDetectionSystemService detectionService = new ParticipantsDetectionSystemService();
 
     public Simulation(Navigation navigation) {
         this.navigation = navigation;
@@ -75,18 +73,24 @@ public class Simulation implements Runnable {
         participants.parallelStream().forEach(participant -> {
             try {
                 if (participant.updatePosition(elapsed)) {
+                    participant.getPosition().setRoad(null);
                     synchronized (toRemove) {
                         toRemove.add(participant);
                     }
                 }
-            }catch(Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });
-        participants.parallelStream().forEach(participant -> {
-            detectionService.setCarPosition(new CarPosition(Integer.toString(participant.getId()),
-                    participant.getPosition().getRoad().getEnd().getId(), participant.getPosition().getRoad().getId()));
-        });
+        CarPosition[] positions = new CarPosition[participants.size()];
+        int idx = 0;
+        for (Participant participant : participants) {
+            if (participant.getPosition().getRoad() == null)
+                positions[idx++] = new CarPosition(Integer.toString(participant.getId()), null, null);
+            else positions[idx++] = new CarPosition(Integer.toString(participant.getId()),
+                    participant.getPosition().getRoad().getEnd().getId(), participant.getPosition().getRoad().getId());
+        }
+        detectionService.setCarPosition(positions);
         Arrays.stream(navigation.getRoadNetwork().roads).parallel().forEach(Road::sortParticipants);
         for (Participant participant : toRemove) {
             participants.remove(participant);
