@@ -7,7 +7,7 @@ public interface ParticipantsInterface {
     String URL = "/participants";
 
     String SEND_CAR = "sendCar";
-    void sendCar(CarPath request);
+    void sendCar(CarPath request) throws Exception;
 
     String NOTIFY_TRAFFIC_LIGHT_CHANGED = "trafficLightChanged";
     void notifyTrafficLightChanged(TrafficLightChange change);

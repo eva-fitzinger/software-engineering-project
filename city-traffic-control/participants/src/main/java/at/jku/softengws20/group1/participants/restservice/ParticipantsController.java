@@ -40,7 +40,8 @@ public class ParticipantsController implements ParticipantsInterface, Applicatio
 
     @Override
     @PostMapping(ParticipantsInterface.SEND_CAR)
-    public void sendCar(@RequestBody CarPath request) {
+    public void sendCar(@RequestBody CarPath request) throws Exception {
+        if(roads.isEmpty()) throw new Exception("called sendCar too early");
         simulation.addParticipant(new Participant(new Position(roads.get(request.getStartRoadSegmentId()), request.getStartRoadPosition()),
                 new Position(roads.get(request.getDestinationRoadSegmentId()), request.getDestinationRoadPosition()), navigation, request.getCallbackUri()));
     }

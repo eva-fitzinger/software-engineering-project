@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
 
 public class Simulation implements Runnable {
     private static final double TIME_FACTOR = Config.REAL_TIME_FACTOR;
-    private static final double MAX_COUNT_PER_TICK = 100;
+    private static final double MAX_COUNT_PER_TICK = 10000;
     private final Navigation navigation;
     private final HashSet<Participant> participants = new HashSet<>();
     private Random random = new Random();
