@@ -57,10 +57,16 @@ public class ParticipantsController implements ParticipantsInterface, Applicatio
             Coordinate c = participant.getPosition().getCoordinate();
             Coordinate screenOffset = participant.getPosition().getRoad().getScreenOffset();
             res.append("<circle cx=").append((c.getX() - minX) / (maxX - minX) * 90 + 5 + screenOffset.getX())
-                    .append("% cy=").append((c.getY() - minY) / (maxY - minY) * 90 + 5 + screenOffset.getY()).append("% r=2").append(" fill='")
+                    .append("% cy=").append((c.getY() - minY) / (maxY - minY) * 90 + 5 + screenOffset.getY()).append("% r=")
+                    .append(getCarDotSize(participant)).append(" fill='")
                     .append(getCarColor(participant)).append("'/>");
         }
         return res.toString();
+    }
+
+    public int getCarDotSize(Participant participant) {
+        if (participant.hasCallback()) return 5;
+        else return 2;
     }
 
     public String getCarColor(Participant participant) {
