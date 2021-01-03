@@ -39,7 +39,7 @@ public class Street {
     }
 
     public TrafficLoad getTrafficLoad() {
-        return new TrafficLoad(id, null, numberOfCars);
+        return new TrafficLoad(id, numberOfCars);
     }
 
     /*For further Implementation if more time:
