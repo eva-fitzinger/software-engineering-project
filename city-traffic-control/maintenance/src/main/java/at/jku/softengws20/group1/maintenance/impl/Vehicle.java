@@ -1,10 +1,10 @@
 package at.jku.softengws20.group1.maintenance.impl;
 
-import at.jku.softengws20.group1.shared.maintenance.MaintenanceCarDestination;
+import at.jku.softengws20.group1.shared.maintenance.CarPath;
 
 public class Vehicle {
     private String id;
-     MaintenanceCarDestination destination;
+    CarPath destination;
     private boolean arrived;
     private boolean available;
 
@@ -15,10 +15,6 @@ public class Vehicle {
 
     public String getId() {
         return id;
-    }
-
-    public void setDestination(MaintenanceCarDestination destination) {
-        this.destination = destination;
     }
 
     public boolean isArrived() {

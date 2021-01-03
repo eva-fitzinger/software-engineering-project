@@ -13,13 +13,4 @@ public class ControlSystemService_Maintenance extends ControlSystemRestService<R
         super(RoadNetwork.class, RoadSegmentStatus[].class);
     }
 
-    @Override
-    public void requestRoadClosing(MaintenanceRequest request) {
-        post(ControlSystemInterface.REQUEST_ROAD_CLOSING_URL, request);
-    }
-
-    @Override
-    public void setRoadAvailable(String roadSegmentId) {
-        post(ControlSystemInterface.SET_ROAD_AVAILABLE_URL, roadSegmentId);
-    }
 }

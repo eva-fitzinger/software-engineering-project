@@ -5,7 +5,8 @@ import at.jku.softengws20.group1.shared.detection.DetectionInterface;
 import at.jku.softengws20.group1.shared.detection.TrafficLightRule;
 import at.jku.softengws20.group1.shared.detection.TrafficLoad;
 
-public abstract class DetectionRestService<T0 extends TrafficLoad> extends BaseService implements DetectionInterface<T0> {
+public abstract class DetectionRestService<T0 extends TrafficLoad, T1 extends TrafficLightRule, T2 extends CarPosition>
+        extends BaseService implements DetectionInterface<T0, T1, T2> {
 
     private Class<T0[]> trafficLoadType;
 
@@ -25,7 +26,7 @@ public abstract class DetectionRestService<T0 extends TrafficLoad> extends BaseS
     }
 
     @Override
-    public void registerCarForTrafficLight(CarPosition position) {
-        post(DetectionInterface.REGISTER_CAR_FOR_TRAFFIC_LIGHT_URL, position);
+    public void setCarPosition(CarPosition position) {
+        post(DetectionInterface.SET_CAR_POSITION, position);
     }
 }

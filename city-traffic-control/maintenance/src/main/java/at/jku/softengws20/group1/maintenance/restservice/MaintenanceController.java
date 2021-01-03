@@ -1,21 +1,17 @@
 package at.jku.softengws20.group1.maintenance.restservice;
 
-import at.jku.softengws20.group1.maintenance.dummy.data.DummyEmergencyRepair;
 import at.jku.softengws20.group1.maintenance.dummy.data.DummyRegularRepair;
-import at.jku.softengws20.group1.maintenance.impl.*;
+import at.jku.softengws20.group1.maintenance.impl.Repair;
+import at.jku.softengws20.group1.maintenance.impl.SchedulingSystem;
+import at.jku.softengws20.group1.maintenance.impl.Vehicle;
+import at.jku.softengws20.group1.maintenance.impl.VehicleCenter;
 import at.jku.softengws20.group1.shared.controlsystem.Timeslot;
-import at.jku.softengws20.group1.shared.maintenance.MaintenanceCarDestination;
+import at.jku.softengws20.group1.shared.maintenance.CarPath;
 import at.jku.softengws20.group1.shared.maintenance.MaintenanceInterface;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
-import javax.swing.plaf.DimensionUIResource;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @RestController
@@ -23,7 +19,9 @@ import java.util.stream.Collectors;
 public class MaintenanceController implements MaintenanceInterface {
     private final int TIME_CONSTANT = 1;
     private SchedulingSystem schedulingSystem = new SchedulingSystem();
-    private VehicleCenter vehicleCenter;
+
+    @Autowired
+    VehicleCenter vehicleCenter;
 
     @Override
     @PostMapping(MaintenanceInterface.NOTIFY_APPROVED_MAINTENANCE_URL)
@@ -33,10 +31,10 @@ public class MaintenanceController implements MaintenanceInterface {
     }
 
     @Override
-    @PostMapping(MaintenanceInterface.NOTIFY_MAINTENANCE_CAR_ARRIVED_URL)
-    public void notifyMaintenanceCarArrived(@RequestBody MaintenanceCarDestination destination) {
+    @PostMapping(MaintenanceInterface.NOTIFY_MAINTENANCE_CAR_ARRIVED_URL + "/{carId}")
+    public void notifyMaintenanceCarArrived(@PathVariable (value = "carId") String carId) {
         // car arrived
-        vehicleCenter.triggerCarArrived(destination);
+        vehicleCenter.triggerCarArrived(carId);
     }
 
     @PostConstruct
@@ -187,5 +185,4 @@ public class MaintenanceController implements MaintenanceInterface {
         });
         car.start();
     }
-
 }

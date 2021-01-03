@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="900.0" prefWidth="1600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.jku.softengws20.group1.controlsystem.gui.controller.MainViewController">
+   <children>
+      <BorderPane fx:id="mainPane" layoutX="121.0" layoutY="81.0" prefHeight="900.0" prefWidth="1600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <right>
+            <SplitPane dividerPositions="0.6" orientation="VERTICAL" prefHeight="200.0" prefWidth="600.0" styleClass="no-border-pane" BorderPane.alignment="CENTER">
+              <items>
+                  <VBox onMouseClicked="#onCrossingViewClicked" prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <HBox prefHeight="24.0" prefWidth="574.0">
+                           <children>
+                              <Label styleClass="header" text="Selected crossing: " />
+                              <Label fx:id="lblCrossingId" styleClass="header" text="Id" />
+                           </children>
+                        </HBox>
+                        <VBox prefHeight="303.0" prefWidth="556.0" styleClass="border-pane">
+                           <children>
+                              <Label styleClass="header" text="Inbound traffic information" />
+                              <TableView fx:id="tblTrafficInformation" prefHeight="200.0" prefWidth="200.0" />
+                              <Label styleClass="header" text="Outbound traffic information" />
+                              <TableView fx:id="tblOutTrafficInformation" prefHeight="200.0" prefWidth="200.0" />
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="200.0" prefWidth="100.0" styleClass="border-pane">
+                           <children>
+                              <Label styleClass="header" text="Active Rules" />
+                              <TableView fx:id="tblActiveRules" prefHeight="200.0" prefWidth="200.0" />
+                           </children>
+                        </VBox>
+                     </children>
+                     <styleClass>
+                        <String fx:value="border-pane" />
+                        <String fx:value="spaced-box" />
+                     </styleClass>
+                  </VBox>
+                  <VBox onMouseClicked="#onRoadSegmentViewClicked" prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label styleClass="header" text="Selected road segment" />
+                        <HBox alignment="CENTER" prefHeight="49.0" prefWidth="574.0" style="-fx-spacing: 150;" styleClass="border-pane">
+                           <children>
+                              <Button fx:id="btnCrossingA" mnemonicParsing="false" onAction="#onSelectCrossingA" text="X" />
+                              <Label text="---&gt;" />
+                              <Button fx:id="btnCrossingB" mnemonicParsing="false" onAction="#onSelectCrossingB" text="Y" />
+                           </children>
+                        </HBox>
+                        <GridPane styleClass="border-pane">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="Road name" GridPane.rowIndex="1" />
+                              <Label text="Road number" GridPane.rowIndex="2" />
+                              <Label text="Road type" GridPane.rowIndex="3" />
+                              <Label text="Segment length" GridPane.rowIndex="5" />
+                              <Label text="Max allowed speed" GridPane.rowIndex="4" />
+                              <Label fx:id="lblRoadName" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label fx:id="lblRoadNumber" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label fx:id="lblRoadType" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Label fx:id="lblMaxSpeed" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <Label fx:id="lblSegmentLength" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <Label text="Segment id" />
+                              <Label fx:id="lblSegmentId" text="Label" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
+                        <Button fx:id="btnCloseRoad" mnemonicParsing="false" onAction="#onBtnCloseRoadClicked" text="Close road" />
+                     </children>
+                     <styleClass>
+                        <String fx:value="border-pane" />
+                        <String fx:value="spaced-box" />
+                     </styleClass>
+                  </VBox>
+              </items>
+            </SplitPane>
+         </right>
+         <top>
+            <MenuBar BorderPane.alignment="CENTER">
+              <menus>
+                <Menu mnemonicParsing="false" text="Views">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Scenario window" />
+                        <MenuItem mnemonicParsing="false" onAction="#onOpenMaintenanceRequestsClick" text="Maintenance requests" />
+                        <MenuItem mnemonicParsing="false" text="Notification window" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Actions">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Delete" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+         </top>
+      </BorderPane>
+   </children>
+</AnchorPane>

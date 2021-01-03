@@ -1,0 +1,19 @@
+.border-pane {
+    -fx-border-color: gray;
+    -fx-border-width: 2px;
+    -fx-border-style: solid inside;
+    -fx-padding: 10px;
+    -fx-border-radius: 5;
+}
+
+.no-border-pane {
+    -fx-padding: 10px;
+}
+
+.spaced-box {
+    -fx-spacing: 10px;
+}
+
+.header {
+    -fx-font-weight: bold;
+}
