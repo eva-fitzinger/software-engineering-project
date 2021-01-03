@@ -68,7 +68,7 @@ public class DetectionController implements DetectionInterface<TrafficLoad, Traf
     @PostMapping(DetectionInterface.SET_CAR_POSITION)
     public void setCarPosition(@RequestBody CarPosition position) {
         if (carPosition.containsKey(position.getCarId())) {
-            cityMap.getStreet(carPosition.get(position.getIncomingRoadSegmentId())).outgoingVehicle();
+            cityMap.getStreet(carPosition.get(position.getCarId())).outgoingVehicle();
         }
         if(position.getIncomingRoadSegmentId() == null) {
             carPosition.remove(position.getCarId());
