@@ -6,23 +6,15 @@ import at.jku.softengws20.group1.shared.controlsystem.Timeslot;
 import at.jku.softengws20.group1.shared.impl.model.*;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 
 public class SchedulingSystem { // TODO: enhance in Milestone 3.2
-    private final int MAX_WEEKS = 52;
-    private final int MAX_DAYS_OF_WEEK = 6;
-    private final int MAX_HOURS = 8;
 
     private static RegularRepair currentRepairApproval;
-    private int weekNr;
-    private int dayOfWeek;
-    private int hourOfDay;
+
     private ControlSystemService_Maintenance controlSystemServiceMaintenance = new ControlSystemService_Maintenance();
-    private GregorianCalendar calendar;
+
 
     public List<Repair> getSchedule() {
         return schedule;
@@ -31,6 +23,7 @@ public class SchedulingSystem { // TODO: enhance in Milestone 3.2
     private List<Repair> schedule;
 
     public SchedulingSystem() {
+        schedule = new ArrayList<>();
     }
 
 
@@ -59,22 +52,27 @@ public class SchedulingSystem { // TODO: enhance in Milestone 3.2
             //TODO delivers a timeslot in the bounds of the working hours
             timeslot = DummyRegularRepair.getDummyTimeSlot(regularRepair);
 
-            for (int j = 0; schedule.get(j) != null && timeslot.getTo().before(schedule.get(j).getTo()); j++) { //as long as the timeSlot end is before the end of the current schedule
-                //if at beginning
-                if (timeslot.getTo().before(schedule.get(0).getFrom())) {
-                    approvedTimeslots[i] = timeslot;
-                    i++;
-                }
-                //if at end
-                if (schedule.get(j + 1) == null) {
-                    approvedTimeslots[i] = timeslot;
-                    i++;
-                }
+            if (schedule.size() == 0) {
+                approvedTimeslots[i] = timeslot;
+                i++;
+            } else {
+                for (int j = 0; j <= schedule.size() && timeslot.getTo().before(schedule.get(j).getTo()); j++) { //as long as the timeSlot end is before the end of the current schedule
+                    //if at beginning
+                    if (timeslot.getTo().before(schedule.get(0).getFrom())) {
+                        approvedTimeslots[i] = timeslot;
+                        i++;
+                    }
+                    //if at end
+                    if (schedule.get(j + 1) == null) {
+                        approvedTimeslots[i] = timeslot;
+                        i++;
+                    }
 
-                //if between to scheduled dates
-                if (schedule.get(j).getTo().before(timeslot.getFrom()) && timeslot.getTo().before(schedule.get(j + 1).getFrom())) {
-                    approvedTimeslots[i] = timeslot;
-                    i++;
+                    //if between to scheduled dates
+                    if (schedule.get(j).getTo().before(timeslot.getFrom()) && timeslot.getTo().before(schedule.get(j + 1).getFrom())) {
+                        approvedTimeslots[i] = timeslot;
+                        i++;
+                    }
                 }
             }
         }
@@ -83,6 +81,7 @@ public class SchedulingSystem { // TODO: enhance in Milestone 3.2
 
     public void addRegularRepair(RegularRepair regularRepair) {//TODO comment on/out
         currentRepairApproval = regularRepair;
+        //TODO Jakob what is this warning?
         MaintenanceRequest<at.jku.softengws20.group1.shared.impl.model.Timeslot> maintenanceRequest = new MaintenanceRequest("close road",
                 currentRepairApproval.getRepairId(), currentRepairApproval.getTimeslot());
         // request permission
@@ -105,7 +104,10 @@ public class SchedulingSystem { // TODO: enhance in Milestone 3.2
 
     public void addEmergencyRepair(EmergencyRepair emergencyRepair) { //TODO: in Milestone 3.2
         //add right away
-        if (emergencyRepair.getTo().before(getSchedule().get(0).getFrom())) {// time is free anyways
+        List<Repair> localSchedule = getSchedule();
+        if (localSchedule.size() == 0) {
+            localSchedule.add(emergencyRepair);
+        } else if (emergencyRepair.getTo().before(localSchedule.get(0).getFrom())) {// time is free anyways
             getSchedule().add(emergencyRepair);
         } else { // reschedule
             long difference = emergencyRepair.getTo().getTime() - getSchedule().get(0).getFrom().getTime();

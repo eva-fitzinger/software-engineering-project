@@ -1,10 +1,7 @@
 package at.jku.softengws20.group1.maintenance.restservice;
 
 import at.jku.softengws20.group1.maintenance.dummy.data.DummyEmergencyRepair;
-import at.jku.softengws20.group1.maintenance.impl.EmergencyRepair;
-import at.jku.softengws20.group1.maintenance.impl.Repair;
-import at.jku.softengws20.group1.maintenance.impl.SchedulingSystem;
-import at.jku.softengws20.group1.maintenance.impl.VehicleCenter;
+import at.jku.softengws20.group1.maintenance.impl.*;
 import at.jku.softengws20.group1.shared.controlsystem.Timeslot;
 import at.jku.softengws20.group1.shared.maintenance.MaintenanceCarDestination;
 import at.jku.softengws20.group1.shared.maintenance.MaintenanceInterface;
@@ -16,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.PostConstruct;
 import javax.swing.plaf.DimensionUIResource;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -23,7 +21,7 @@ import java.util.stream.Collectors;
 @RequestMapping(MaintenanceInterface.URL)
 public class MaintenanceController implements MaintenanceInterface {
     private final int TIME_CONSTANT = 1;
-    private SchedulingSystem schedulingSystem;
+    private SchedulingSystem schedulingSystem = new SchedulingSystem();
     private VehicleCenter vehicleCenter;
 
     @Override
@@ -37,6 +35,7 @@ public class MaintenanceController implements MaintenanceInterface {
     @PostMapping(MaintenanceInterface.NOTIFY_MAINTENANCE_CAR_ARRIVED_URL)
     public void notifyMaintenanceCarArrived(@RequestBody MaintenanceCarDestination destination) {
         // car arrived
+        vehicleCenter.triggerCarArrived(destination);
     }
 
     @PostConstruct
@@ -48,7 +47,7 @@ public class MaintenanceController implements MaintenanceInterface {
 
         Thread regularRepairThread = new Thread(() -> { // fill up schedule with test data
             int i = 0;
-            for (;;) {
+            for (; ; ) {
                 schedulingSystem.addRegularRepair();
                 while (!SchedulingSystem.getCurrentRepairApproval().isApproved() || i < 10) {
                     try {
@@ -74,7 +73,7 @@ public class MaintenanceController implements MaintenanceInterface {
             long timePassed;
 
             try {
-                Thread.sleep(200);
+                Thread.sleep(5000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -87,12 +86,12 @@ public class MaintenanceController implements MaintenanceInterface {
 
                 EmergencyRepair emergencyRepair = DummyEmergencyRepair.getEmergencyRepair(currentDate);
                 schedulingSystem.addEmergencyRepair(emergencyRepair);
-                vehicleCenter.sendCar(emergencyRepair);
                 try {
-                    Thread.sleep((1000L * 60 * 60 * 24) / TIME_CONSTANT); //todo does this make sense?
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                sendVehicle(emergencyRepair);
             }
         });
 
@@ -105,17 +104,39 @@ public class MaintenanceController implements MaintenanceInterface {
                 currentDate = new Date();
                 timePassed = (startDateTime - currentDate.getTime()) * TIME_CONSTANT;
                 currentDate = new Date(startDateTime + timePassed);
-                if (schedulingSystem.getSchedule().stream()
+                List<Repair> schedule = schedulingSystem.getSchedule();
+                if (schedule.size() > 0 && schedule.stream()
                         .map(Repair::getFrom)
                         .collect(Collectors.toList()).contains(currentDate)) {
-                    Repair repair = schedulingSystem.getSchedule().get(schedulingSystem.getSchedule().indexOf(currentDate));
-                    vehicleCenter.sendCar(repair);
-                    schedulingSystem.getSchedule().remove(repair);
+                    Repair repair = schedule.get(schedulingSystem.getSchedule().indexOf(currentDate)); //TODO cannot work!
+                    sendVehicle(repair);
+
                 }
             }
         });
+
         emergencyRepairThread.start();
         regularRepairThread.start();
         sendCarsThread.start();
+    }
+
+    private void sendVehicle(Repair repair) {
+        Thread car = new Thread(() -> {
+            if (VehicleCenter.getNrVehicles() - repair.getNrVehiclesNeeded() >= 0) {
+                Vehicle vehicle = vehicleCenter.sendCar(repair);
+                schedulingSystem.getSchedule().remove(repair);
+                while (vehicle != null && !vehicle.isArrived()) { // wait for car to arrive
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (vehicle != null && vehicle.isArrived()) {
+                    vehicleCenter.returnCar(vehicle);
+                }
+            }
+        });
+        car.start();
     }
 }
