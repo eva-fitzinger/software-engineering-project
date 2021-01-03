@@ -39,6 +39,7 @@ public class AutomaticTrafficControl {
 
     @Scheduled(fixedRate = 1000)
     private void processTrafficLoad() {
+        System.out.println("##### processTrafficLoad");
         TrafficLoad[] trafficLoad = detectionService.getTrafficLoad();
         if (trafficLoad.length > 0) {
             trafficStatusRepository.processTrafficLoad(trafficLoad);
@@ -48,16 +49,17 @@ public class AutomaticTrafficControl {
     @Scheduled(fixedRate = 1000)
     private void processApprovedMaintenanceRequests() {
         // read actual closed roadSegments
-        ArrayList<RoadSegmentStatus> closedRoadSegments = new ArrayList<>(Arrays.asList(trafficStatusRepository.getClosedRoadSegments()));
+        ArrayList<RoadSegmentStatus> closedRoadSegments = new ArrayList<>(Arrays.asList(trafficStatusRepository.getClosedRoadSegmentsByMaintenance()));
+
         for (MaintenanceRequest m: maintenanceRepository.getCurrentMaintenanceRequests()) {
             trafficStatusRepository.closeRoadSegment(mapRepository.getRoadSegment(m.getRoadSegmentId()));
-            closedRoadSegments.removeIf(r -> r.getRoadSegmentId() == m.getRoadSegmentId());
+            closedRoadSegments.removeIf(r -> r.getRoadSegmentId().equals(m.getRoadSegmentId()));
         }
 
-//        //open remaining
-//        for (RoadSegmentStatus s: closedRoadSegments) {
-//            s.open();
-//        }
+        //open remaining
+        for (RoadSegmentStatus s: closedRoadSegments) {
+            s.open();
+        }
     }
 
     @Scheduled(fixedRate = 1000)

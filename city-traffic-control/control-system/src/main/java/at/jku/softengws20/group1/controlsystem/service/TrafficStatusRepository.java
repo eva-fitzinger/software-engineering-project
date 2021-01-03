@@ -18,6 +18,7 @@ public class TrafficStatusRepository {
     private TrafficCapacityRepository trafficCapacityRepository;
 
     private HashMap<RoadSegment, RoadSegmentStatus> roadSegmentStatusHashMap = new HashMap<RoadSegment, RoadSegmentStatus>();
+    private ArrayList<RoadSegment> directlyClosedRoadSegments = new ArrayList<>();
 
     public void closeRoadSegment(RoadSegment roadSegment) {
         if (roadSegment == null) return;
@@ -35,6 +36,23 @@ public class TrafficStatusRepository {
             roadSegmentStatusHashMap.put(roadSegment, new RoadSegmentStatus(roadSegment.getId(), true));
         }
     }
+
+    public void directlyCloseRoadSegment(RoadSegment roadSegment) {
+        if (roadSegment == null) return;
+        closeRoadSegment(roadSegment);
+        if (!directlyClosedRoadSegments.contains(roadSegment)) {
+            directlyClosedRoadSegments.add(roadSegment);
+        }
+    }
+
+    public void directlyOpenRoadSegment(RoadSegment roadSegment) {
+        if (roadSegment == null) return;
+        openRoadSegment(roadSegment);
+        if (directlyClosedRoadSegments.contains(roadSegment)) {
+            directlyClosedRoadSegments.remove(roadSegment);
+        }
+    }
+
     public void processTrafficLoad(TrafficLoad[] trafficLoad) {
         for (TrafficLoad t : trafficLoad) {
             RoadSegment roadSegment = mapRepository.getRoadSegment(t.getRoadSegmentId());
@@ -71,6 +89,19 @@ public class TrafficStatusRepository {
         for (RoadSegmentStatus roadSegmentStatus : getRoadSegmentStatus()) {
             if (!roadSegmentStatus.isOpen()) {
                 result.add(roadSegmentStatus);
+            }
+        }
+        return result.toArray(new RoadSegmentStatus[0]);
+    }
+
+    public RoadSegmentStatus[] getClosedRoadSegmentsByMaintenance() {
+        ArrayList<RoadSegmentStatus> result = new ArrayList<RoadSegmentStatus>();
+        for (RoadSegmentStatus roadSegmentStatus : getRoadSegmentStatus()) {
+            if (!roadSegmentStatus.isOpen()) {
+                RoadSegment roadSegment = mapRepository.getRoadSegment(roadSegmentStatus.getRoadSegmentId());
+                if (!directlyClosedRoadSegments.contains(roadSegment)) {
+                    result.add(roadSegmentStatus);
+                }
             }
         }
         return result.toArray(new RoadSegmentStatus[0]);

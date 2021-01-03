@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Random;
+
 
 @RestController
 @RequestMapping(ControlSystemInterface.URL)
@@ -59,13 +61,13 @@ public class ControlSystemController implements ControlSystemInterface<Maintenan
     @Override
     @PostMapping(ControlSystemInterface.SET_ROAD_AVAILABLE_URL)
     public void setRoadAvailable(@RequestBody String roadSegmentId) {
-        trafficStatusRepository.openRoadSegment(mapRepository.getRoadSegment(roadSegmentId));
+        trafficStatusRepository.directlyOpenRoadSegment(mapRepository.getRoadSegment(roadSegmentId));
     }
 
     public static final String SET_ROAD_CLOSE = "setRoadClose";
     @PostMapping(SET_ROAD_CLOSE)
     public void setRoadClose(@RequestBody String roadSegmentId) {
-        trafficStatusRepository.closeRoadSegment(mapRepository.getRoadSegment(roadSegmentId));
+        trafficStatusRepository.directlyCloseRoadSegment(mapRepository.getRoadSegment(roadSegmentId));
     }
 
     public static final String GET_CLOSED_ROADSEGMENTS_URL = "getClosedRoadSegments";
@@ -117,8 +119,13 @@ public class ControlSystemController implements ControlSystemInterface<Maintenan
 
 //    @Scheduled(fixedRate = 1000)
 //    private void testRoadClose() {
+//        Random rand = new Random();
 //        System.out.println("##### Close RoadSegment 10761352_80");
-//        setRoadClose("10761352_80");
+//        if (rand.nextInt(2) % 2 == 0) {
+//            setRoadClose("10761352_80");
+//        } else {
+//            setRoadAvailable("10761352_80");
+//        }
 //    }
 
 }

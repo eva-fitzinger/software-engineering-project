@@ -58,27 +58,27 @@ public class MaintenanceRepository {
             }
         }
     }
-//
-//    private void enterTestData()  {
-//        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy kk:mm:ss", Locale.GERMAN);
-//        formatter.setTimeZone(TimeZone.getTimeZone("CET"));
-//
-//        Timeslot[] timeslots1 = new Timeslot[3];
-//        try {
-//            timeslots1[0] = new Timeslot( formatter.parse("12-12-2020 20:32:00"),formatter.parse("12-12-2020 20:32:30"));
-//            timeslots1[1] = new Timeslot( formatter.parse("13-12-2020 09:21:30"),formatter.parse("13-12-2020 09:22:00"));
-//            timeslots1[2] = new Timeslot( formatter.parse("14-12-2020 10:00:00"),formatter.parse("14-12-2020 23:00:00"));
-//            maintenanceRequestList.add( new MaintenanceRequest("type", "rs1", timeslots1));
-//
-//            Timeslot[] timeslots2 = new Timeslot[3];
-//            timeslots2[0] = new Timeslot( formatter.parse("12-12-2020 10:00:00"),formatter.parse("12-12-2020 23:00:00"));
-//            timeslots2[1] = new Timeslot( formatter.parse("13-12-2020 10:00:00"),formatter.parse("13-12-2020 23:00:00"));
-//            timeslots2[2] = new Timeslot( formatter.parse("14-12-2020 10:00:00"),formatter.parse("14-12-2020 23:00:00"));
-//            maintenanceRequestList.add( new MaintenanceRequest("type", "rs3", timeslots2));
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
+
+    private void enterTestData()  {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy kk:mm:ss", Locale.GERMAN);
+        formatter.setTimeZone(TimeZone.getTimeZone("CET"));
+
+        Timeslot[] timeslots1 = new Timeslot[3];
+        try {
+            timeslots1[0] = new Timeslot( formatter.parse("03-01-2021 08:00:00"),formatter.parse("03-01-2021 20:00:00"));
+            timeslots1[1] = new Timeslot( formatter.parse("04-01-2021 08:00:00"),formatter.parse("04-01-2021 20:00:00"));
+            timeslots1[2] = new Timeslot( formatter.parse("05-01-2021 08:00:00"),formatter.parse("05-01-2021 20:00:00"));
+            approvedMaintenanceRequests.add( new MaintenanceRequest("type", "223870427_0", timeslots1));
+
+            Timeslot[] timeslots2 = new Timeslot[3];
+            timeslots2[0] = new Timeslot( formatter.parse("03-01-2021 08:00:00"),formatter.parse("03-01-2021 20:00:00"));
+            timeslots2[1] = new Timeslot( formatter.parse("04-01-2021 08:00:00"),formatter.parse("04-01-2021 20:00:00"));
+            timeslots2[2] = new Timeslot( formatter.parse("05-01-2021 08:00:00"),formatter.parse("05-01-2021 20:00:00"));
+            approvedMaintenanceRequests.add( new MaintenanceRequest("type", "9679128_5", timeslots2));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+    }
 
 }
