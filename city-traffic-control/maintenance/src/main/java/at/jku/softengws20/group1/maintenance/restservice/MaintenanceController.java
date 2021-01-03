@@ -29,10 +29,11 @@ public class MaintenanceController implements MaintenanceInterface, ApplicationL
     }
 
     @Override
-    @PostMapping(MaintenanceInterface.NOTIFY_MAINTENANCE_CAR_ARRIVED_URL + "/{carId}")
+    @GetMapping(MaintenanceInterface.NOTIFY_MAINTENANCE_CAR_ARRIVED_URL + "/{carId}")
     public void notifyMaintenanceCarArrived(@PathVariable(value = "carId") String carId) {
         // car arrived
         System.out.println("Maintenance: car arrived");
+        //todo don't always send because car might arrive at Maintenance Center
         vehicleCenter.triggerCarArrived(carId);
     }
 
@@ -54,7 +55,7 @@ public class MaintenanceController implements MaintenanceInterface, ApplicationL
                 sendVehicledummy(repair);
 
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(50000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
