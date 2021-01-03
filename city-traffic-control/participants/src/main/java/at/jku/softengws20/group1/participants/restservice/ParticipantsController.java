@@ -47,6 +47,7 @@ public class ParticipantsController implements ParticipantsInterface, Applicatio
 
     @RequestMapping("participantPositions")
     public String participantPositions() {
+        if(roadNetwork == null) return "";
         double minX = roadNetwork.getMinX();
         double minY = roadNetwork.getMinY();
         double maxX = roadNetwork.getMaxX();
@@ -131,12 +132,12 @@ public class ParticipantsController implements ParticipantsInterface, Applicatio
     }
 
     public void pollRoadNetworkState() {
-        //RoadSegmentStatus[] status = controlSystemService.getStatus();
-        //for (RoadSegmentStatus s : status) {
-        //    Road road = roads.get(s.getRoadSegmentId());
-        //    road.setClosed(!s.isOpen());
-        //    road.setEstimatedSpeed(Math.min(road.getSpeedLimit(), Math.max(3, road.getSpeedLimit() * (1 - s.getTrafficLoad()))));
-        //}
+        RoadSegmentStatus[] status = controlSystemService.getStatus();
+        for (RoadSegmentStatus s : status) {
+            Road road = roads.get(s.getRoadSegmentId());
+            road.setClosed(!s.isOpen());
+            road.setEstimatedSpeed(Math.min(road.getSpeedLimit(), Math.max(3, road.getSpeedLimit() * (1 - s.getTrafficLoad()))));
+        }
         roadNetwork.incVersion();
     }
 

@@ -5,12 +5,15 @@ import at.jku.softengws20.group1.participants.roadNetwork.Crossing;
 import at.jku.softengws20.group1.participants.roadNetwork.Road;
 import at.jku.softengws20.group1.participants.roadNetwork.RoadNetwork;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.PriorityQueue;
 
 public class Navigation {
+    private final HashMap<NavigationPair, Road> getNextCache = new HashMap<>();
     private RoadNetwork roadNetwork;
     private int version;
-    private final HashMap<NavigationPair, Road> getNextCache = new HashMap<>();
 
     public RoadNetwork getRoadNetwork() {
         return roadNetwork;
@@ -25,7 +28,7 @@ public class Navigation {
         synchronized (getNextCache) {
             if (roadNetwork.getVersion() == version) {
                 var key = new NavigationPair(current, destination);
-                if(getNextCache.containsKey(key)) return getNextCache.get(key);
+                if (getNextCache.containsKey(key)) return getNextCache.get(key);
             } else {
                 version = roadNetwork.getVersion();
                 getNextCache.clear();
@@ -35,7 +38,7 @@ public class Navigation {
         PriorityQueue<Node> queue = new PriorityQueue<>();
         HashSet<Road> visited = new HashSet<>();
         for (Road road : current.getRoads()) {
-            queue.add(new Node(0, road, null));
+            if (!road.isClosed()) queue.add(new Node(0, road, null));
         }
         Road next = null;
         while (!queue.isEmpty()) {
@@ -47,7 +50,8 @@ public class Navigation {
                 break;
             }
             for (Road road : n.road.getEnd().getRoads()) {
-                queue.add(new Node(n.cost + road.getLength() / road.getEstimatedSpeed() + 1, road, n));
+                if (!road.isClosed())
+                    queue.add(new Node(n.cost + road.getLength() / road.getEstimatedSpeed() + 1, road, n));
             }
         }
         synchronized (getNextCache) {
