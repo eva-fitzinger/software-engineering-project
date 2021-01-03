@@ -9,7 +9,7 @@ public class TestClass {        //########################################   Tes
     private CityMap cityMap;
     private DetectionController det = new DetectionController();
 
-    void init() {
+    void init() {p
         det.init();
         try {
             Thread.sleep(250);

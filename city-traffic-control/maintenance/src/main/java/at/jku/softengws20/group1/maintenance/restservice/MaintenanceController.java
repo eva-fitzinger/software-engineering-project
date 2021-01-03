@@ -45,6 +45,12 @@ public class MaintenanceController implements MaintenanceInterface, ApplicationL
         System.out.println("Maintenance is alive!");
         Thread sendCarsThread = new Thread(() -> {
 
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             for (; ; ) {
                 // calculate current time
                 Repair repair = DummyRegularRepair.getRegularRepair();
