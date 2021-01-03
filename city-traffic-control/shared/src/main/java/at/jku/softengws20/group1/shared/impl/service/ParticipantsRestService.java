@@ -1,7 +1,7 @@
 package at.jku.softengws20.group1.shared.impl.service;
 
+import at.jku.softengws20.group1.shared.impl.model.CarPath;
 import at.jku.softengws20.group1.shared.impl.model.TrafficLightChange;
-import at.jku.softengws20.group1.shared.maintenance.CarPath;
 import at.jku.softengws20.group1.shared.participants.ParticipantsInterface;
 
 public abstract class ParticipantsRestService extends BaseService implements ParticipantsInterface {
