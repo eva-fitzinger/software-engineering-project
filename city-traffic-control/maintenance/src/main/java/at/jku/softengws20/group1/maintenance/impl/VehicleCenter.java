@@ -67,7 +67,12 @@ public class VehicleCenter {
     }
 
     public void triggerCarArrived(String id) {
-        vehicles.stream().filter(x -> x.getId().equals(id)).findFirst().ifPresent(vehicle -> vehicle.setArrived(true));
+        Vehicle vehicle = vehicles.stream().filter(x -> x.getId().equals(id)).findFirst().orElse(null);
+        if(vehicle != null){
+            returnCar(vehicle);
+        } else {
+            System.out.println("Maintenance:: not found vehicle that arrived");
+        }
     }
 
     public void returnCar(Vehicle vehicle) {
