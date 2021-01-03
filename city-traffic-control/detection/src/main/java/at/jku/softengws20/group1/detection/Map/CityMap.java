@@ -1,6 +1,7 @@
 package at.jku.softengws20.group1.detection.Map;
 
 import at.jku.softengws20.group1.shared.impl.model.RoadNetwork;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,8 +26,10 @@ public class CityMap {
         for (int i = 0; i < roadNetwork.getCrossings().length; i++) {
             String id = roadNetwork.getCrossings()[i].getId();
             crossroads.put(id, new Crossroad(id));
-            for (int j = 0; j < roadNetwork.getCrossings()[i].getRoadSegmentIds().length; j++) {
-                crossroads.get(id).putStreet(getStreet(roadNetwork.getCrossings()[i].getRoadSegmentIds()[j]));
+            for(var rs : roadNetwork.getRoadSegments()) {
+                if(rs.getCrossingBId().equals(id)) {
+                    crossroads.get(id).putStreet(getStreet(rs.getId()));
+                }
             }
         }
 
