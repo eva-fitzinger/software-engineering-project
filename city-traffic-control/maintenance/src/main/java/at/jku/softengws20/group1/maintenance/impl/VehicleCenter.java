@@ -42,14 +42,19 @@ public class VehicleCenter {
         if (localNumVehicles >= 0) {
             // todo should find the right car
             for (int i = 0; i < repair.getNrVehiclesNeeded(); i++) {
+                System.out.println("Maintenance:: send car");
+                String destination = cityMapService.getRoadNetwork().getRoadSegments()[rand.nextInt(cityMapService.getRoadNetwork().getRoadSegments().length)].getId();
+                Vehicle vehicle = vehicles.get(i); //TODO
                 at.jku.softengws20.group1.shared.impl.model.CarPath carPath =
                         new at.jku.softengws20.group1.shared.impl.model.CarPath(
                                 cityMapService.getRoadNetwork().getMaintenanceCenterRoadSegmentId(),
                                 0,
-                                cityMapService.getRoadNetwork().getRoads()[rand.nextInt(cityMapService.getRoadNetwork().getRoads().length)].getId(),
+                                destination,
                                 0,
-                                getMaintenanceUriString(vehicles.get(i))); //TODO
+                                getMaintenanceUriString(vehicle));
+
                 participantServiceMaintenance.sendCar(carPath);
+                vehicle.setDestination(destination);
             }
             nrVehicles = localNumVehicles;
             return vehicles.stream().filter(Vehicle::isAvailable).findFirst().orElse(null);
@@ -67,7 +72,8 @@ public class VehicleCenter {
 
     public void returnCar(Vehicle vehicle) {
         nrVehicles++;
-        participantServiceMaintenance.sendCar(new at.jku.softengws20.group1.shared.impl.model.CarPath(vehicle.destination.getStartRoadSegmentId(), 0, cityMapService.getRoadNetwork().getMaintenanceCenterRoadSegmentId(), 0, getMaintenanceUriString(vehicle)));
+        System.out.println("Maintenance:: return car");
+        participantServiceMaintenance.sendCar(new at.jku.softengws20.group1.shared.impl.model.CarPath(vehicle.getDestination(), 0, cityMapService.getRoadNetwork().getMaintenanceCenterRoadSegmentId(), 0, getMaintenanceUriString(vehicle)));
     }
 
     private String getMaintenanceUriString(Vehicle vehicle) {

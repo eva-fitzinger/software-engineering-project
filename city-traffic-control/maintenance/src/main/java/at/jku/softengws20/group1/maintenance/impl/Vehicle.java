@@ -4,7 +4,16 @@ import at.jku.softengws20.group1.shared.maintenance.CarPath;
 
 public class Vehicle {
     private String id;
-    CarPath destination;
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    private String destination;
     private boolean arrived;
     private boolean available;
 
