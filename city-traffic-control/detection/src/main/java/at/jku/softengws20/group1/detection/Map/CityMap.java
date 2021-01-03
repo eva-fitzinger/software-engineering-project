@@ -53,8 +53,8 @@ public class CityMap {
 
     //############################# Debugging and Testing methods ########################################
     //Streets and Crossroads
-    public void putStreet(String id) {
-        streets.put(id, new Street(id, "all"));
+    public void putStreet(String id, String toCrossroad) {
+        streets.put(id, new Street(id, toCrossroad));
     }
 
     public void putStreetToCrossroad(String crossroadId, String streetId) {
