@@ -65,15 +65,15 @@ public class DetectionController implements DetectionInterface<TrafficLoad, Traf
     @Override       //set from Participants
     @PostMapping(DetectionInterface.SET_CAR_POSITION)
     public void setCarPosition(@RequestBody CarPosition[] position) {
-        for (int i = 0; i < position.length; i++) {
-            if (carPosition.containsKey(position[i].getCarId())) {     // car leaves street
-                cityMap.getStreet(carPosition.get(position[i].getCarId())).outgoingVehicle();
+        for (final CarPosition value : position) {
+            if (carPosition.containsKey(value.getCarId())) {     // car leaves street
+                cityMap.getStreet(carPosition.get(value.getCarId())).outgoingVehicle();
             }
-            if(position[i].getIncomingRoadSegmentId() == null) {
-                carPosition.remove(position[i].getCarId());        //car is arrived
+            if (value.getIncomingRoadSegmentId() == null) {
+                carPosition.remove(value.getCarId());        //car is arrived
             } else {
-                cityMap.getStreet(position[i].getIncomingRoadSegmentId()).incomingVehicle();
-                carPosition.put(position[i].getCarId(), position[i].getIncomingRoadSegmentId());
+                cityMap.getStreet(value.getIncomingRoadSegmentId()).incomingVehicle();
+                carPosition.put(value.getCarId(), value.getIncomingRoadSegmentId());
             }
         }
         }
