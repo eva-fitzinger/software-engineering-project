@@ -2,7 +2,7 @@ package at.jku.softengws20.group1.maintenance.impl;
 
 import at.jku.softengws20.group1.shared.maintenance.MaintenanceCarDestination;
 
-public class Vehicle {// TODO: Milestone 3.2
+public class Vehicle {
     private String id;
      MaintenanceCarDestination destination;
     private boolean arrived;

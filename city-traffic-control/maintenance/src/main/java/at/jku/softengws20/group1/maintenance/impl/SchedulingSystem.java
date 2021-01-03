@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 
-public class SchedulingSystem { // TODO: enhance in Milestone 3.2
+public class SchedulingSystem {
 
     private static RegularRepair currentRepairApproval;
 
@@ -49,7 +49,6 @@ public class SchedulingSystem { // TODO: enhance in Milestone 3.2
         at.jku.softengws20.group1.shared.impl.model.Timeslot[] approvedTimeslots = new at.jku.softengws20.group1.shared.impl.model.Timeslot[3];
 
         for (int i = 0; i < 3; ) {
-            //TODO delivers a timeslot in the bounds of the working hours
             timeslot = DummyRegularRepair.getDummyTimeSlot(regularRepair);
 
             if (schedule.size() == 0) {
@@ -102,7 +101,7 @@ public class SchedulingSystem { // TODO: enhance in Milestone 3.2
         return currentRepairApproval;
     }
 
-    public void addEmergencyRepair(EmergencyRepair emergencyRepair) { //TODO: in Milestone 3.2
+    public void addEmergencyRepair(EmergencyRepair emergencyRepair) {
         //add right away
         List<Repair> localSchedule = getSchedule();
         if (localSchedule.size() == 0) {

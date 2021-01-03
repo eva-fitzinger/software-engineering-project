@@ -2,7 +2,7 @@ package at.jku.softengws20.group1.maintenance.impl;
 
 import java.util.Date;
 
-public class EmergencyRepair extends Repair {// TODO: Milestone 3.2
+public class EmergencyRepair extends Repair {
     int gravity;
     private Date from;
     private Date to;

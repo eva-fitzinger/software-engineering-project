@@ -2,7 +2,7 @@ package at.jku.softengws20.group1.maintenance.impl;
 
 import java.util.Date;
 
-public abstract class Repair { // TODO: Milestone 3.2
+public abstract class Repair {
     public static int nextRepairId;
     private final RepairType repairType;
     private final String repairId;
@@ -44,7 +44,7 @@ public abstract class Repair { // TODO: Milestone 3.2
         return repairId;
     }
 
-    public Enum getRepairType() {
+    public Enum<RepairType> getRepairType() {
         return repairType;
     }
 
@@ -75,5 +75,4 @@ public abstract class Repair { // TODO: Milestone 3.2
     public Date getTo() {
         return to;
     }
-
 }
