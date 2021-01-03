@@ -41,9 +41,10 @@ public class VehicleCenter {
         localNumVehicles -= repair.getNrVehiclesNeeded();
         if (localNumVehicles >= 0) {
             // todo should find the right car
+            String destination = cityMapService.getRoadNetwork()
+                    .getRoadSegments()[rand.nextInt(cityMapService.getRoadNetwork().getRoadSegments().length)].getId();
             for (int i = 0; i < repair.getNrVehiclesNeeded(); i++) {
                 System.out.println("Maintenance:: send car");
-                String destination = cityMapService.getRoadNetwork().getRoadSegments()[rand.nextInt(cityMapService.getRoadNetwork().getRoadSegments().length)].getId();
                 Vehicle vehicle = vehicles.get(i); //TODO
                 at.jku.softengws20.group1.shared.impl.model.CarPath carPath =
                         new at.jku.softengws20.group1.shared.impl.model.CarPath(
@@ -78,11 +79,17 @@ public class VehicleCenter {
     public void returnCar(Vehicle vehicle) {
         nrVehicles++;
         System.out.println("Maintenance:: return car");
-        participantServiceMaintenance.sendCar(new at.jku.softengws20.group1.shared.impl.model.CarPath(vehicle.getDestination(), 0, cityMapService.getRoadNetwork().getMaintenanceCenterRoadSegmentId(), 0, getMaintenanceUriString(vehicle)));
+        participantServiceMaintenance.sendCar(new at.jku.softengws20.group1.shared.impl.model.
+                CarPath(vehicle.getDestination(),
+                0,
+                cityMapService.getRoadNetwork().getMaintenanceCenterRoadSegmentId(),
+                0,
+                getMaintenanceUriString(vehicle)));
     }
 
     private String getMaintenanceUriString(Vehicle vehicle) {
-        return "http://localhost:8080"+servletContext.getContextPath() + MaintenanceInterface.URL + "/" + MaintenanceInterface.NOTIFY_APPROVED_MAINTENANCE_URL
+        return "http://localhost:8080"+servletContext.getContextPath() + MaintenanceInterface.URL + "/"
+                + MaintenanceInterface.NOTIFY_MAINTENANCE_CAR_ARRIVED_URL
                 + "/" + vehicle.getId();
     }
 }

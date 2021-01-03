@@ -34,8 +34,8 @@ public class TrafficCapacityRepository {
         // ToDo:  calculation of capacity should be refined
         final double CAR_LENGTH = 4.5;
         final int SPEEDBOUNDRY_LOWERHIGER = 50;
-        final double HALTEWEG_FACTOR_LOWERSPEED = 0.3;
-        final double HALTEWEG_FACTOR_HIGHERSPEED = 0.5;
+        final double HALTEWEG_FACTOR_LOWERSPEED = 0.15;
+        final double HALTEWEG_FACTOR_HIGHERSPEED = 0.25;
 
         double requiredSpacePerCar =
                 CAR_LENGTH +
