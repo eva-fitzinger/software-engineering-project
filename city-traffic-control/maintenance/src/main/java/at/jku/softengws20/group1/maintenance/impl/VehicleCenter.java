@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static at.jku.softengws20.group1.shared.Config.*;
+
 @Service
 public class VehicleCenter {
 
@@ -20,30 +22,38 @@ public class VehicleCenter {
     @Autowired
     private ServletContext servletContext;
 
-    private static int nrVehicles = 25;
+    private static int nrVehicles = MAX_MAINTENANCE_VEHICLES;
     private ParticipantService_Maintenance participantServiceMaintenance = new ParticipantService_Maintenance();
     private static List<Vehicle> vehicles = new ArrayList<>();
     private static int vehicleId;
 
     VehicleCenter() {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < nrVehicles; i++) {
             vehicles.add(new Vehicle("VH" + vehicleId));
             vehicleId++;
         }
     }
 
     public @Nullable
-    Vehicle sendCar(Repair repair) {
+    void sendCar(Repair repair) {
+        //todo maybe make this threadsafe ?
         Random rand = new Random();
-        int localNumVehicles = nrVehicles;
+        Vehicle vehicle = null;
+        int localNumVehicles = vehicles.size();
         localNumVehicles -= repair.getNrVehiclesNeeded();
         if (localNumVehicles >= 0) {
-            // todo should find the right car
             String destination = cityMapService.getRoadNetwork()
                     .getRoadSegments()[rand.nextInt(cityMapService.getRoadNetwork().getRoadSegments().length)].getId();
+            System.out.println("Maintenance:: send cars: " + repair.getNrVehiclesNeeded());
             for (int i = 0; i < repair.getNrVehiclesNeeded(); i++) {
-                System.out.println("Maintenance:: send car");
-                Vehicle vehicle = vehicles.get(i); //TODO
+                vehicle = vehicles.stream().filter(Vehicle::isAvailable).findFirst().orElse(null);
+                if (vehicle == null) {
+                    System.out.println("Maintenance:: could not find vehicle to send");
+                    return;
+                }
+
+                vehicle.setAvailable(false);
+                System.out.println("Maintenance:: send car: " + vehicle.getId());
                 at.jku.softengws20.group1.shared.impl.model.CarPath carPath =
                         new at.jku.softengws20.group1.shared.impl.model.CarPath(
                                 cityMapService.getRoadNetwork().getMaintenanceCenterRoadSegmentId(),
@@ -54,11 +64,10 @@ public class VehicleCenter {
 
                 participantServiceMaintenance.sendCar(carPath);
                 vehicle.setDestination(destination);
+                vehicle.setCarOut(true);
             }
             nrVehicles = localNumVehicles;
-            return vehicles.stream().filter(Vehicle::isAvailable).findFirst().orElse(null);
         }
-        return null;
     }
 
     public static int getNrVehicles() {
@@ -67,26 +76,30 @@ public class VehicleCenter {
 
     public void triggerCarArrived(String id) {
         Vehicle vehicle = vehicles.stream().filter(x -> x.getId().equals(id)).findFirst().orElse(null);
-        if(vehicle != null){
+        if (vehicle != null && vehicle.isCarOut()) {
+            System.out.println("Maintenance:: car arrived: " + vehicle.getId());
             returnCar(vehicle);
+            vehicle.setCarOut(false);
+        } else if (vehicle != null && !vehicle.isCarOut()) {
+            System.out.println("Maintenance:: car arrived at VehicleCenter: " + vehicle.getId());
         } else {
-            System.out.println("Maintenance:: not found vehicle that arrived");
+            System.out.println("Maintenance:: could not find vehicle that arrived");
         }
     }
 
     public void returnCar(Vehicle vehicle) {
-        nrVehicles++;
-        System.out.println("Maintenance:: return car");
+        System.out.println("Maintenance:: return car: " + vehicle.getId());
         participantServiceMaintenance.sendCar(new at.jku.softengws20.group1.shared.impl.model.
                 CarPath(vehicle.getDestination(),
                 0,
                 cityMapService.getRoadNetwork().getMaintenanceCenterRoadSegmentId(),
                 0,
                 getMaintenanceUriString(vehicle)));
+        nrVehicles++;
     }
 
     private String getMaintenanceUriString(Vehicle vehicle) {
-        return "http://localhost:8080"+servletContext.getContextPath() + MaintenanceInterface.URL + "/"
+        return "http://localhost:8080" + servletContext.getContextPath() + MaintenanceInterface.URL + "/"
                 + MaintenanceInterface.NOTIFY_MAINTENANCE_CAR_ARRIVED_URL
                 + "/" + vehicle.getId();
     }
