@@ -56,6 +56,8 @@ public class ControlSystemController implements ControlSystemInterface<Maintenan
     @PostMapping(ControlSystemInterface.REQUEST_ROAD_CLOSING_URL)
     public void requestRoadClosing (@RequestBody MaintenanceRequest request) {
         maintenanceRepository.pushMaintenanceRequestToApprove(request);
+        System.out.println("##### Control-system: received 1 maintenanceRequest from maintenanceSystem");
+        //TESTprocessAutomaticApproveOfMaintenanceRequests(request);
     }
 
     @Override
@@ -102,6 +104,7 @@ public class ControlSystemController implements ControlSystemInterface<Maintenan
     @PostMapping (SET_APPROVED_MAINTENANCE_URL)
     public void setApprovedMaintenance(@RequestBody MaintenanceRequest maintenanceRequest) {
         maintenanceRepository.pushApprovedMaintenanceRequests((at.jku.softengws20.group1.shared.impl.model.MaintenanceRequest) maintenanceRequest);
+        maintenanceService.notifyApprovedMaintenance(maintenanceRequest);
     }
 
     public static final String GET_MAINENANCE_REQUESTS_URL = "getMaintenanceRequests";
@@ -127,5 +130,8 @@ public class ControlSystemController implements ControlSystemInterface<Maintenan
 //            setRoadAvailable("10761352_80");
 //        }
 //    }
+    private void TESTprocessAutomaticApproveOfMaintenanceRequests(MaintenanceRequest maintenanceRequest) {
+        maintenanceService.notifyApprovedMaintenance(maintenanceRequest);
+    }
 
 }

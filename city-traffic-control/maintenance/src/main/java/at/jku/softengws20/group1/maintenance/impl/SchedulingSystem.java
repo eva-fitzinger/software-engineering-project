@@ -79,18 +79,24 @@ public class SchedulingSystem {
     }
 
     public void addRegularRepair(RegularRepair regularRepair) {
-        currentRepairApproval = regularRepair;
         //TODO Jakob what is this warning?
-        MaintenanceRequest<at.jku.softengws20.group1.shared.impl.model.Timeslot> maintenanceRequest = new MaintenanceRequest("close road",
-                currentRepairApproval.getRepairId(), currentRepairApproval.getTimeslot());
+        MaintenanceRequest<at.jku.softengws20.group1.shared.impl.model.Timeslot> maintenanceRequest =
+                new MaintenanceRequest(
+                        regularRepair.getRepairId(),
+                        "close road",
+                        regularRepair.getRepairId(),
+                        regularRepair.getTimeslot());
         // request permission
         controlSystemServiceMaintenance.requestRoadClosing(maintenanceRequest);
+        System.out.println("Maintenance:: Regular Repair request sent: " + regularRepair.getRepairId());
     }
 
-    public void triggerRegularRepairAccepted(Timeslot approvedTimeslot) {
-        currentRepairApproval.setApproved(true);
-        //safe in schedule
-        setTimeslot(approvedTimeslot);
+    public void triggerRegularRepairAccepted(at.jku.softengws20.group1.shared.controlsystem.MaintenanceRequest approvedTimeslot) {
+//        todo
+//        schedule.stream().filter(repair -> repair.getRepairId().equals(approvedTimeslot.getRepairId()));
+//        currentRepairApproval.setApproved(true);
+//        //safe in schedule
+//        setTimeslot(approvedTimeslot);
     }
 
     private void setTimeslot(Timeslot approvedTimeslot) {

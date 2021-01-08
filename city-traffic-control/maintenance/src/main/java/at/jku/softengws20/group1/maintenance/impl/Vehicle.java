@@ -1,21 +1,11 @@
 package at.jku.softengws20.group1.maintenance.impl;
 
-import at.jku.softengws20.group1.shared.maintenance.CarPath;
-
 public class Vehicle {
     private String id;
-
-    public String getDestination() {
-        return destination;
-    }
-
-    public void setDestination(String destination) {
-        this.destination = destination;
-    }
-
     private String destination;
     private boolean arrived;
-    private boolean available;
+    private boolean available = true;
+    private boolean carOut = false;
 
     Vehicle(String id) {
         this.id = id;
@@ -24,6 +14,14 @@ public class Vehicle {
 
     public String getId() {
         return id;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
     }
 
     public boolean isArrived() {
@@ -40,5 +38,13 @@ public class Vehicle {
 
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+
+    public boolean isCarOut() {
+        return carOut;
+    }
+
+    public void setCarOut(boolean carOut) {
+        this.carOut = carOut;
     }
 }

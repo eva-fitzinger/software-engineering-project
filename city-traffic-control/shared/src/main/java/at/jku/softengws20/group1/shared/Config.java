@@ -17,4 +17,7 @@ public class Config {
     public static final String STANDARD_TEST_INFO_SIGN = "good ride";
 
 
+    //Maintenance-------------------------------------------------------------------------------------------------------
+    public static final int MAX_MAINTENANCE_VEHICLES = 10;
+    public static final int MAX_EMPLOYEES = 50;
 }
