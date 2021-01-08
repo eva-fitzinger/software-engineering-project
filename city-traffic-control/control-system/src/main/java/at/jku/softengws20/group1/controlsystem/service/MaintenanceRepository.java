@@ -68,13 +68,13 @@ public class MaintenanceRepository {
             timeslots1[0] = new Timeslot( formatter.parse("03-01-2021 08:00:00"),formatter.parse("03-01-2021 20:00:00"));
             timeslots1[1] = new Timeslot( formatter.parse("04-01-2021 08:00:00"),formatter.parse("04-01-2021 20:00:00"));
             timeslots1[2] = new Timeslot( formatter.parse("05-01-2021 08:00:00"),formatter.parse("05-01-2021 20:00:00"));
-            approvedMaintenanceRequests.add( new MaintenanceRequest("type", "223870427_0", timeslots1));
+            //approvedMaintenanceRequests.add( new MaintenanceRequest("type", "223870427_0", timeslots1));
 
             Timeslot[] timeslots2 = new Timeslot[3];
             timeslots2[0] = new Timeslot( formatter.parse("03-01-2021 08:00:00"),formatter.parse("03-01-2021 20:00:00"));
             timeslots2[1] = new Timeslot( formatter.parse("04-01-2021 08:00:00"),formatter.parse("04-01-2021 20:00:00"));
             timeslots2[2] = new Timeslot( formatter.parse("05-01-2021 08:00:00"),formatter.parse("05-01-2021 20:00:00"));
-            approvedMaintenanceRequests.add( new MaintenanceRequest("type", "9679128_5", timeslots2));
+            //approvedMaintenanceRequests.add( new MaintenanceRequest("type", "9679128_5", timeslots2));
         } catch (ParseException e) {
             e.printStackTrace();
         }
