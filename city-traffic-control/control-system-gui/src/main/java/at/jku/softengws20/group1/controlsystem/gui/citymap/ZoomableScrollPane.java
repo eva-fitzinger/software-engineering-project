@@ -23,7 +23,7 @@ public class ZoomableScrollPane extends ScrollPane {
     public void zoom(double value) {
         var oldZoom = zoom;
         zoom += value;
-        zoom = Math.min(1.8, Math.max(0.2, zoom));
+        zoom = Math.min(2.2, Math.max(0.2, zoom));
         // very bad approximation...
         if(Math.abs(zoom - oldZoom) > 0.0001) {
             setHvalue(getHvalue() +Math.sqrt(getHvalue()) *2.0 * (zoom-oldZoom)/(zoom*zoom));
