@@ -20,8 +20,6 @@ public class VehicleCenter {
     @Autowired
     private ServletContext servletContext;
 
-    public static final int MAX_VEHICLES = 10;
-    public static final int MAX_EMPLOYEES = 50;
     private static int nrVehicles = 25;
     private ParticipantService_Maintenance participantServiceMaintenance = new ParticipantService_Maintenance();
     private static List<Vehicle> vehicles = new ArrayList<>();

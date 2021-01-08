@@ -9,6 +9,8 @@ import at.jku.softengws20.group1.shared.impl.model.Timeslot;
 import java.util.Date;
 import java.util.Random;
 
+import static at.jku.softengws20.group1.shared.Config.*;
+
 public class DummyRegularRepair {
     public static final long MAX_DURATION = 28800000L;
 
@@ -20,8 +22,8 @@ public class DummyRegularRepair {
                 "", //location
                 rand.nextInt(5), //priority
                 rand.nextLong() % MAX_DURATION, //duration in milliseconds
-                rand.nextInt(VehicleCenter.MAX_VEHICLES/2), // vehicles needed
-                rand.nextInt(VehicleCenter.MAX_EMPLOYEES));
+                rand.nextInt(MAX_MAINTENANCE_VEHICLES/2), // vehicles needed
+                rand.nextInt(MAX_EMPLOYEES));
     }
 
     //for simplicity reasons: this maintenance company is a 24/7 service
