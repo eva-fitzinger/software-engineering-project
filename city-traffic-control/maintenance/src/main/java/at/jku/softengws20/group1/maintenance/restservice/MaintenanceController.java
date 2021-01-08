@@ -4,7 +4,7 @@ import at.jku.softengws20.group1.maintenance.dummy.data.DummyRegularRepair;
 import at.jku.softengws20.group1.maintenance.impl.Repair;
 import at.jku.softengws20.group1.maintenance.impl.SchedulingSystem;
 import at.jku.softengws20.group1.maintenance.impl.VehicleCenter;
-import at.jku.softengws20.group1.shared.controlsystem.Timeslot;
+import at.jku.softengws20.group1.shared.controlsystem.MaintenanceRequest;
 import at.jku.softengws20.group1.shared.maintenance.MaintenanceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -22,9 +22,9 @@ public class MaintenanceController implements MaintenanceInterface, ApplicationL
 
     @Override
     @PostMapping(MaintenanceInterface.NOTIFY_APPROVED_MAINTENANCE_URL)
-    public void notifyApprovedMaintenance(@RequestBody Timeslot approvedTimeslot) {
+    public void notifyApprovedMaintenance(@RequestBody MaintenanceRequest approvedMaintenanceRequest) {
         // schedule ok
-        schedulingSystem.triggerRegularRepairAccepted(approvedTimeslot);
+        schedulingSystem.triggerRegularRepairAccepted(approvedMaintenanceRequest);
     }
 
     @Override
@@ -60,7 +60,32 @@ public class MaintenanceController implements MaintenanceInterface, ApplicationL
                 }
             }
         });
+        //----- regularRepair --------------------------------------------------------------
+        Thread regularRepairThread = new Thread(() -> { // fill up schedule with test data
+            int i = 0;
+            for (; ; i++) {
+                schedulingSystem.addRegularRepair();
+//                while (!SchedulingSystem.getCurrentRepairApproval().isApproved() || i < 10) {
+//                    try {
+//                        Thread.sleep(1000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    i++;
+//                }
+
+                //as time passes wait longer to make next regular repair schedule, so we have don't overload
+                try {
+                    Thread.sleep(1000L * i);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
         sendCarsThread.start();
+        regularRepairThread.start();
     }
 
 //    @PostConstruct

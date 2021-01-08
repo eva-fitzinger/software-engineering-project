@@ -1,7 +1,6 @@
 package at.jku.softengws20.group1.shared.impl.service;
 
-import at.jku.softengws20.group1.shared.controlsystem.Timeslot;
-import at.jku.softengws20.group1.shared.maintenance.CarPath;
+import at.jku.softengws20.group1.shared.controlsystem.MaintenanceRequest;
 import at.jku.softengws20.group1.shared.maintenance.MaintenanceInterface;
 
 public abstract class MaintenanceRestService extends BaseService implements MaintenanceInterface {
@@ -10,8 +9,8 @@ public abstract class MaintenanceRestService extends BaseService implements Main
     }
 
     @Override
-    public void notifyApprovedMaintenance(Timeslot approvedTimeslot) {
-        post(MaintenanceInterface.NOTIFY_APPROVED_MAINTENANCE_URL, approvedTimeslot);
+    public void notifyApprovedMaintenance(MaintenanceRequest approvedMaintenanceRequest) {
+        post(MaintenanceInterface.NOTIFY_APPROVED_MAINTENANCE_URL, approvedMaintenanceRequest);
     }
 
     @Override
