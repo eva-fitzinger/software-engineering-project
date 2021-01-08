@@ -48,7 +48,7 @@ public class MaintenanceRequestsController {
         if (selReq != null && selTimeslot != null) {
             selReq.timeslotsProperty().clear();
             selReq.timeslotsProperty().add(selTimeslot);
-                    var req = new MaintenanceRequest<>(selReq.getRequestType(), selReq.getRoadSegmentId(),
+                    var req = new MaintenanceRequest<>(selReq.getRequestId(), selReq.getRequestType(), selReq.getRoadSegmentId(),
                             new ObservableTimeslot[]{selTimeslot});
             controlSystemApi.setApprovedMaintenance(req);
             confirmedRequests.add(selReq);

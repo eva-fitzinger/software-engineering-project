@@ -5,7 +5,7 @@ public class MaintenanceRequest<T0 extends Timeslot> implements at.jku.softengws
     private String requestId;
     private String requestType;
     private String roadSegmentId;
-    private T0[] timeslots;
+    private T0[] timeSlots;
 
     public MaintenanceRequest() {}
 
@@ -13,7 +13,7 @@ public class MaintenanceRequest<T0 extends Timeslot> implements at.jku.softengws
         this.requestId = requestId;
         this.requestType = requestType;
         this.roadSegmentId = roadSegmentId;
-        this.timeslots = timeslots;
+        this.timeSlots = timeslots;
     }
 
     @Override
@@ -31,6 +31,6 @@ public class MaintenanceRequest<T0 extends Timeslot> implements at.jku.softengws
 
     @Override
     public T0[] getTimeSlots() {
-        return timeslots;
+        return timeSlots;
     }
 }

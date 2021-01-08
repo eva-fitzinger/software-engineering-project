@@ -75,7 +75,7 @@ public class LocalDataRepository {
     public void updateMaintenanceRequests(MaintenanceRequest[] maintenanceRequests) {
         openRequests.clear();
         for(var mr : maintenanceRequests) {
-            openRequests.add(new ObservableMaintenanceRequest(getRoadSegmentById(mr.getRoadSegmentId()), mr.getTimeSlots(), mr.getRequestType()));
+            openRequests.add(new ObservableMaintenanceRequest(mr.getRequestId(), getRoadSegmentById(mr.getRoadSegmentId()), mr.getTimeSlots(), mr.getRequestType()));
         }
     }
 

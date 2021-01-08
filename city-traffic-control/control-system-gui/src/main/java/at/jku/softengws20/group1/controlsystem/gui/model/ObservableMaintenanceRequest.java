@@ -9,12 +9,14 @@ import javafx.collections.ObservableList;
 
 public class ObservableMaintenanceRequest implements MaintenanceRequest {
 
+    private String requestId;
     private RoadSegment roadSegment;
     private StringProperty roadSegmentName;
     private ObservableList<ObservableTimeslot> timeslots = FXCollections.observableArrayList();
     private String requestType;
 
-    public ObservableMaintenanceRequest(RoadSegment roadSegment, Timeslot[] timeslots, String requestType) {
+    public ObservableMaintenanceRequest(String requestId, RoadSegment roadSegment, Timeslot[] timeslots, String requestType) {
+        this.requestId = requestId;
         this.roadSegment= roadSegment;
         this.roadSegmentName = new SimpleStringProperty(roadSegment.getDisplayName());
         this.requestType = requestType;
@@ -36,6 +38,11 @@ public class ObservableMaintenanceRequest implements MaintenanceRequest {
     @Override
     public Timeslot[] getTimeSlots() {
         return timeslots.toArray(new Timeslot[0]);
+    }
+
+    @Override
+    public String getRequestId() {
+        return requestId;
     }
 
     public StringProperty roadSegmentNameProperty() {
