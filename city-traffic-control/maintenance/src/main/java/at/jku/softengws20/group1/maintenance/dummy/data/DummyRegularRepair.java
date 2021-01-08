@@ -22,7 +22,7 @@ public class DummyRegularRepair {
                 "", //location
                 rand.nextInt(5), //priority
                 rand.nextLong() % MAX_DURATION, //duration in milliseconds
-                rand.nextInt(MAX_MAINTENANCE_VEHICLES/2), // vehicles needed
+                rand.nextInt(MAX_MAINTENANCE_VEHICLES / 2) + 1, // vehicles needed
                 rand.nextInt(MAX_EMPLOYEES));
     }
 
