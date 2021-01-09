@@ -36,22 +36,21 @@ public class MaintenanceRequestsController {
     @FXML
     private TableView<ObservableTimeslot> tblTimeslots;
 
-    private LocalDataRepository localDataRepository;
-    private MainViewController mainViewController;
     private ControlSystemApi controlSystemApi = new ControlSystemApi();
     private ObservableList<ObservableMaintenanceRequest> confirmedRequests = FXCollections.observableArrayList();
 
+    private ObservableMaintenanceRequest selectedMaintenanceRequest;
+
     @FXML
     void btnConfirmTimeslotClicked(ActionEvent event) {
-        var selReq = tblRequests.getSelectionModel().getSelectedItem();
         var selTimeslot = tblTimeslots.getSelectionModel().getSelectedItem();
-        if (selReq != null && selTimeslot != null) {
-            selReq.timeslotsProperty().clear();
-            selReq.timeslotsProperty().add(selTimeslot);
-                    var req = new MaintenanceRequest<>(selReq.getRequestId(), selReq.getRequestType(), selReq.getRoadSegmentId(),
+        if (selectedMaintenanceRequest != null && selTimeslot != null) {
+            selectedMaintenanceRequest.setApprovedTimeslot(selTimeslot);
+                    var req = new MaintenanceRequest<>(selectedMaintenanceRequest.getRequestId(),
+                            selectedMaintenanceRequest.getRequestType(), selectedMaintenanceRequest.getRoadSegmentId(),
                             new ObservableTimeslot[]{selTimeslot});
             controlSystemApi.setApprovedMaintenance(req);
-            confirmedRequests.add(selReq);
+            confirmedRequests.add(selectedMaintenanceRequest);
         }
     }
 
@@ -63,8 +62,6 @@ public class MaintenanceRequestsController {
     }
 
     private void initTables(MainViewController mainViewController, LocalDataRepository localDataRepository) {
-        this.localDataRepository = localDataRepository;
-        this.mainViewController = mainViewController;
 
         var colSegment = new TableColumn<ObservableMaintenanceRequest, String>("Road segment");
         colSegment.setCellValueFactory(cellData -> cellData.getValue().roadSegmentNameProperty());
@@ -73,6 +70,7 @@ public class MaintenanceRequestsController {
 
         tblRequests.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
+                selectedMaintenanceRequest = newValue;
                 mainViewController.select(newValue.getRoadSegment());
                 tblTimeslots.setItems(newValue.timeslotsProperty());
             }
@@ -85,6 +83,20 @@ public class MaintenanceRequestsController {
         var colTo = new TableColumn<ObservableTimeslot, String>("To");
         colTo.setCellValueFactory(cellData -> cellData.getValue().toProperty());
         tblTimeslots.getColumns().add(colTo);
+
+        var colRs = new TableColumn<ObservableMaintenanceRequest, String>("Road segment");
+        colRs.setCellValueFactory(cellData -> cellData.getValue().roadSegmentNameProperty());
+        tblConfirmedRequests.getColumns().add(colRs);
+
+        var colStart = new TableColumn<ObservableMaintenanceRequest, String>("Start time");
+        colStart.setCellValueFactory(cellData -> cellData.getValue().startTimeProperty());
+        tblConfirmedRequests.getColumns().add(colStart);
+
+        var colEnd = new TableColumn<ObservableMaintenanceRequest, String>("End time");
+        colEnd.setCellValueFactory(cellData -> cellData.getValue().endTimeProperty());
+        tblConfirmedRequests.getColumns().add(colEnd);
+
+        tblConfirmedRequests.setItems(confirmedRequests);
     }
 
     static void open(MainViewController mainViewController, LocalDataRepository localDataRepository) {

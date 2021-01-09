@@ -9,6 +9,7 @@ import at.jku.softengws20.group1.shared.impl.model.MaintenanceRequest;
 import at.jku.softengws20.group1.shared.impl.model.RoadSegmentStatus;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import java.io.IOException;
 import java.net.URI;
@@ -22,6 +23,10 @@ public class ControlSystemApi implements ControlSystemInterface<MaintenanceReque
     private static final String BASE_URL = "http://localhost:8080" + ControlSystemInterface.URL + "/";
     private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder().build();
     private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    static {
+        MAPPER.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    }
 
     public void setRoadClose(String roadSegmentId){
         doPost(ControlSystemController.SET_ROAD_CLOSE, roadSegmentId);
