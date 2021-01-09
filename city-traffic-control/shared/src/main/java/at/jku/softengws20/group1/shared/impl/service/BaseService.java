@@ -1,6 +1,8 @@
 package at.jku.softengws20.group1.shared.impl.service;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 public abstract class BaseService {
@@ -11,6 +13,8 @@ public abstract class BaseService {
 
     protected BaseService(String url) {
         baseUrl = concatUrl(HOST_URL, url);
+        MappingJackson2HttpMessageConverter con = (MappingJackson2HttpMessageConverter) restTemplate.getMessageConverters().stream().filter(c -> c instanceof MappingJackson2HttpMessageConverter).findFirst().get();
+        con.getObjectMapper().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
     protected void post(String url, Object object) {

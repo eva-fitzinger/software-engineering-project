@@ -1,5 +1,7 @@
 package at.jku.softengws20.group1.shared.impl.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class Timeslot implements at.jku.softengws20.group1.shared.controlsystem.Timeslot {
@@ -15,11 +17,13 @@ public class Timeslot implements at.jku.softengws20.group1.shared.controlsystem.
     }
 
     @Override
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     public Date getFrom() {
         return from;
     }
 
     @Override
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     public Date getTo() {
         return to;
     }
