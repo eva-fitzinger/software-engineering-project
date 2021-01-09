@@ -50,8 +50,9 @@ public class VehicleCenter {
                     System.out.println("Maintenance:: could not find vehicle to send");
                     return;
                 }
-
+                vehicle.setDestination(destination);
                 vehicle.setAvailable(false);
+
                 System.out.println("Maintenance:: send car: " + vehicle.getId());
                 at.jku.softengws20.group1.shared.impl.model.CarPath carPath =
                         new at.jku.softengws20.group1.shared.impl.model.CarPath(
@@ -62,7 +63,6 @@ public class VehicleCenter {
                                 getMaintenanceUriString(vehicle));
 
                 participantServiceMaintenance.sendCar(carPath);
-                vehicle.setDestination(destination);
                 vehicle.setCarOut(true);
             }
             nrVehicles = localNumVehicles;

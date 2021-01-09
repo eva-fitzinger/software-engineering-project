@@ -6,7 +6,7 @@ public abstract class Repair {
     public static int nextRepairId;
     private final RepairType repairType;
     private final String repairId;
-    private final String location;
+    private String location;
     private Date from = new Date();
     private Date to = new  Date();
     // duration in milliseconds
@@ -50,6 +50,10 @@ public abstract class Repair {
 
     public String getLocation() {
         return location;
+    }
+
+    public void setLocation(String location){
+        this.location = location;
     }
 
     /**

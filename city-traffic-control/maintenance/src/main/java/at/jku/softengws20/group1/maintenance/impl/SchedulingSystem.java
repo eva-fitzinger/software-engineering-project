@@ -2,16 +2,21 @@ package at.jku.softengws20.group1.maintenance.impl;
 
 import at.jku.softengws20.group1.maintenance.dummy.data.DummyRegularRepair;
 import at.jku.softengws20.group1.maintenance.restservice.ControlSystemService_Maintenance;
-import at.jku.softengws20.group1.shared.controlsystem.Timeslot;
-import at.jku.softengws20.group1.shared.impl.model.*;
+import at.jku.softengws20.group1.shared.impl.model.MaintenanceRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
-
+@Service
 public class SchedulingSystem {
 
-    private static RegularRepair currentRepairApproval;
+    @Autowired
+    private CityMapService cityMapService;
 
     private ControlSystemService_Maintenance controlSystemServiceMaintenance = new ControlSystemService_Maintenance();
 
@@ -79,12 +84,16 @@ public class SchedulingSystem {
     }
 
     public void addRegularRepair(RegularRepair regularRepair) {
+        Random rand = new Random();
         //TODO Jakob what is this warning?
+        String location = cityMapService.getRoadNetwork()
+                .getRoadSegments()[rand.nextInt(cityMapService.getRoadNetwork().getRoadSegments().length)].getId();
+        regularRepair.setLocation(location);
         MaintenanceRequest<at.jku.softengws20.group1.shared.impl.model.Timeslot> maintenanceRequest =
                 new MaintenanceRequest(
                         regularRepair.getRepairId(),
                         "close road",
-                        regularRepair.getRepairId(),
+                        regularRepair.getLocation(),
                         regularRepair.getTimeslot());
         // request permission
         controlSystemServiceMaintenance.requestRoadClosing(maintenanceRequest);
@@ -98,14 +107,6 @@ public class SchedulingSystem {
 //        currentRepairApproval.setApproved(true);
 //        //safe in schedule
 //        setTimeslot(approvedTimeslot);
-    }
-
-    private void setTimeslot(Timeslot approvedTimeslot) {
-        currentRepairApproval.setTime(approvedTimeslot.getFrom(), approvedTimeslot.getTo());
-    }
-
-    public static RegularRepair getCurrentRepairApproval() {
-        return currentRepairApproval;
     }
 
     public void addEmergencyRepair(EmergencyRepair emergencyRepair) {

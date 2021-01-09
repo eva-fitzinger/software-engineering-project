@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(MaintenanceInterface.URL) //todo timeconstant
 public class MaintenanceController implements MaintenanceInterface, ApplicationListener<ContextRefreshedEvent> {
-    private SchedulingSystem schedulingSystem = new SchedulingSystem();
 
     @Autowired
     VehicleCenter vehicleCenter;
+
+    @Autowired
+    SchedulingSystem schedulingSystem;
 
     @Override
     @PostMapping(MaintenanceInterface.NOTIFY_APPROVED_MAINTENANCE_URL)
@@ -61,7 +63,12 @@ public class MaintenanceController implements MaintenanceInterface, ApplicationL
             }
         });
         //----- regularRepair --------------------------------------------------------------
-        Thread regularRepairThread = new Thread(() -> { // fill up schedule with test data
+        Thread regularRepairThread = new Thread(() -> {// fill up schedule with test data
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             int i = 0;
             for (; ; i++) {
                 schedulingSystem.addRegularRepair();
