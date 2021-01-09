@@ -17,7 +17,6 @@ public class MaintenanceRepository {
 
     public MaintenanceRepository() {
         super();
-        //enterTestData();
     }
 
     public void pushMaintenanceRequestToApprove(MaintenanceRequest maintenanceRequest) {
@@ -30,6 +29,7 @@ public class MaintenanceRepository {
 
     public void pushApprovedMaintenanceRequests(MaintenanceRequest maintenanceRequest) {
         approvedMaintenanceRequests.add(maintenanceRequest);
+        maintenanceRequestsToApprove.removeIf(r -> r.getRequestId().equals(maintenanceRequest.getRequestId()));
     }
 
     public MaintenanceRequest[] getApprovedMaintenanceRequests() {
@@ -57,28 +57,6 @@ public class MaintenanceRepository {
                 approvedMaintenanceRequests.remove(maintenanceRequest);
             }
         }
-    }
-
-    private void enterTestData()  {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy kk:mm:ss", Locale.GERMAN);
-        formatter.setTimeZone(TimeZone.getTimeZone("CET"));
-
-        Timeslot[] timeslots1 = new Timeslot[3];
-        try {
-            timeslots1[0] = new Timeslot( formatter.parse("03-01-2021 08:00:00"),formatter.parse("03-01-2021 20:00:00"));
-            timeslots1[1] = new Timeslot( formatter.parse("04-01-2021 08:00:00"),formatter.parse("04-01-2021 20:00:00"));
-            timeslots1[2] = new Timeslot( formatter.parse("05-01-2021 08:00:00"),formatter.parse("05-01-2021 20:00:00"));
-            //approvedMaintenanceRequests.add( new MaintenanceRequest("type", "223870427_0", timeslots1));
-
-            Timeslot[] timeslots2 = new Timeslot[3];
-            timeslots2[0] = new Timeslot( formatter.parse("03-01-2021 08:00:00"),formatter.parse("03-01-2021 20:00:00"));
-            timeslots2[1] = new Timeslot( formatter.parse("04-01-2021 08:00:00"),formatter.parse("04-01-2021 20:00:00"));
-            timeslots2[2] = new Timeslot( formatter.parse("05-01-2021 08:00:00"),formatter.parse("05-01-2021 20:00:00"));
-            //approvedMaintenanceRequests.add( new MaintenanceRequest("type", "9679128_5", timeslots2));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
     }
 
 }

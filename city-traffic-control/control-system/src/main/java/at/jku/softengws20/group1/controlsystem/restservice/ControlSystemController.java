@@ -46,18 +46,35 @@ public class ControlSystemController implements ControlSystemInterface<Maintenan
         return mapRepository.getRoadNetwork();
     }
 
+    private static final String GET_TRAFFIC_CAPACITY_URL = "getTrafficCapacity";
+    @GetMapping(GET_TRAFFIC_CAPACITY_URL)
+    public String[] getTrafficCapacity() {
+        return  trafficCapacityRepository.getCapacityString();
+    }
+
+    public static final String GET_TRAFFIC_SCENARIOS_URL = "getScenarios";
+    @Override
+    @GetMapping(GET_TRAFFIC_SCENARIOS_URL)
+    public TrafficScenario[] getTrafficScenarios() {
+        return trafficScenarioRepository.getTrafficScenarios();
+    }
+
+    public static final String GET_ENABLED_TRAFFIC_SCENARIOS_URL = "getEnabledTrafficScenarios";
+    @Override
+    @GetMapping(GET_ENABLED_TRAFFIC_SCENARIOS_URL)
+    public TrafficScenario[] getEnabledTrafficScenarios() {
+        return  trafficScenarioRepository.getEnabledTrafficScenarios();
+    }
+
     @Override
     @GetMapping(ControlSystemInterface.GET_STATUS_URL)
     public RoadSegmentStatus[] getStatus() {
         return trafficStatusRepository.getRoadSegmentStatus();
     }
-
-    @Override
-    @PostMapping(ControlSystemInterface.REQUEST_ROAD_CLOSING_URL)
-    public void requestRoadClosing (@RequestBody MaintenanceRequest request) {
-        maintenanceRepository.pushMaintenanceRequestToApprove(request);
-        System.out.println("##### Control-system: received 1 maintenanceRequest from maintenanceSystem");
-        //TESTprocessAutomaticApproveOfMaintenanceRequests(request);
+    private static final String GET_ENABLED_TRAFFICLIGHT_RULES_URL = "getEnabledTrafficLightRules";
+    @GetMapping(GET_ENABLED_TRAFFICLIGHT_RULES_URL)
+    public TrafficLightRule[] getEnabledTrafficLightRules() {
+        return trafficScenarioRepository.getEnabledTrafficLightRules();
     }
 
     @Override
@@ -78,25 +95,24 @@ public class ControlSystemController implements ControlSystemInterface<Maintenan
         return  trafficStatusRepository.getClosedRoadSegments();
     }
 
-
-    public static final String GET_ENABLED_TRAFFIC_SCENARIOS_URL = "getEnabledTrafficScenarios";
+    public static final String GET_MAINENANCE_REQUESTS_URL = "getMaintenanceRequests";
     @Override
-    @GetMapping(GET_ENABLED_TRAFFIC_SCENARIOS_URL)
-    public TrafficScenario[] getEnabledTrafficScenarios() {
-       return  trafficScenarioRepository.getEnabledTrafficScenarios();
+    @GetMapping(GET_MAINENANCE_REQUESTS_URL)
+    public MaintenanceRequest[] getMaintenanceRequests() {
+        return maintenanceRepository.getMaintenanceRequestsToApprove();
     }
 
-    private static final String GET_TRAFFIC_CAPACITY_URL = "getTrafficCapacity";
-    @GetMapping(GET_TRAFFIC_CAPACITY_URL)
-    public String[] getTrafficCapacity() {
-        return  trafficCapacityRepository.getCapacityString();
+    public static final String GET_APPROVED_MAINTENANCE_REQUESTS_URL = "getApprovedMaintenanceRequests";
+    @GetMapping(GET_APPROVED_MAINTENANCE_REQUESTS_URL)
+    public MaintenanceRequest[] getApprovedMaintenanceRequests() {
+        return maintenanceRepository.getApprovedMaintenanceRequests();
     }
 
-    public static final String GET_TRAFFIC_SCENARIOS_URL = "getScenarios";
     @Override
-    @GetMapping(GET_TRAFFIC_SCENARIOS_URL)
-    public TrafficScenario[] getTrafficScenarios() {
-        return trafficScenarioRepository.getTrafficScenarios();
+    @PostMapping(ControlSystemInterface.REQUEST_ROAD_CLOSING_URL)
+    public void requestRoadClosing (@RequestBody MaintenanceRequest request) {
+        maintenanceRepository.pushMaintenanceRequestToApprove(request);
+        System.out.printf("##### Control-system: received maintenanceRequest #%s from maintenanceSystem%n", request.getRequestId());
     }
 
     public static final String SET_APPROVED_MAINTENANCE_URL = "setApprovedMaintenance";
@@ -105,33 +121,7 @@ public class ControlSystemController implements ControlSystemInterface<Maintenan
     public void setApprovedMaintenance(@RequestBody MaintenanceRequest maintenanceRequest) {
         maintenanceRepository.pushApprovedMaintenanceRequests((at.jku.softengws20.group1.shared.impl.model.MaintenanceRequest) maintenanceRequest);
         maintenanceService.notifyApprovedMaintenance(maintenanceRequest);
-    }
-
-    public static final String GET_MAINENANCE_REQUESTS_URL = "getMaintenanceRequests";
-    @Override
-    @GetMapping(GET_MAINENANCE_REQUESTS_URL)
-    public MaintenanceRequest[] getMaintenanceRequests() {
-        return maintenanceRepository.getMaintenanceRequestsToApprove();
-    }
-
-    private static final String GET_ENABLED_TRAFFICLIGHT_RULES_URL = "getEnabledTrafficLightRules";
-    @GetMapping(GET_ENABLED_TRAFFICLIGHT_RULES_URL)
-    public TrafficLightRule[] getEnabledTrafficLightRules() {
-        return trafficScenarioRepository.getEnabledTrafficLightRules();
-    }
-
-//    @Scheduled(fixedRate = 1000)
-//    private void testRoadClose() {
-//        Random rand = new Random();
-//        System.out.println("##### Close RoadSegment 10761352_80");
-//        if (rand.nextInt(2) % 2 == 0) {
-//            setRoadClose("10761352_80");
-//        } else {
-//            setRoadAvailable("10761352_80");
-//        }
-//    }
-    private void TESTprocessAutomaticApproveOfMaintenanceRequests(MaintenanceRequest maintenanceRequest) {
-        maintenanceService.notifyApprovedMaintenance(maintenanceRequest);
+        System.out.printf("##### Control-system: maintenanceRequest #%s approved by control-system%n", maintenanceRequest.getRequestId());
     }
 
 }
