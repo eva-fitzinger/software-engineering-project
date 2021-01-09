@@ -4,7 +4,8 @@ import at.jku.softengws20.group1.maintenance.dummy.data.DummyRegularRepair;
 import at.jku.softengws20.group1.maintenance.impl.Repair;
 import at.jku.softengws20.group1.maintenance.impl.SchedulingSystem;
 import at.jku.softengws20.group1.maintenance.impl.VehicleCenter;
-import at.jku.softengws20.group1.shared.controlsystem.MaintenanceRequest;
+import at.jku.softengws20.group1.shared.impl.model.MaintenanceRequest;
+import at.jku.softengws20.group1.shared.impl.model.Timeslot;
 import at.jku.softengws20.group1.shared.maintenance.MaintenanceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(MaintenanceInterface.URL) //todo timeconstant
-public class MaintenanceController implements MaintenanceInterface, ApplicationListener<ContextRefreshedEvent> {
+public class MaintenanceController implements MaintenanceInterface<MaintenanceRequest<Timeslot>>, ApplicationListener<ContextRefreshedEvent> {
 
     @Autowired
     VehicleCenter vehicleCenter;
@@ -24,7 +25,7 @@ public class MaintenanceController implements MaintenanceInterface, ApplicationL
 
     @Override
     @PostMapping(MaintenanceInterface.NOTIFY_APPROVED_MAINTENANCE_URL)
-    public void notifyApprovedMaintenance(@RequestBody MaintenanceRequest approvedMaintenanceRequest) {
+    public void notifyApprovedMaintenance(@RequestBody MaintenanceRequest<Timeslot> approvedMaintenanceRequest) {
         // schedule ok
         schedulingSystem.triggerRegularRepairAccepted(approvedMaintenanceRequest);
     }
