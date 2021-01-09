@@ -36,7 +36,6 @@ public class VehicleCenter {
 
     public @Nullable
     void sendCar(Repair repair) {
-        //todo maybe make this threadsafe ?
         Random rand = new Random();
         Vehicle vehicle = null;
         int localNumVehicles = vehicles.size();
@@ -80,6 +79,7 @@ public class VehicleCenter {
             System.out.println("Maintenance:: car arrived: " + vehicle.getId());
             returnCar(vehicle);
             vehicle.setCarOut(false);
+            vehicle.setAvailable(true);
         } else if (vehicle != null && !vehicle.isCarOut()) {
             System.out.println("Maintenance:: car arrived at VehicleCenter: " + vehicle.getId());
         } else {

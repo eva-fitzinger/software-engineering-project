@@ -48,13 +48,13 @@ public class MaintenanceController implements MaintenanceInterface, ApplicationL
                 e.printStackTrace();
             }
 
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; ; i++) {
                 // calculate current time
                 Repair repair = DummyRegularRepair.getRegularRepair();
                 sendVehicledummy(repair);
 
                 try {
-                    Thread.sleep(50000);
+                    Thread.sleep(50000 * i);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
