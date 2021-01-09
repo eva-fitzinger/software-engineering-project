@@ -91,7 +91,8 @@ public class SchedulingSystem {
         System.out.println("Maintenance:: Regular Repair request sent: " + regularRepair.getRepairId());
     }
 
-    public void triggerRegularRepairAccepted(at.jku.softengws20.group1.shared.controlsystem.MaintenanceRequest approvedTimeslot) {
+    public void triggerRegularRepairAccepted(at.jku.softengws20.group1.shared.controlsystem.MaintenanceRequest approvedMaintenanceRequest) {
+        System.out.println("Maintenance:: Regular Repair accepted: " + approvedMaintenanceRequest.getRequestId());
 //        todo
 //        schedule.stream().filter(repair -> repair.getRepairId().equals(approvedTimeslot.getRepairId()));
 //        currentRepairApproval.setApproved(true);
