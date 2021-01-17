@@ -12,6 +12,8 @@ import static at.jku.softengws20.group1.shared.Config.*;
 
 public class DummyRegularRepair {
     public static final long MAX_DURATION = 28800000L;
+    public static final long ONE_MONTH = 2629800000L;
+    public static final long TWO_MONTHS = ONE_MONTH*2;
 
     public static RegularRepair getRegularRepair() {
         Random rand = new Random();
@@ -38,7 +40,7 @@ public class DummyRegularRepair {
         Timeslot[] timeslots = new at.jku.softengws20.group1.shared.impl.model.Timeslot[rand.nextInt(4) + 1];
         for (int i = 0; i < timeslots.length; i++) {
 
-            Date from = new Date(dateTime + rand.nextLong());
+            Date from = new Date(dateTime + Math.abs(rand.nextLong() % TWO_MONTHS));
             Date to = new Date(from.getTime() + regularRepair.getDuration());
 
             timeslots[i] = new at.jku.softengws20.group1.shared.impl.model.Timeslot(
@@ -57,7 +59,7 @@ public class DummyRegularRepair {
         Date currentDate = new Date();
         long dateTime = currentDate.getTime();
 
-        Date from = new Date(dateTime + rand.nextLong());
+        Date from = new Date(dateTime + Math.abs(rand.nextLong() % TWO_MONTHS));
         Date to = new Date(from.getTime() + regularRepair.getDuration());
 
         Timeslot timeslot = new at.jku.softengws20.group1.shared.impl.model.Timeslot(

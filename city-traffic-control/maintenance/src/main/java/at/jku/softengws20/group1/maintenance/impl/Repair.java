@@ -8,7 +8,7 @@ public abstract class Repair {
     private final String repairId;
     private String location;
     private Date from = new Date();
-    private Date to = new  Date();
+    private Date to = new Date();
     // duration in milliseconds
     private long duration;
     private int nrVehiclesNeeded;
@@ -52,7 +52,7 @@ public abstract class Repair {
         return location;
     }
 
-    public void setLocation(String location){
+    public void setLocation(String location) {
         this.location = location;
     }
 
@@ -67,7 +67,7 @@ public abstract class Repair {
         this.duration = duration;
     }
 
-    public void setTime (Date from, Date to){
+    public void setTime(Date from, Date to) {
         this.from = from;
         this.to = to;
     }

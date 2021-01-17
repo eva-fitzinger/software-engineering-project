@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class SchedulingSystem {
@@ -37,6 +34,12 @@ public class SchedulingSystem {
 
     public void printSchedule() {
         System.out.println("-------- Time Table for this Week ---------");
+        schedule.sort((r1, r2) -> {
+            if (r1 == r2) {
+                return 0;
+            }
+            return r1.getFrom().before(r2.getFrom()) ? -1 : 1;
+        });
         for (Repair repair : schedule) {
             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             System.out.println(formatter.format(repair.getFrom()) + "-"
@@ -63,22 +66,25 @@ public class SchedulingSystem {
                 availableTimeslots[i] = timeslot;
                 i++;
             } else {
-                for (int j = 0; j <= schedule.size() && timeslot.getTo().before(schedule.get(j).getTo()); j++) { //as long as the timeSlot end is before the end of the current schedule
+                for (int j = 0; i < 3 && j < schedule.size() && timeslot.getTo().before(schedule.get(j).getTo()); j++) { //as long as the timeSlot end is before the end of the current schedule
                     //if at beginning
                     if (timeslot.getTo().before(schedule.get(0).getFrom())) {
                         availableTimeslots[i] = timeslot;
                         i++;
+                        break;
                     }
                     //if at end
-                    if (schedule.get(j + 1) == null) {
+                    else if (timeslot.getFrom().after(schedule.get(schedule.size() - 1).getTo())) {
                         availableTimeslots[i] = timeslot;
                         i++;
+                        break;
                     }
 
                     //if between to scheduled dates
-                    if (schedule.get(j).getTo().before(timeslot.getFrom()) && timeslot.getTo().before(schedule.get(j + 1).getFrom())) {
+                    else if (schedule.get(j).getTo().before(timeslot.getFrom()) && timeslot.getTo().before(schedule.get(j + 1).getFrom())) {
                         availableTimeslots[i] = timeslot;
                         i++;
+                        break;
                     }
                 }
             }
@@ -92,6 +98,8 @@ public class SchedulingSystem {
         String location = cityMapService.getRoadNetwork()
                 .getRoadSegments()[rand.nextInt(cityMapService.getRoadNetwork().getRoadSegments().length)].getId();
         regularRepair.setLocation(location);
+        System.out.println("Maintenance:: Regular Repair request sent: " + regularRepair.getRepairId());
+        notApprovedRegularRepairs.add(regularRepair);
         MaintenanceRequest<at.jku.softengws20.group1.shared.impl.model.Timeslot> maintenanceRequest =
                 new MaintenanceRequest(
                         regularRepair.getRepairId(),
@@ -101,8 +109,6 @@ public class SchedulingSystem {
                 );
         // request permission
         controlSystemServiceMaintenance.requestRoadClosing(maintenanceRequest);
-        notApprovedRegularRepairs.add(regularRepair);
-        System.out.println("Maintenance:: Regular Repair request sent: " + regularRepair.getRepairId());
     }
 
     public void triggerRegularRepairAccepted(at.jku.softengws20.group1.shared.controlsystem.MaintenanceRequest approvedMaintenanceRequest) {
@@ -110,28 +116,31 @@ public class SchedulingSystem {
         Timeslot[] approvedTimeslots = (Timeslot[]) approvedMaintenanceRequest.getTimeSlots();
         RegularRepair regularRepair = notApprovedRegularRepairs.stream().filter(r -> r.getRepairId().equals(approvedMaintenanceRequest.getRequestId())).findAny().orElse(null);
 
-        if (approvedTimeslots == null||regularRepair == null) {
+        if (approvedTimeslots == null) {
+            System.out.println("Maintenance:: no Timeslots accepted");
+            return;
+        }
+        if (regularRepair == null) {
+            System.out.println("Maintenance:: no such Repair");
             return;
         }
 
-        regularRepair.setTimeslot(approvedTimeslots);
-
-        //safe in schedule approvedTimeslots.length() Repairs
-        for (Timeslot a : approvedTimeslots) {
-            schedule.add(
-                    new RegularRepair(
-                            regularRepair.getRepairId(),
-                            regularRepair.getRepairType(),
-                            regularRepair.getLocation(),
-                            regularRepair.getPriority(),
-                            regularRepair.getDuration(),
-                            regularRepair.getNrVehiclesNeeded(),
-                            regularRepair.getNrVehiclesNeeded(),
-                            a.getFrom(),
-                            a.getTo()
-                    ));
+        //search for first possible timeslot
+        Timeslot timeslot = Arrays.stream(approvedTimeslots).min((r1, r2) -> {
+            if (r1 == r2) {
+                return 0;
+            }
+            return r1.getFrom().before(r2.getFrom()) ? -1 : 1;
+        }).orElse(null);
+        if(timeslot == null){
+            return;
         }
+        regularRepair.setTime(timeslot.getFrom(), timeslot.getTo());
 
+        //safe first possible Timeslot in schedule
+        schedule.add(regularRepair);
+
+        printSchedule();
     }
 
     public void addEmergencyRepair(EmergencyRepair emergencyRepair) {
