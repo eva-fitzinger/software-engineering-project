@@ -35,7 +35,6 @@ public class MaintenanceController implements MaintenanceInterface<MaintenanceRe
     public void notifyMaintenanceCarArrived(@PathVariable(value = "carId") String carId) {
         // car arrived
         System.out.println("Maintenance: car arrived");
-        //todo don't always send because car might arrive at Maintenance Center
         vehicleCenter.triggerCarArrived(carId);
     }
 

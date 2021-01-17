@@ -44,7 +44,7 @@ public abstract class Repair {
         return repairId;
     }
 
-    public Enum<RepairType> getRepairType() {
+    public RepairType getRepairType() {
         return repairType;
     }
 

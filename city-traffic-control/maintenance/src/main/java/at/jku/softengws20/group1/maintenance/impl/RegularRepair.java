@@ -16,8 +16,14 @@ public class RegularRepair extends Repair {
                          int nrVehiclesNeeded, int nrWorkersNeeded) {
         super(repairId, repairType, location, duration, nrVehiclesNeeded, nrWorkersNeeded);
         this.priority = priority;
-        timeslot = new at.jku.softengws20.group1.shared.impl.model.Timeslot[3];
-        timeslot[0] = new at.jku.softengws20.group1.shared.impl.model.Timeslot(new Date(3), new Date(4));
+        this.timeslot = new Timeslot[0];
+    }
+    public RegularRepair(String repairId, RepairType repairType, String location, int priority, long duration,
+                         int nrVehiclesNeeded, int nrWorkersNeeded, Date from, Date to) {
+        super(repairId, repairType, location, duration, nrVehiclesNeeded, nrWorkersNeeded);
+        this.priority = priority;
+        this.timeFrom = from;
+        this.timeTo = to;
     }
 
     public int getPriority() {
