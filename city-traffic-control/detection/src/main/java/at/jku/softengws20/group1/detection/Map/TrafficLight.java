@@ -40,6 +40,16 @@ public class TrafficLight implements Runnable {
         standardPriority = false;
     }
 
+    public Map<String, Double> getRules_debug(){        //only for debugging
+
+        //calculate back to given priority
+        Map<String, Double> prioPercentage = new HashMap<>();
+        for (Map.Entry<String, Double> entry : priority.entrySet()) {
+            prioPercentage.put(entry.getKey(), entry.getValue() / minutesForFullRun);
+        }
+        return prioPercentage;
+    }
+
     @Override
     public void run() {
         long time;
