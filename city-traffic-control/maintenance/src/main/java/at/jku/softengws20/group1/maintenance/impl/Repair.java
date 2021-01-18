@@ -8,7 +8,7 @@ public abstract class Repair {
     private final String repairId;
     private String location;
     private Date from = new Date();
-    private Date to = new  Date();
+    private Date to = new Date();
     // duration in milliseconds
     private long duration;
     private int nrVehiclesNeeded;
@@ -22,6 +22,18 @@ public abstract class Repair {
         this.duration = duration;
         this.nrVehiclesNeeded = nrVehiclesNeeded;
         this.nrWorkersNeeded = nrWorkersNeeded;
+    }
+
+    public Repair(String repairId, RepairType repairType, String location, long duration,
+                  int nrVehiclesNeeded, int nrWorkersNeeded, Date from, Date to) {
+        this.repairId = repairId;
+        this.repairType = repairType;
+        this.location = location;
+        this.duration = duration;
+        this.nrVehiclesNeeded = nrVehiclesNeeded;
+        this.nrWorkersNeeded = nrWorkersNeeded;
+        this.from = from;
+        this.to = to;
     }
 
     public int getNrVehiclesNeeded() {
@@ -44,7 +56,7 @@ public abstract class Repair {
         return repairId;
     }
 
-    public Enum<RepairType> getRepairType() {
+    public RepairType getRepairType() {
         return repairType;
     }
 
@@ -52,7 +64,7 @@ public abstract class Repair {
         return location;
     }
 
-    public void setLocation(String location){
+    public void setLocation(String location) {
         this.location = location;
     }
 
@@ -67,7 +79,7 @@ public abstract class Repair {
         this.duration = duration;
     }
 
-    public void setTime (Date from, Date to){
+    public void setTime(Date from, Date to) {
         this.from = from;
         this.to = to;
     }

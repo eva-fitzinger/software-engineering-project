@@ -9,15 +9,18 @@ public class RegularRepair extends Repair {
     boolean approved;
 
     Timeslot[] timeslot;
-    Date timeFrom;
-    Date timeTo;
 
     public RegularRepair(String repairId, RepairType repairType, String location, int priority, long duration,
                          int nrVehiclesNeeded, int nrWorkersNeeded) {
         super(repairId, repairType, location, duration, nrVehiclesNeeded, nrWorkersNeeded);
         this.priority = priority;
-        timeslot = new at.jku.softengws20.group1.shared.impl.model.Timeslot[3];
-        timeslot[0] = new at.jku.softengws20.group1.shared.impl.model.Timeslot(new Date(3), new Date(4));
+        this.timeslot = new Timeslot[0];
+    }
+
+    public RegularRepair(String repairId, RepairType repairType, String location, int priority, long duration,
+                         int nrVehiclesNeeded, int nrWorkersNeeded, Date from, Date to) {
+        super(repairId, repairType, location, duration, nrVehiclesNeeded, nrWorkersNeeded, from, to);
+        this.priority = priority;
     }
 
     public int getPriority() {
@@ -44,11 +47,13 @@ public class RegularRepair extends Repair {
         this.timeslot = timeslot;
     }
 
-    public Date getTimeFrom() {
-        return timeFrom;
+    @Override
+    public Date getFrom() {
+        return super.getFrom();
     }
 
-    public Date getTimeTo() {
-        return timeTo;
+    @Override
+    public Date getTo() {
+        return super.getTo();
     }
 }
