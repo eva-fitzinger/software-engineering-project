@@ -177,20 +177,15 @@ public class MainViewController implements Initializable {
         outTrafficInformationData.clear();
         activeRules.clear();
         if (selectedCrossing != null) {
-            // todo show view
             lblCrossingId.setText(selectedCrossing.getId());
             trafficInformationData.addAll(localDataRepository.getTrafficInformation(selectedCrossing));
             outTrafficInformationData.addAll(localDataRepository.getOutTrafficInformation(selectedCrossing));
             activeRules.addAll(localDataRepository.getActiveRules(selectedCrossing));
-            // todo lblCarsWaiting.setText();
-        } else {
-            // todo hide view
         }
     }
 
     private void updateRoadSegmentView() {
         if (selectedRoadSegment != null) {
-            // todo show view
             lblSegmentId.setText(selectedRoadSegment.getId());
             lblRoadName.setText(selectedRoadSegment.getRoad().getName());
             lblRoadNumber.setText(selectedRoadSegment.getRoad().getNumber());
@@ -199,8 +194,6 @@ public class MainViewController implements Initializable {
             lblSegmentLength.setText(String.format("%.2f km", selectedRoadSegment.getLength()));
             btnCrossingA.setText(selectedRoadSegment.getCrossingAId());
             btnCrossingB.setText(selectedRoadSegment.getCrossingBId());
-        } else {
-            // todo hide view
         }
     }
 
