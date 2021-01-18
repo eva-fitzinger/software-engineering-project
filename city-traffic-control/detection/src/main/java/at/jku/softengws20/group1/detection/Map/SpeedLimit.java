@@ -1,7 +1,7 @@
 package at.jku.softengws20.group1.detection.Map;
 
 public class SpeedLimit {
-    private int standardSpeedLimit;
+    private int standardSpeedLimit = 50;        //Default value
     private int speedLimit;
 
     public void setStandardSpeedLimit(int speedLimit) {

@@ -2,10 +2,7 @@ package at.jku.softengws20.group1.detection.restservice;
 
 import at.jku.softengws20.group1.detection.Map.CityMap;
 import at.jku.softengws20.group1.shared.TestMap;
-import at.jku.softengws20.group1.shared.impl.model.CarPosition;
-import at.jku.softengws20.group1.shared.impl.model.RoadNetwork;
-import at.jku.softengws20.group1.shared.impl.model.TrafficLightRule;
-import at.jku.softengws20.group1.shared.impl.model.TrafficLoad;
+import at.jku.softengws20.group1.shared.impl.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -37,25 +34,30 @@ class DetectionControllerTest {
         assertNotNull(detectionController.getCityMap());
         assertEquals(TestMap.loadDummyMap().getCrossings().length, detectionController.getCityMap().getCrossroads().size());
         assertEquals(TestMap.loadDummyMap().getRoadSegments().length, detectionController.getCityMap().getStreets().size());
+        RoadSegment roadSegment = TestMap.loadDummyMap().getRoadSegments()[7];
+        assertEquals(roadSegment.getDefaultSpeedLimit(), detectionController.getCityMap().getStreet(roadSegment.getId()).getSpeedLimit().getSpeedLimit());
     }
 
     @Test
     void getTrafficLoad() {
-        assertEquals( detectionController.getCityMap().getStreets().size(), detectionController.getTrafficLoad().length);
+        assertEquals(detectionController.getCityMap().getStreets().size(), detectionController.getTrafficLoad().length);
+        assertEquals(TestMap.loadDummyMap().getRoadSegments().length, detectionController.getTrafficLoad().length);
         // tested in detail with Unit test: setCarPosition()
     }
 
     @Test
     void setTrafficLightRules(){
+        //init
         double prioForChangedStreet = 0.8;
         String crossingId = controlSystemService.getRoadNetwork().getCrossings()[0].getId();
         String incomingRoadSegmentId = controlSystemService.getRoadNetwork().getCrossings()[0].getRoadSegmentIds()[0];
         TrafficLightRule[] rules = new TrafficLightRule[1];
+        CityMap map = detectionController.getCityMap();
 
         rules[0] = new TrafficLightRule(crossingId, incomingRoadSegmentId, prioForChangedStreet);
         detectionController.setTrafficLightRules(rules);
-        CityMap map = detectionController.getCityMap();
-        Map<String, Double> prio =  map.getCrossroad(crossingId).getTrafficLight().getRules_debug();
+        Map<String, Double> prio =  map.getCrossroad(crossingId).getTrafficLight().getRules();
+
         assertEquals(prioForChangedStreet,  (double) prio.get(incomingRoadSegmentId));
     }
 
@@ -72,7 +74,7 @@ class DetectionControllerTest {
         for (int i = 0; i < carPositions.length; i++) {
             carPositions[i] = new CarPosition(String.valueOf(i), crossingId, incomingRoadSegmentId);
         }
-        detectionController.setCarPosition(carPositions);
+        detectionController.setCarPosition(carPositions);       //API: setCarPosition
 
         TrafficLoad[] trafficLoad = detectionController.getTrafficLoad();
         int carsWaiting = -1;
@@ -94,7 +96,7 @@ class DetectionControllerTest {
         for (int i = 0; i < carPositions.length-5; i++) {
             carPositions[i] = new CarPosition(String.valueOf(i), crossingId, incomingRoadSegmentId);
         }
-        detectionController.setCarPosition(carPositions);
+        detectionController.setCarPosition(carPositions);           //API: setCarPosition
         trafficLoad = detectionController.getTrafficLoad();
         carsWaiting = -1;
         for (final TrafficLoad load : trafficLoad) {

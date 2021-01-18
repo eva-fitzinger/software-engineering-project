@@ -17,6 +17,7 @@ public class CityMap {
             String toCrossroad = roadNetwork.getRoadSegments()[i].getCrossingBId();     //road goes from A  to B -> B is incoming to a crossroad
             streets.put(id, new Street(id, toCrossroad));
             streets.get(id).getSpeedLimit().setStandardSpeedLimit(roadNetwork.getRoadSegments()[i].getDefaultSpeedLimit()); //set default speed limit
+            streets.get(id).getSpeedLimit().resetSpeedLimit();   //set current speed to standard speed limit
         }
 
         //create crossroads
