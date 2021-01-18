@@ -124,7 +124,7 @@ public class LocalDataRepository {
             for(var r : s.getTrafficLightRules()) {
                 var rs = getRoadSegmentById(r.getIncomingRoadSegmentId());
                 if (selectedCrossing.getId().equals(rs.getCrossingB().getId())) {
-                    rules.add(new ObservableRule(rs, r.getPriority()));
+                    rules.add(new ObservableRule(rs, r.getPriority(), s));
                 }
             }
         }

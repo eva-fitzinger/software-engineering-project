@@ -145,8 +145,11 @@ public class MainViewController implements Initializable {
         colRoadSegment.setPrefWidth(300);
         var colPriority = new TableColumn<ObservableRule, Double>("Green light priority");
         colPriority.setCellValueFactory(cellData -> cellData.getValue().priorityProperty().asObject());
+        var colRuleSet = new TableColumn<ObservableRule, String>("Scenario (Ruleset)");
+        colRuleSet.setCellValueFactory(cellData -> cellData.getValue().scenarioProperty());
         tblActiveRules.getColumns().add(colRoadSegment);
         tblActiveRules.getColumns().add(colPriority);
+        tblActiveRules.getColumns().add(colRuleSet);
 
         tblActiveRules.setItems(activeRules);
         tblActiveRules.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->{
