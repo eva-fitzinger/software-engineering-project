@@ -1,6 +1,8 @@
 package at.jku.softengws20.group1.maintenance.restservice;
 
+import at.jku.softengws20.group1.maintenance.dummy.data.DummyEmergencyRepair;
 import at.jku.softengws20.group1.maintenance.dummy.data.DummyRegularRepair;
+import at.jku.softengws20.group1.maintenance.impl.EmergencyRepair;
 import at.jku.softengws20.group1.maintenance.impl.Repair;
 import at.jku.softengws20.group1.maintenance.impl.SchedulingSystem;
 import at.jku.softengws20.group1.maintenance.impl.VehicleCenter;
@@ -11,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 
 @RestController
@@ -56,7 +60,7 @@ public class MaintenanceController implements MaintenanceInterface<MaintenanceRe
                 sendVehicledummy(repair);
 
                 try {
-                    Thread.sleep(50000 * i);
+                    Thread.sleep(50000L * i);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -72,16 +76,8 @@ public class MaintenanceController implements MaintenanceInterface<MaintenanceRe
             int i = 0;
             for (; ; i++) {
                 schedulingSystem.addRegularRepair();
-//                while (!SchedulingSystem.getCurrentRepairApproval().isApproved() || i < 10) {
-//                    try {
-//                        Thread.sleep(1000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    i++;
-//                }
-
-                //as time passes wait longer to make next regular repair schedule, so we have don't overload
+                //as time passes wait longer to make next regular repair schedule,
+                // so we don't have an overload
                 try {
                     Thread.sleep(1000L * i);
                 } catch (InterruptedException e) {
@@ -90,9 +86,32 @@ public class MaintenanceController implements MaintenanceInterface<MaintenanceRe
 
             }
         });
+        //---------------------------Emergency Repair------------------------------------------------
+        Thread emergencyRepairThread = new Thread(() -> {
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            for (long i = 0; ; i++) {
+                // calculate current time
+
+                EmergencyRepair emergencyRepair = DummyEmergencyRepair.getEmergencyRepair(new Date());
+                schedulingSystem.addEmergencyRepair(emergencyRepair);
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                sendVehicle(emergencyRepair);
+            }
+        });
 
         sendCarsThread.start();
         regularRepairThread.start();
+        emergencyRepairThread.start();
     }
 
 //    @PostConstruct
