@@ -38,7 +38,6 @@ public class MaintenanceController implements MaintenanceInterface<MaintenanceRe
     @GetMapping(MaintenanceInterface.NOTIFY_MAINTENANCE_CAR_ARRIVED_URL + "/{carId}")
     public void notifyMaintenanceCarArrived(@PathVariable(value = "carId") String carId) {
         // car arrived
-        System.out.println("Maintenance: car arrived");
         vehicleCenter.triggerCarArrived(carId);
     }
 
@@ -57,7 +56,6 @@ public class MaintenanceController implements MaintenanceInterface<MaintenanceRe
 
             for (int i = 0; ; i++) {
                 final Date currentDate = new Date();
-//                Repair repair = DummyRegularRepair.getRegularRepair();
                 List<Repair> schedule = schedulingSystem.getSchedule();
                 schedule.stream()
                         .filter(x -> x.getFrom().before(currentDate))
@@ -100,12 +98,11 @@ public class MaintenanceController implements MaintenanceInterface<MaintenanceRe
             }
 
             for (long i = 0; ; i++) {
-                // calculate current time
 
                 EmergencyRepair emergencyRepair = DummyEmergencyRepair.getEmergencyRepair(new Date());
                 schedulingSystem.addEmergencyRepair(emergencyRepair);
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(30000 * i);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

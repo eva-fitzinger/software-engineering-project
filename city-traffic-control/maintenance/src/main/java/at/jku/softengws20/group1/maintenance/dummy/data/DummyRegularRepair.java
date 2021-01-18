@@ -8,24 +8,28 @@ import at.jku.softengws20.group1.shared.controlsystem.Timeslot;
 import java.util.Date;
 import java.util.Random;
 
+import static at.jku.softengws20.group1.maintenance.impl.Constants.*;
 import static at.jku.softengws20.group1.shared.Config.*;
 
 public class DummyRegularRepair {
-    public static final long MAX_DURATION = 28800000L;
-    public static final long ONE_MONTH = 2629800000L;
-    public static final long TWO_MONTHS = ONE_MONTH*2;
+
 
     public static RegularRepair getRegularRepair() {
         Random rand = new Random();
+
+        long duration = (Math.abs(rand.nextLong()) % MAX_DURATION);
+        duration = duration == 0 ? MAX_DURATION : duration;
+
+        int vehiclesNeeded = rand.nextInt(MAX_MAINTENANCE_VEHICLES / 2) + 1;
 
         return new RegularRepair(
                 "RR: " + Repair.nextRepairId++, //repairId
                 RepairType.REGULAR_REPAIR, // RepairType
                 "", //location
                 rand.nextInt(5), //priority
-                Math.abs(rand.nextLong()) % MAX_DURATION, //duration in milliseconds
-                rand.nextInt(MAX_MAINTENANCE_VEHICLES / 2) + 1, // vehicles needed
-                rand.nextInt(MAX_EMPLOYEES)
+                duration, //duration in milliseconds
+                vehiclesNeeded, // vehicles needed
+                rand.nextInt(MAX_EMPLOYEES_PER_CAR) * vehiclesNeeded + 1
         );
     }
 

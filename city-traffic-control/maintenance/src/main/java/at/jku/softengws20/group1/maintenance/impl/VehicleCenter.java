@@ -23,31 +23,53 @@ public class VehicleCenter {
     private ServletContext servletContext;
 
     private static int nrVehicles = MAX_MAINTENANCE_VEHICLES;
-    private ParticipantService_Maintenance participantServiceMaintenance = new ParticipantService_Maintenance();
-    private static List<Vehicle> vehicles = new ArrayList<>();
+    private static int nrEmployees = MAX_EMPLOYEES;
+    private final ParticipantService_Maintenance participantServiceMaintenance = new ParticipantService_Maintenance();
+    private static final List<Vehicle> vehicles = new ArrayList<>();
+    private static final List<Employee> employees = new ArrayList<>();
     private static int vehicleId;
+    private static int employeeId;
 
     VehicleCenter() {
         for (int i = 0; i < nrVehicles; i++) {
             vehicles.add(new Vehicle("VH" + vehicleId));
             vehicleId++;
         }
+
+        for (int i = 0; i < nrEmployees; i++) {
+            employees.add(new Employee("E" + employeeId));
+            employeeId++;
+        }
     }
 
     public @Nullable
     void sendCar(Repair repair) {
         Random rand = new Random();
-        Vehicle vehicle = null;
-        int localNumVehicles = vehicles.size();
+        Vehicle vehicle;
+        Employee employee = new Employee("null");
+        int localNumVehicles = nrVehicles;
+        int localNumEmployees = nrEmployees;
+
         localNumVehicles -= repair.getNrVehiclesNeeded();
-        if (localNumVehicles >= 0) {
+        localNumEmployees -= repair.getNrWorkersNeeded();
+        if (localNumVehicles >= 0 && localNumEmployees >= 0) {
             String destination = cityMapService.getRoadNetwork()
                     .getRoadSegments()[rand.nextInt(cityMapService.getRoadNetwork().getRoadSegments().length)].getId();
-            System.out.println("Maintenance:: send cars: " + repair.getNrVehiclesNeeded());
+            System.out.println("Maintenance:: send " + repair.getNrVehiclesNeeded() + " cars");
+            System.out.println("Maintenance:: send " + repair.getNrWorkersNeeded() + " employees");
+
+            for (int i = 0; i < repair.getNrWorkersNeeded(); i++) {
+                employee = employees.stream().filter(x -> x.getAssignedToCar() == null).findFirst().orElse(null);
+                if (employee == null) {
+                    System.out.println("Maintenance:: no employee available right now");
+                    return;
+                }
+            }
+
             for (int i = 0; i < repair.getNrVehiclesNeeded(); i++) {
                 vehicle = vehicles.stream().filter(Vehicle::isAvailable).findFirst().orElse(null);
                 if (vehicle == null) {
-                    System.out.println("Maintenance:: could not find vehicle to send");
+                    System.out.println("Maintenance:: no vehicle available right now");
                     return;
                 }
                 vehicle.setDestination(destination);
@@ -63,9 +85,11 @@ public class VehicleCenter {
                                 getMaintenanceUriString(vehicle));
 
                 participantServiceMaintenance.sendCar(carPath);
-                vehicle.setCarOut(true);
+                vehicle.setCarIsGoingOut(true);
+                employee.setAssignedToCar(vehicle.getId());
             }
             nrVehicles = localNumVehicles;
+            nrEmployees = localNumEmployees;
         }
     }
 
@@ -75,27 +99,41 @@ public class VehicleCenter {
 
     public void triggerCarArrived(String id) {
         Vehicle vehicle = vehicles.stream().filter(x -> x.getId().equals(id)).findFirst().orElse(null);
+        long numEmployee = employees.stream().filter(x -> x.getAssignedToCar().equals(id)).count();
         if (vehicle != null && vehicle.isCarOut()) {
-            System.out.println("Maintenance:: car arrived: " + vehicle.getId());
+            System.out.println("Maintenance:: car (" + vehicle.getId() + ") arrived at " + vehicle.getDestination());
             returnCar(vehicle);
-            vehicle.setCarOut(false);
-            vehicle.setAvailable(true);
+            vehicle.setCarIsGoingOut(false);
+            vehicle.setAvailable(false);
         } else if (vehicle != null && !vehicle.isCarOut()) {
-            System.out.println("Maintenance:: car arrived at VehicleCenter: " + vehicle.getId());
+            vehicle.setAvailable(true);
+            System.out.println("Maintenance:: car(" + vehicle.getId() + ") arrived at VehicleCenter");
+            nrVehicles++;
+            if (numEmployee > 0) {
+                for (int i = 0; i < numEmployee; i++) {
+                    employees.stream().filter(x -> x.getAssignedToCar().equals(id)).findAny().ifPresent(employee -> {
+                        employee.setAssignedToCar(null);
+                        System.out.println("Maintenance:: employee(" + employee.getId() + ") arrived at VehicleCenter");
+                        nrEmployees++;
+                    });
+
+                }
+            } else {
+                System.out.println("Maintenance:: could not find employee that arrived");
+            }
         } else {
             System.out.println("Maintenance:: could not find vehicle that arrived");
         }
     }
 
     public void returnCar(Vehicle vehicle) {
-        System.out.println("Maintenance:: return car: " + vehicle.getId());
+        System.out.println("Maintenance:: return car (" + vehicle.getId() + ")");
         participantServiceMaintenance.sendCar(new at.jku.softengws20.group1.shared.impl.model.
                 CarPath(vehicle.getDestination(),
                 0,
                 cityMapService.getRoadNetwork().getMaintenanceCenterRoadSegmentId(),
                 0,
                 getMaintenanceUriString(vehicle)));
-        nrVehicles++;
     }
 
     private String getMaintenanceUriString(Vehicle vehicle) {

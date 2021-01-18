@@ -46,7 +46,7 @@ public class Vehicle {
         return carOut;
     }
 
-    public void setCarOut(boolean carOut) {
+    public void setCarIsGoingOut(boolean carOut) {
         this.carOut = carOut;
     }
 }

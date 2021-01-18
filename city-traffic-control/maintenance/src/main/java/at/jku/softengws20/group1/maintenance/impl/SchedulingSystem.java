@@ -33,7 +33,7 @@ public class SchedulingSystem {
 
 
     public void printSchedule() {
-        System.out.println("-------- Time Table for this Week ---------");
+        System.out.println("-------- Time Table for this Year ---------");
         schedule.sort((r1, r2) -> {
             if (r1 == r2) {
                 return 0;
