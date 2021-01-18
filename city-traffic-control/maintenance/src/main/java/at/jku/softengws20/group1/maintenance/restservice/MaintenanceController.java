@@ -1,7 +1,6 @@
 package at.jku.softengws20.group1.maintenance.restservice;
 
 import at.jku.softengws20.group1.maintenance.dummy.data.DummyEmergencyRepair;
-import at.jku.softengws20.group1.maintenance.dummy.data.DummyRegularRepair;
 import at.jku.softengws20.group1.maintenance.impl.EmergencyRepair;
 import at.jku.softengws20.group1.maintenance.impl.Repair;
 import at.jku.softengws20.group1.maintenance.impl.SchedulingSystem;
@@ -15,6 +14,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 
 @RestController
@@ -48,6 +48,7 @@ public class MaintenanceController implements MaintenanceInterface<MaintenanceRe
         System.out.println("Maintenance is alive!");
         //----- send Cars --------------------------------------------------------------
         Thread sendCarsThread = new Thread(() -> {
+
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -55,9 +56,12 @@ public class MaintenanceController implements MaintenanceInterface<MaintenanceRe
             }
 
             for (int i = 0; ; i++) {
-                // calculate current time
-                Repair repair = DummyRegularRepair.getRegularRepair();
-                sendVehicledummy(repair);
+                final Date currentDate = new Date();
+//                Repair repair = DummyRegularRepair.getRegularRepair();
+                List<Repair> schedule = schedulingSystem.getSchedule();
+                schedule.stream()
+                        .filter(x -> x.getFrom().before(currentDate))
+                        .findAny().ifPresent(this::sendVehicle);
 
                 try {
                     Thread.sleep(50000L * i);
@@ -114,123 +118,11 @@ public class MaintenanceController implements MaintenanceInterface<MaintenanceRe
         emergencyRepairThread.start();
     }
 
-//    @PostConstruct
-//    public void init() {
-//        Date startDate = new Date();
-//        long startDateTime = startDate.getTime();
-//        System.out.println("Maintenance is alive!");
-//        schedulingSystem = new SchedulingSystem();
-//
-//        Thread regularRepairThread = new Thread(() -> { // fill up schedule with test data
-//            int i = 0;
-//            for (; ; ) {
-//                schedulingSystem.addRegularRepair();
-//                while (!SchedulingSystem.getCurrentRepairApproval().isApproved() || i < 10) {
-//                    try {
-//                        Thread.sleep(1000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    i++;
-//                }
-//
-//                //as time passes wait longer to make next regular repair schedule, so we have don't overload
-//                try {
-//                    Thread.sleep(1000L * i);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//
-//            }
-//        });
-//
-//        Thread emergencyRepairThread = new Thread(() -> {
-//            Date currentDate;
-//            long timePassed;
-//
-//            try {
-//                Thread.sleep(5000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//
-//            for (long i = 0; ; i++) {
-//                // calculate current time
-//                currentDate = new Date();
-//                timePassed = (startDateTime - currentDate.getTime()) * TIME_CONSTANT;
-//                currentDate = new Date(startDateTime + timePassed);
-//
-//                EmergencyRepair emergencyRepair = DummyEmergencyRepair.getEmergencyRepair(currentDate);
-//                schedulingSystem.addEmergencyRepair(emergencyRepair);
-//                try {
-//                    Thread.sleep(500);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                sendVehicle(emergencyRepair);
-//            }
-//        });
-//
-//        Thread sendCarsThread = new Thread(() -> {
-//            Date currentDate;
-//            long timePassed;
-//
-//            for (; ; ) {
-//                // calculate current time
-//                currentDate = new Date();
-//                timePassed = (startDateTime - currentDate.getTime()) * TIME_CONSTANT;
-//                currentDate = new Date(startDateTime + timePassed);
-//                List<Repair> schedule = schedulingSystem.getSchedule();
-//                if (schedule.size() > 0 && schedule.stream()
-//                        .map(Repair::getFrom)
-//                        .collect(Collectors.toList()).contains(currentDate)) {
-//                    Repair repair = schedule.get(schedulingSystem.getSchedule().indexOf(currentDate)); //TODO cannot work!
-//                    sendVehicle(repair);
-//
-//                }
-//            }
-//        });
-//
-//        emergencyRepairThread.start();
-//        regularRepairThread.start();
-//        sendCarsThread.start();
-//    }
-
     private void sendVehicle(Repair repair) {
         Thread car = new Thread(() -> {
             if (VehicleCenter.getNrVehicles() - repair.getNrVehiclesNeeded() >= 0) {
                 vehicleCenter.sendCar(repair);
                 schedulingSystem.getSchedule().remove(repair);
-//                while (vehicle != null && !vehicle.isArrived()) { // wait for car to arrive
-//                    try {
-//                        Thread.sleep(5000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                if (vehicle != null && vehicle.isArrived()) {
-//                    vehicleCenter.returnCar(vehicle);
-//                }
-            }
-        });
-        car.start();
-    }
-
-    private void sendVehicledummy(Repair repair) {
-        Thread car = new Thread(() -> {
-            if (VehicleCenter.getNrVehicles() - repair.getNrVehiclesNeeded() >= 0) {
-                vehicleCenter.sendCar(repair);
-                //schedulingSystem.getSchedule().remove(repair);
-//                while (vehicle != null && !vehicle.isArrived()) { // wait for car to arrive
-//                    try {
-//                        Thread.sleep(5000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                if (vehicle != null && vehicle.isArrived()) {
-//                    vehicleCenter.returnCar(vehicle);
-//                }
             }
         });
         car.start();
