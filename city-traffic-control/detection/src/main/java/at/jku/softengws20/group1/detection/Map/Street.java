@@ -42,9 +42,4 @@ public class Street {
         if (numberOfCars <= 0) {numberOfCars = 0;} //failed notify
         return new TrafficLoad(id, numberOfCars);
     }
-
-    /*For further Implementation if more time:
-        - block roads possible
-     */
-
 }

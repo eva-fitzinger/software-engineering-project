@@ -19,6 +19,4 @@ public class SpeedLimit {
     public void resetSpeedLimit() {
         speedLimit = standardSpeedLimit;
     }
-
-
 }

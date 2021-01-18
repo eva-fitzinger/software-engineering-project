@@ -47,8 +47,4 @@ public class Crossroad {
     public void setInformationSign(final InformationSign informationSign) {
         this.informationSign = informationSign;
     }
-
-    /*For further Implementation if more time:
-        - block roads possible
-     */
 }

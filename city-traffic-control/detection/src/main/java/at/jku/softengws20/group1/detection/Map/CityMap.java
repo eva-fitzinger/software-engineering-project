@@ -53,25 +53,6 @@ public class CityMap {
         return crossroads.get(id);
     }
 
-
-    //############################# Debugging and Testing methods ########################################
-    //Streets and Crossroads
-    public void putStreet(String id, String toCrossroad) {
-        streets.put(id, new Street(id, toCrossroad));
-    }
-
-    public void putStreetToCrossroad(String crossroadId, String streetId) {
-        crossroads.get(crossroadId).putStreet(getStreet(streetId));
-    }
-
-    public void putCrossroad(String id) {
-        crossroads.put(id, new Crossroad(id));
-    }
-
-    public Map<String, Crossroad> getCrossroads() {
-        return crossroads;
-    }
-    /*For further Implementation if more time:
-        - block roads possible
-     */
+    //I am perfectly aware that there are unused method´s in the implementation.
+    //These could be useful for further implementations and where left there on purpose.
 }
