@@ -1,74 +1,71 @@
 package at.jku.softengws20.group1.detection.restservice;
 
 import at.jku.softengws20.group1.detection.Map.CityMap;
+import at.jku.softengws20.group1.shared.TestMap;
 import at.jku.softengws20.group1.shared.impl.model.CarPosition;
+import at.jku.softengws20.group1.shared.impl.model.RoadNetwork;
 import at.jku.softengws20.group1.shared.impl.model.TrafficLightRule;
 import at.jku.softengws20.group1.shared.impl.model.TrafficLoad;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.when;
 
 class DetectionControllerTest {
 
     @InjectMocks
-    DetectionController detectionController;
+    private DetectionController detectionController;
 
-    @InjectMocks
-    ControlSystemService controlSystemService;
-
+    @Mock
+    private ControlSystemService controlSystemService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        MockitoAnnotations.openMocks(detectionController);
+        when(controlSystemService.getRoadNetwork()).thenReturn(TestMap.loadDummyMap());
+        detectionController.onApplicationEvent(null);
     }
 
     @Test
-    void getCityMap() throws InterruptedException {
-        detectionController.onApplicationEvent_Debug(controlSystemService);
-        Thread.sleep(5000);     // wait for DetectionController to initialize
-
+    void getCityMap()  {
         assertNotNull(detectionController.getCityMap());
+        assertEquals(TestMap.loadDummyMap().getCrossings().length, detectionController.getCityMap().getCrossroads().size());
+        assertEquals(TestMap.loadDummyMap().getRoadSegments().length, detectionController.getCityMap().getStreets().size());
     }
 
     @Test
-    void getTrafficLoad() throws InterruptedException {
-        detectionController.onApplicationEvent_Debug(controlSystemService);
-        Thread.sleep(5000);     // wait for DetectionController to initialize
+    void getTrafficLoad() {
         assertEquals( detectionController.getCityMap().getStreets().size(), detectionController.getTrafficLoad().length);
+        // tested in detail with Unit test: setCarPosition()
     }
 
     @Test
-    void setTrafficLightRules() throws InterruptedException {
+    void setTrafficLightRules(){
         double prioForChangedStreet = 0.8;
-        detectionController.onApplicationEvent_Debug(controlSystemService);
         String crossingId = controlSystemService.getRoadNetwork().getCrossings()[0].getId();
         String incomingRoadSegmentId = controlSystemService.getRoadNetwork().getCrossings()[0].getRoadSegmentIds()[0];
         TrafficLightRule[] rules = new TrafficLightRule[1];
 
         rules[0] = new TrafficLightRule(crossingId, incomingRoadSegmentId, prioForChangedStreet);
-        Thread.sleep(5000);     // wait for DetectionController to initialize
         detectionController.setTrafficLightRules(rules);
         CityMap map = detectionController.getCityMap();
         Map<String, Double> prio =  map.getCrossroad(crossingId).getTrafficLight().getRules_debug();
-        assertEquals((double) prioForChangedStreet,  (double) prio.get(incomingRoadSegmentId));
-
+        assertEquals(prioForChangedStreet,  (double) prio.get(incomingRoadSegmentId));
     }
 
     @Test           //check setCarPosition and Traffic load
     void setCarPosition() {
         //init
         int expectationWaitingCars = 18;
-        detectionController.onApplicationEvent_Debug(controlSystemService);
-        String crossingId = controlSystemService.getRoadNetwork().getCrossings()[0].getId();
-        String incomingRoadSegmentId = controlSystemService.getRoadNetwork().getCrossings()[0].getRoadSegmentIds()[0];
+        RoadNetwork map = controlSystemService.getRoadNetwork();
+        String crossingId = map.getCrossings()[0].getId();
+        String incomingRoadSegmentId = map.getCrossings()[0].getRoadSegmentIds()[0];
         CarPosition[] carPositions = new CarPosition[expectationWaitingCars];
 
         //set car positions
@@ -85,12 +82,13 @@ class DetectionControllerTest {
                 break;
             }
         }
+
         //check incoming cars working
         assertEquals(expectationWaitingCars, carsWaiting);
 
-        crossingId = controlSystemService.getRoadNetwork().getCrossings()[1].getId();
-        incomingRoadSegmentId = controlSystemService.getRoadNetwork().getCrossings()[1].getRoadSegmentIds()[0];
-
+        //change some car positions
+        crossingId = map.getCrossings()[2].getId();
+        incomingRoadSegmentId = map.getCrossings()[2].getRoadSegmentIds()[0];
 
         expectationWaitingCars -= 5;
         for (int i = 0; i < carPositions.length-5; i++) {
@@ -105,6 +103,7 @@ class DetectionControllerTest {
                 break;
             }
         }
+
         //check outgoing cars working
         assertEquals(expectationWaitingCars, carsWaiting);
     }

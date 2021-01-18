@@ -31,25 +31,10 @@ public class DetectionController implements DetectionInterface<TrafficLoad, Traf
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        Thread t = new Thread(() -> {
-                cityMap.createCityMap(controlSystemService.getRoadNetwork());
-                initialized = true;
-                System.out.println("Detection running");
-        });
-        t.start();
+        cityMap.createCityMap(controlSystemService.getRoadNetwork());
+        initialized = true;
+        System.out.println("Detection running");
     }
-
-    //for debugging purposes
-    public void onApplicationEvent_Debug(ControlSystemService controlSystemService) {
-        Thread t = new Thread(() -> {
-            cityMap.createCityMap(controlSystemService.getRoadNetwork());
-            initialized = true;
-            System.out.println("Detection debug running");
-        });
-        t.start();
-    }
-
-
 
     @Override   //request from Control system
     @GetMapping(DetectionInterface.GET_TRAFFIC_LOAD_URL)

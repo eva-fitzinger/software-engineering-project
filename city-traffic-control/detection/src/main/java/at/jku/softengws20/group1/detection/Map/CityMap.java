@@ -9,9 +9,6 @@ public class CityMap {
     private final Map<String, Street> streets = new HashMap<>();
     private final Map<String, Crossroad> crossroads = new HashMap<>();
 
-    public CityMap() {
-    }
-
     public void createCityMap(RoadNetwork roadNetwork) {
 
         //create roads
@@ -34,10 +31,6 @@ public class CityMap {
         }
 
         //start traffic lights (running in thread´s)
-        start();
-    }
-
-    public void start() {                           //Start Map
         crossroads.forEach((x,y) -> y.start());
     }
 
@@ -51,6 +44,10 @@ public class CityMap {
 
     public Crossroad getCrossroad(String id) {
         return crossroads.get(id);
+    }
+
+    public Map<String, Crossroad> getCrossroads() {     //debugging
+        return crossroads;
     }
 
     //I am perfectly aware that there are unused method´s in the implementation.
