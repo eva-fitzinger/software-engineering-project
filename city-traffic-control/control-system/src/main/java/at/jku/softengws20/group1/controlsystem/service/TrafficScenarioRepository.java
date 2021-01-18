@@ -4,14 +4,11 @@ import at.jku.softengws20.group1.controlsystem.internal.RecurringScenario;
 import at.jku.softengws20.group1.controlsystem.internal.Schedule;
 import at.jku.softengws20.group1.controlsystem.internal.TrafficScenario;
 import at.jku.softengws20.group1.shared.impl.model.RoadSegment;
-import at.jku.softengws20.group1.shared.impl.model.Timeslot;
+import at.jku.softengws20.group1.shared.impl.model.RoadType;
 import at.jku.softengws20.group1.shared.impl.model.TrafficLightRule;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.*;
 
 @Repository
@@ -37,7 +34,7 @@ public class TrafficScenarioRepository {
 
         for (int i = 0; i < trafficScenario.length; i++) {
             for (RoadSegment rs:mapRepository.getRoadNetwork().getRoadSegments()) {
-                trafficScenario[i].addRule(new TrafficLightRule(rs.getCrossingBId(),rs.getId(),rand.nextDouble()));
+                trafficScenario[i].addRule(new TrafficLightRule(rs.getCrossingBId(),rs.getId(), 0.5 + rand.nextDouble() * 0.5 * RoadType.valueOf(rs.getRoadType()).getGreenLightPriorityFactor()));
             }
         }
     }
