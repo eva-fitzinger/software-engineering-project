@@ -1,7 +1,10 @@
 package at.jku.softengws20.group1.maintenance.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Vehicle {
-    private String id;
+    private final String id;
     private String destination;
     private boolean arrived;
     private boolean available = true;
@@ -10,7 +13,6 @@ public class Vehicle {
     Vehicle(String id) {
         this.id = id;
     }
-
 
     public String getId() {
         return id;
