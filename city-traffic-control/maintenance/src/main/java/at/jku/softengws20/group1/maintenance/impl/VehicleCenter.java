@@ -99,7 +99,7 @@ public class VehicleCenter {
 
     public void triggerCarArrived(String id) {
         Vehicle vehicle = vehicles.stream().filter(x -> x.getId().equals(id)).findFirst().orElse(null);
-        long numEmployee = employees.stream().filter(x -> x.getAssignedToCar().equals(id)).count();
+        long numEmployee = employees.stream().filter(x -> id.equals(x.getAssignedToCar())).count();
         if (vehicle != null && vehicle.isCarOut()) {
             System.out.println("Maintenance:: car (" + vehicle.getId() + ") arrived at " + vehicle.getDestination());
             returnCar(vehicle);
@@ -111,7 +111,7 @@ public class VehicleCenter {
             nrVehicles++;
             if (numEmployee > 0) {
                 for (int i = 0; i < numEmployee; i++) {
-                    employees.stream().filter(x -> x.getAssignedToCar().equals(id)).findAny().ifPresent(employee -> {
+                    employees.stream().filter(x -> id.equals(x.getAssignedToCar())).findAny().ifPresent(employee -> {
                         employee.setAssignedToCar(null);
                         System.out.println("Maintenance:: employee(" + employee.getId() + ") arrived at VehicleCenter");
                         nrEmployees++;
