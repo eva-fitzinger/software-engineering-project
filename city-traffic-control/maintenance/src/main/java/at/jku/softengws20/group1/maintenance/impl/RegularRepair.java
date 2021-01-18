@@ -9,8 +9,6 @@ public class RegularRepair extends Repair {
     boolean approved;
 
     Timeslot[] timeslot;
-    Date from;
-    Date to;
 
     public RegularRepair(String repairId, RepairType repairType, String location, int priority, long duration,
                          int nrVehiclesNeeded, int nrWorkersNeeded) {
@@ -21,10 +19,8 @@ public class RegularRepair extends Repair {
 
     public RegularRepair(String repairId, RepairType repairType, String location, int priority, long duration,
                          int nrVehiclesNeeded, int nrWorkersNeeded, Date from, Date to) {
-        super(repairId, repairType, location, duration, nrVehiclesNeeded, nrWorkersNeeded);
+        super(repairId, repairType, location, duration, nrVehiclesNeeded, nrWorkersNeeded, from, to);
         this.priority = priority;
-        this.from = from;
-        this.to = to;
     }
 
     public int getPriority() {
@@ -53,11 +49,11 @@ public class RegularRepair extends Repair {
 
     @Override
     public Date getFrom() {
-        return from;
+        return super.getFrom();
     }
 
     @Override
     public Date getTo() {
-        return to;
+        return super.getTo();
     }
 }

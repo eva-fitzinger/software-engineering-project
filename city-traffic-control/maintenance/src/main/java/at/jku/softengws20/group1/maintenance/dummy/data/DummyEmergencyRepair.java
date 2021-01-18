@@ -22,6 +22,6 @@ public class DummyEmergencyRepair {
                 rand.nextInt(MAX_MAINTENANCE_VEHICLES) + 1, // vehicles needed
                 rand.nextInt(MAX_EMPLOYEES),
                 currentDate,
-                rand.nextLong() % MAX_DURATION);
+                Math.abs(rand.nextLong()) % MAX_DURATION);
     }
 }

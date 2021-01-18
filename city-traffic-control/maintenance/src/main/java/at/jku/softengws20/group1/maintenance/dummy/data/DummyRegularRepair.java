@@ -23,36 +23,13 @@ public class DummyRegularRepair {
                 RepairType.REGULAR_REPAIR, // RepairType
                 "", //location
                 rand.nextInt(5), //priority
-                rand.nextLong() % MAX_DURATION, //duration in milliseconds
+                Math.abs(rand.nextLong()) % MAX_DURATION, //duration in milliseconds
                 rand.nextInt(MAX_MAINTENANCE_VEHICLES / 2) + 1, // vehicles needed
                 rand.nextInt(MAX_EMPLOYEES)
         );
     }
 
     //for simplicity reasons: this maintenance company is a 24/7 service
-    // todo decide whether you use this
-    public static Timeslot[] getDummyTimeSlots(RegularRepair regularRepair) {
-        Random rand = new Random();
-
-        Date currentDate = new Date();
-        long dateTime = currentDate.getTime();
-
-        Timeslot[] timeslots = new at.jku.softengws20.group1.shared.impl.model.Timeslot[rand.nextInt(4) + 1];
-        for (int i = 0; i < timeslots.length; i++) {
-
-            Date from = new Date(dateTime + Math.abs(rand.nextLong() % TWO_MONTHS));
-            Date to = new Date(from.getTime() + regularRepair.getDuration());
-
-            timeslots[i] = new at.jku.softengws20.group1.shared.impl.model.Timeslot(
-                    from,
-                    to
-            );
-        }
-
-        return timeslots;
-    }
-
-
     public static Timeslot getDummyTimeSlot(RegularRepair regularRepair) {
         Random rand = new Random();
 

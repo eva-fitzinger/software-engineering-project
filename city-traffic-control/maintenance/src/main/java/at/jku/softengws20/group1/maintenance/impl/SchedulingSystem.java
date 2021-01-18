@@ -40,8 +40,9 @@ public class SchedulingSystem {
             }
             return r1.getFrom().before(r2.getFrom()) ? -1 : 1;
         });
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
         for (Repair repair : schedule) {
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             System.out.println(formatter.format(repair.getFrom()) + "-"
                     + formatter.format(repair.getTo()) + ":" +
                     repair.getRepairId());
@@ -132,7 +133,7 @@ public class SchedulingSystem {
             }
             return r1.getFrom().before(r2.getFrom()) ? -1 : 1;
         }).orElse(null);
-        if(timeslot == null){
+        if (timeslot == null || timeslot.getFrom() == null || timeslot.getTo() == null) {
             return;
         }
         regularRepair.setTime(timeslot.getFrom(), timeslot.getTo());

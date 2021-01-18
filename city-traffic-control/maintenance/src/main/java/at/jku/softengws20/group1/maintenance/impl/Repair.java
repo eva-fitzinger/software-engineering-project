@@ -24,6 +24,18 @@ public abstract class Repair {
         this.nrWorkersNeeded = nrWorkersNeeded;
     }
 
+    public Repair(String repairId, RepairType repairType, String location, long duration,
+                  int nrVehiclesNeeded, int nrWorkersNeeded, Date from, Date to) {
+        this.repairId = repairId;
+        this.repairType = repairType;
+        this.location = location;
+        this.duration = duration;
+        this.nrVehiclesNeeded = nrVehiclesNeeded;
+        this.nrWorkersNeeded = nrWorkersNeeded;
+        this.from = from;
+        this.to = to;
+    }
+
     public int getNrVehiclesNeeded() {
         return nrVehiclesNeeded;
     }
