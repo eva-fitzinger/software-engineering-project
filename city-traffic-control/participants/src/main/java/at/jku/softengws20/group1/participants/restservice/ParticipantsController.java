@@ -97,7 +97,7 @@ public class ParticipantsController implements ParticipantsInterface, Applicatio
         for (Crossing crossing : roadNetwork.crossings) {
             double x = (crossing.getPosition().getX() - minX) / (maxX - minX) * 90 + 5;
             double y = (crossing.getPosition().getY() - minY) / (maxY - minY) * 90 + 5;
-            gui.append("<text x=").append(x).append("% y=").append(y).append("% class='small'>").append(crossing.getId()).append("</text>");
+            //gui.append("<text x=").append(x).append("% y=").append(y).append("% class='small'>").append(crossing.getId()).append("</text>");
             gui.append("<circle cx=").append(x).append("% cy=").append(y).append("% r=2").append(" fill='black'/>");
         }
         gui.append("</svg>");
