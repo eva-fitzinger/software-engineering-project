@@ -16,11 +16,11 @@ public class SchedulingSystem {
     @Autowired
     private CityMapService cityMapService;
 
-    private ControlSystemService_Maintenance controlSystemServiceMaintenance = new ControlSystemService_Maintenance();
+    private final ControlSystemService_Maintenance controlSystemServiceMaintenance = new ControlSystemService_Maintenance();
 
 
-    private List<Repair> schedule;
-    private List<RegularRepair> notApprovedRegularRepairs;
+    private final List<Repair> schedule;
+    private final List<RegularRepair> notApprovedRegularRepairs;
 
     public SchedulingSystem() {
         schedule = new ArrayList<>();
@@ -67,7 +67,7 @@ public class SchedulingSystem {
                 availableTimeslots[i] = timeslot;
                 i++;
             } else {
-                for (int j = 0; i < 3 && j < schedule.size() && timeslot.getTo().before(schedule.get(j).getTo()); j++) { //as long as the timeSlot end is before the end of the current schedule
+                for (int j = 0; j < schedule.size() && timeslot.getTo().before(schedule.get(j).getTo()); j++) { //as long as the timeSlot end is before the end of the current schedule
                     //if at beginning
                     if (timeslot.getTo().before(schedule.get(0).getFrom())) {
                         availableTimeslots[i] = timeslot;
@@ -146,6 +146,7 @@ public class SchedulingSystem {
 
     public void addEmergencyRepair(EmergencyRepair emergencyRepair) {
         //add right away
+        System.out.println("Maintenance:: Emergency Repair with: " + emergencyRepair.getNrVehiclesNeeded() + " vehicle(s)");
         List<Repair> localSchedule = getSchedule();
         if (localSchedule.size() == 0) {
             localSchedule.add(emergencyRepair);
