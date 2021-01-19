@@ -1,6 +1,5 @@
 package at.jku.softengws20.group1.controlsystem.restservice;
 
-import at.jku.softengws20.group1.controlsystem.service.MaintenanceRepository;
 import at.jku.softengws20.group1.controlsystem.service.MapRepository;
 import at.jku.softengws20.group1.shared.TestMap;
 import at.jku.softengws20.group1.shared.impl.model.MaintenanceRequest;
@@ -10,25 +9,36 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 import java.util.Arrays;
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
+@SpringBootTest(classes = ControlSystemControllerTest.Config.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class ControlSystemControllerTest {
+
+    @SpringBootApplication(scanBasePackages = {"at.jku.softengws20.group1.controlsystem"})
+    //@EnableScheduling
+    static class Config extends SpringBootServletInitializer {
+        public static void main(String[] args) {
+            SpringApplication.run(Config.class, args);
+        }
+    }
 
     @Mock
     private MapRepository mapRepository;
 
+    @Autowired
     @InjectMocks
     private ControlSystemController controller;
-
-    @Mock
-    private MaintenanceRepository maintenanceRepository;
 
     @Test
     void whenRequestMap_thenMapIsReturned() {
@@ -45,7 +55,6 @@ class ControlSystemControllerTest {
         };
         MaintenanceRequest maintenanceRequest = new MaintenanceRequest("ring", "regular","rs1", timeslots);
         MaintenanceRequest[] maintenanceRequestsToApprove = new MaintenanceRequest[] {maintenanceRequest};
-        when(maintenanceRepository.getMaintenanceRequestsToApprove()).thenReturn(maintenanceRequestsToApprove);
 
         controller.requestRoadClosing(maintenanceRequest);
         MaintenanceRequest[] maintenanceRequests = controller.getMaintenanceRequests();
