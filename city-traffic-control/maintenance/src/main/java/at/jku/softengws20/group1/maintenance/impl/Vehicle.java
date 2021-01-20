@@ -1,14 +1,15 @@
 package at.jku.softengws20.group1.maintenance.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+/**
+ * The <a href="#{@link}">{@link Vehicle}</a> class exists for completion. The number of Vehicles is considered
+ * in order to only send available vehicles. Vehicles are handled in the vehicle center.
+ */
 
 public class Vehicle {
     private final String id;
     private String destination;
-    private boolean arrived;
     private boolean available = true;
-    private boolean carOut = false;
+    private boolean carIsGoingOut = false;
 
     Vehicle(String id) {
         this.id = id;
@@ -26,14 +27,6 @@ public class Vehicle {
         this.destination = destination;
     }
 
-    public boolean isArrived() {
-        return arrived;
-    }
-
-    public void setArrived(boolean arrived) {
-        this.arrived = arrived;
-    }
-
     public boolean isAvailable() {
         return available;
     }
@@ -42,11 +35,11 @@ public class Vehicle {
         this.available = available;
     }
 
-    public boolean isCarOut() {
-        return carOut;
+    public boolean isCarIsGoingOut() {
+        return carIsGoingOut;
     }
 
     public void setCarIsGoingOut(boolean carOut) {
-        this.carOut = carOut;
+        this.carIsGoingOut = carOut;
     }
 }

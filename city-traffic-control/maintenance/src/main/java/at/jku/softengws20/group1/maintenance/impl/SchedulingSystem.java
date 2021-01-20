@@ -5,11 +5,17 @@ import at.jku.softengws20.group1.maintenance.restservice.ControlSystemService_Ma
 import at.jku.softengws20.group1.shared.impl.model.Timeslot;
 import at.jku.softengws20.group1.shared.impl.model.MaintenanceRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static at.jku.softengws20.group1.maintenance.impl.MaintenanceConstants.NUMBER_OF_TIME_SLOTS;
+
+/**
+ * This class is handles the scheduling of Repairs.
+ */
 @Service
 public class SchedulingSystem {
 
@@ -31,24 +37,10 @@ public class SchedulingSystem {
         return schedule;
     }
 
-
-    public void printSchedule() {
-        System.out.println("-------- Time Table for this Year ---------");
-        schedule.sort((r1, r2) -> {
-            if (r1 == r2) {
-                return 0;
-            }
-            return r1.getFrom().before(r2.getFrom()) ? -1 : 1;
-        });
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-
-        for (Repair repair : schedule) {
-            System.out.println(formatter.format(repair.getFrom()) + "-"
-                    + formatter.format(repair.getTo()) + ":" +
-                    repair.getRepairId());
-        }
-    }
-
+    /**
+     * Adds a random  <a href="#{@link}">{@link RegularRepair}</a> to the schedule.
+     * Mostly used for the dummy implementation to demonstrate the System.
+     */
     public void addRegularRepair() {
         RegularRepair regularRepair = DummyRegularRepair.getRegularRepair();
         at.jku.softengws20.group1.shared.impl.model.Timeslot[] timeslots = findAvailableTimeslots(regularRepair);
@@ -56,11 +48,22 @@ public class SchedulingSystem {
         addRegularRepair(regularRepair);
     }
 
+    /**
+     * Returns an array of  <a href="#{@link}">{@link Timeslot}</a>.
+     * The timeslots are calculated in a way so that there can only be one
+     * <a href="#{@link}">{@link RegularRepair}</a> at a time!
+     * Mostly used for the dummy implementation to demonstrate the System.
+     *
+     * @param regularRepair The <a href="#{@link}">{@link RegularRepair}</a> for which a
+     *                      <a href="#{@link}">{@link Timeslot}</a> has to be found.
+     * @return an array of available  <a href="#{@link}">{@link Timeslot}</a>
+     */
     private at.jku.softengws20.group1.shared.impl.model.Timeslot[] findAvailableTimeslots(RegularRepair regularRepair) {
         at.jku.softengws20.group1.shared.impl.model.Timeslot timeslot;
         at.jku.softengws20.group1.shared.impl.model.Timeslot[] availableTimeslots = new at.jku.softengws20.group1.shared.impl.model.Timeslot[3];
 
-        for (int i = 0; i < 3; ) {
+        int i = 0;
+        while (i < NUMBER_OF_TIME_SLOTS) {
             timeslot = (Timeslot) DummyRegularRepair.getDummyTimeSlot(regularRepair);
 
             if (schedule.size() == 0) {
@@ -93,9 +96,16 @@ public class SchedulingSystem {
         return availableTimeslots;
     }
 
-    public void addRegularRepair(RegularRepair regularRepair) {
-        Random rand = new Random();
-        //TODO Jakob what is this warning?
+    /**
+     * Adds an existing <a href="#{@link}">{@link RegularRepair}</a> to the schedule.
+     * If the Maintenance System had a GUI, this is the method that would be used to connect it
+     * to the GUI. The method requests a road closing at the ControlSystem.
+     *
+     * @param regularRepair an already created <a href="#{@link}">{@link RegularRepair}</a>.
+     */
+
+    public void addRegularRepair(@NonNull RegularRepair regularRepair) {
+         Random rand = new Random();
         String location = cityMapService.getRoadNetwork()
                 .getRoadSegments()[rand.nextInt(cityMapService.getRoadNetwork().getRoadSegments().length)].getId();
         regularRepair.setLocation(location);
@@ -108,10 +118,18 @@ public class SchedulingSystem {
                         regularRepair.getLocation(),
                         regularRepair.getTimeslot()
                 );
-        // request permission
+
+        // request permission to schedule and close road from ControlSystem
         controlSystemServiceMaintenance.requestRoadClosing(maintenanceRequest);
     }
 
+    /**
+     * Schedules the first possible Timeslot in the schedule and calls to print the schedule
+     * in the Terminal.
+     *
+     * @param approvedMaintenanceRequest an approved <a href="#{@link}">{@link MaintenanceRequest}</a>
+     *                                   usually received from the ControlSystem.
+     */
     public void triggerRegularRepairAccepted(at.jku.softengws20.group1.shared.controlsystem.MaintenanceRequest approvedMaintenanceRequest) {
         System.out.println("Maintenance:: Regular Repair accepted: " + approvedMaintenanceRequest.getRequestId());
         Timeslot[] approvedTimeslots = (Timeslot[]) approvedMaintenanceRequest.getTimeSlots();
@@ -133,6 +151,7 @@ public class SchedulingSystem {
             }
             return r1.getFrom().before(r2.getFrom()) ? -1 : 1;
         }).orElse(null);
+
         if (timeslot == null || timeslot.getFrom() == null || timeslot.getTo() == null) {
             return;
         }
@@ -144,7 +163,32 @@ public class SchedulingSystem {
         printSchedule();
     }
 
-    public void addEmergencyRepair(EmergencyRepair emergencyRepair) {
+    public void printSchedule() {
+        System.out.println("-------- Time Table for this Year ---------");
+        schedule.sort((r1, r2) -> {
+            if (r1 == r2) {
+                return 0;
+            }
+            return r1.getFrom().before(r2.getFrom()) ? -1 : 1;
+        });
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+        for (Repair repair : schedule) {
+            System.out.println(formatter.format(repair.getFrom()) + "-"
+                    + formatter.format(repair.getTo()) + ":" +
+                    repair.getRepairId());
+        }
+    }
+
+    /**
+     * Method receives an <a href="#{@link}">{@link EmergencyRepair}</a> and reschedules the schedule
+     * in case there would be an overlap.
+     *
+     * @param emergencyRepair already created <a href="#{@link}">{@link EmergencyRepair}</a>
+     *                        its duration is used to reschedule the schedule if necessary
+     */
+
+    public void addEmergencyRepair(@NonNull EmergencyRepair emergencyRepair) {
         //add right away
         System.out.println("Maintenance:: Emergency Repair with: " + emergencyRepair.getNrVehiclesNeeded() + " vehicle(s)");
         List<Repair> localSchedule = getSchedule();

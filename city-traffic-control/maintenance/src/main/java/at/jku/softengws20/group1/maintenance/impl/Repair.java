@@ -11,6 +11,7 @@ public abstract class Repair {
     private Date to = new Date();
     // duration in milliseconds
     private long duration;
+
     private int nrVehiclesNeeded;
     private int nrWorkersNeeded;
 
@@ -24,40 +25,16 @@ public abstract class Repair {
         this.nrWorkersNeeded = nrWorkersNeeded;
     }
 
-    public Repair(String repairId, RepairType repairType, String location, long duration,
-                  int nrVehiclesNeeded, int nrWorkersNeeded, Date from, Date to) {
-        this.repairId = repairId;
-        this.repairType = repairType;
-        this.location = location;
-        this.duration = duration;
-        this.nrVehiclesNeeded = nrVehiclesNeeded;
-        this.nrWorkersNeeded = nrWorkersNeeded;
-        this.from = from;
-        this.to = to;
-    }
-
     public int getNrVehiclesNeeded() {
         return nrVehiclesNeeded;
-    }
-
-    public void setNrVehiclesNeeded(int nrVehiclesNeeded) {
-        this.nrVehiclesNeeded = nrVehiclesNeeded;
     }
 
     public int getNrWorkersNeeded() {
         return nrWorkersNeeded;
     }
 
-    public void setNrWorkersNeeded(int nrWorkersNeeded) {
-        this.nrWorkersNeeded = nrWorkersNeeded;
-    }
-
     public String getRepairId() {
         return repairId;
-    }
-
-    public RepairType getRepairType() {
-        return repairType;
     }
 
     public String getLocation() {
@@ -90,5 +67,20 @@ public abstract class Repair {
 
     public Date getTo() {
         return to;
+    }
+
+
+    //Methods which are not used yet but could be crucial in further implementations
+
+    public RepairType getRepairType() {
+        return repairType;
+    }
+
+    void setNrVehiclesNeeded(int nrVehiclesNeeded) {
+        this.nrVehiclesNeeded = nrVehiclesNeeded;
+    }
+
+    public void setNrWorkersNeeded(int nrWorkersNeeded) {
+        this.nrWorkersNeeded = nrWorkersNeeded;
     }
 }
