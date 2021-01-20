@@ -231,6 +231,49 @@ class ControlSystemControllerTest {
 
     }
 
+    @Test
+    void roadClosingAndOpening() {
+        for (RoadSegment rs : mapRepository.getRoadNetwork().getRoadSegments()) {
+            when (mapRepository.getRoadSegment(rs.getId())).thenReturn(rs);
+        }
+
+        // no road segments closed at the beginning
+        assertEquals(0, controller.getClosedRoadSegments().length);
+
+        for (RoadSegment roadSegment : mapRepository.getRoadNetwork().getRoadSegments()) {
+            controller.setRoadClose(roadSegment.getId());
+            // check if specific road segment is closed
+            assertEquals(1, Arrays.stream(controller.getStatus()).filter(rss -> !rss.isOpen()).filter(rs -> rs.getRoadSegmentId().equals(roadSegment.getId())).count());
+        }
+
+        // check if all road segments are closed
+        assertEquals(mapRepository.getRoadNetwork().getRoadSegments().length, controller.getClosedRoadSegments().length);
+        assertEquals(mapRepository.getRoadNetwork().getRoadSegments().length, Arrays.stream(controller.getStatus()).filter(rss -> !rss.isOpen()).count());
+        // check if any road segments is open
+        assertEquals(0, Arrays.stream(controller.getStatus()).filter(rss -> rss.isOpen()).count());
+
+        //open all roadsegments
+        int totalNumberRoadSegments = mapRepository.getRoadNetwork().getRoadSegments().length;
+        int numberClosedRoadSegments = controller.getClosedRoadSegments().length;
+        for (RoadSegment roadSegment : mapRepository.getRoadNetwork().getRoadSegments()) {
+            controller.setRoadAvailable(roadSegment.getId());
+            numberClosedRoadSegments--;
+            // check number of roads opened
+            assertEquals(totalNumberRoadSegments - numberClosedRoadSegments, Arrays.stream(controller.getStatus()).filter(rss -> rss.isOpen()).count());
+            // check number of closed road segments
+            assertEquals(numberClosedRoadSegments, Arrays.stream(controller.getStatus()).filter(rss -> !rss.isOpen()).count());
+            assertEquals(numberClosedRoadSegments, controller.getClosedRoadSegments().length);
+            // check if specific road segment is opened
+            assertEquals(1, Arrays.stream(controller.getStatus()).filter(rss -> rss.isOpen()).filter(rs -> rs.getRoadSegmentId().equals(roadSegment.getId())).count());
+        }
+
+        // check if all road segments are open
+        assertEquals(0, controller.getClosedRoadSegments().length);
+        assertEquals(mapRepository.getRoadNetwork().getRoadSegments().length, Arrays.stream(controller.getStatus()).filter(rss -> rss.isOpen()).count());
+        // check if any road segments is closed
+        assertEquals(0, Arrays.stream(controller.getStatus()).filter(rss -> !rss.isOpen()).count());
+    }
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
