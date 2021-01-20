@@ -19,6 +19,11 @@ public class MaintenanceRepository {
         super();
     }
 
+    public void init() {
+        maintenanceRequestsToApprove = new ArrayList<MaintenanceRequest>();
+        approvedMaintenanceRequests = new ArrayList<MaintenanceRequest>();
+    }
+
     public void pushMaintenanceRequestToApprove(MaintenanceRequest maintenanceRequest) {
         maintenanceRequestsToApprove.add(maintenanceRequest);
     }
