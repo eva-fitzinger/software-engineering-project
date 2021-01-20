@@ -134,4 +134,16 @@ public class MaintenanceController implements MaintenanceInterface<MaintenanceRe
         });
         car.start();
     }
+
+    /**
+     * Methodes for debugging
+     * @return
+     */
+    public VehicleCenter getVehicleCenter() {
+        return vehicleCenter;
+    }
+
+    public SchedulingSystem getSchedulingSystem() {
+        return schedulingSystem;
+    }
 }
