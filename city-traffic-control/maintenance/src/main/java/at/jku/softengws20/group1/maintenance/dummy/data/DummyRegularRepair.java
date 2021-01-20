@@ -8,8 +8,12 @@ import at.jku.softengws20.group1.shared.controlsystem.Timeslot;
 import java.util.Date;
 import java.util.Random;
 
-import static at.jku.softengws20.group1.maintenance.impl.Constants.*;
+import static at.jku.softengws20.group1.maintenance.impl.MaintenanceConstants.*;
 import static at.jku.softengws20.group1.shared.Config.*;
+
+/**
+ * Dummy class used to create RegularRepairs and Timeslots
+ */
 
 public class DummyRegularRepair {
 
@@ -43,10 +47,9 @@ public class DummyRegularRepair {
         Date from = new Date(dateTime + Math.abs(rand.nextLong() % TWO_MONTHS));
         Date to = new Date(from.getTime() + regularRepair.getDuration());
 
-        Timeslot timeslot = new at.jku.softengws20.group1.shared.impl.model.Timeslot(
+        return new at.jku.softengws20.group1.shared.impl.model.Timeslot(
                 from,
                 to
         );
-        return timeslot;
     }
 }

@@ -1,12 +1,15 @@
 package at.jku.softengws20.group1.maintenance.impl;
 
 import at.jku.softengws20.group1.shared.impl.model.*;
-
 import java.util.Date;
+
+/**
+ * A regular repair is a repair which is scheduled. It can have multiple timeslots which are sent to
+ * the ControlSystem for approval (Implementation in Scheduling System).
+ */
 
 public class RegularRepair extends Repair {
     int priority;
-    boolean approved;
 
     Timeslot[] timeslot;
 
@@ -17,12 +20,6 @@ public class RegularRepair extends Repair {
         this.timeslot = new Timeslot[0];
     }
 
-    public RegularRepair(String repairId, RepairType repairType, String location, int priority, long duration,
-                         int nrVehiclesNeeded, int nrWorkersNeeded, Date from, Date to) {
-        super(repairId, repairType, location, duration, nrVehiclesNeeded, nrWorkersNeeded, from, to);
-        this.priority = priority;
-    }
-
     public int getPriority() {
         return priority;
     }
@@ -31,29 +28,11 @@ public class RegularRepair extends Repair {
         this.priority = priority;
     }
 
-    public boolean isApproved() {
-        return approved;
-    }
-
-    public void setApproved(boolean approved) {
-        this.approved = approved;
-    }
-
     public Timeslot[] getTimeslot() {
         return timeslot;
     }
 
     public void setTimeslot(Timeslot[] timeslot) {
         this.timeslot = timeslot;
-    }
-
-    @Override
-    public Date getFrom() {
-        return super.getFrom();
-    }
-
-    @Override
-    public Date getTo() {
-        return super.getTo();
     }
 }

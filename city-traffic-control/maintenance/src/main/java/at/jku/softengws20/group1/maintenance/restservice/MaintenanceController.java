@@ -7,6 +7,7 @@ import at.jku.softengws20.group1.maintenance.impl.SchedulingSystem;
 import at.jku.softengws20.group1.maintenance.impl.VehicleCenter;
 import at.jku.softengws20.group1.shared.impl.model.MaintenanceRequest;
 import at.jku.softengws20.group1.shared.impl.model.Timeslot;
+import at.jku.softengws20.group1.shared.impl.service.ControlSystemRestService;
 import at.jku.softengws20.group1.shared.maintenance.MaintenanceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -16,9 +17,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 
-
+/**
+ * The <a href="#{@link}">{@link MaintenanceController}</a> class is mostly responsible to
+ * control the cycles of the System. Most Methods are implemented as Dummies to get the System running.
+ *
+ * The descriptions of the REST API can be found in the <a href="#{@link}">{@link MaintenanceInterface}</a>
+ * since the methods should be called from there by the other systems.
+ */
 @RestController
-@RequestMapping(MaintenanceInterface.URL) //todo timeconstant
+@RequestMapping(MaintenanceInterface.URL)
 public class MaintenanceController implements MaintenanceInterface<MaintenanceRequest<Timeslot>>, ApplicationListener<ContextRefreshedEvent> {
 
     @Autowired
@@ -57,6 +64,7 @@ public class MaintenanceController implements MaintenanceInterface<MaintenanceRe
             for (int i = 0; ; i++) {
                 final Date currentDate = new Date();
                 List<Repair> schedule = schedulingSystem.getSchedule();
+                // if a scheduled RegularRepair has passed, send a car.
                 schedule.stream()
                         .filter(x -> x.getFrom().before(currentDate))
                         .findAny().ifPresent(this::sendVehicle);
@@ -78,8 +86,8 @@ public class MaintenanceController implements MaintenanceInterface<MaintenanceRe
             int i = 0;
             for (; ; i++) {
                 schedulingSystem.addRegularRepair();
-                //as time passes wait longer to make next regular repair schedule,
-                // so we don't have an overload
+                // as time passes wait longer to make next regular repair schedule,
+                // so we don't have an overload in this Dummy Implementation
                 try {
                     Thread.sleep(1000L * i);
                 } catch (InterruptedException e) {
@@ -106,6 +114,8 @@ public class MaintenanceController implements MaintenanceInterface<MaintenanceRe
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                // as time passes wait longer to make next regular repair schedule,
+                // so we don't have an overload in this Dummy Implementation
                 sendVehicle(emergencyRepair);
             }
         });

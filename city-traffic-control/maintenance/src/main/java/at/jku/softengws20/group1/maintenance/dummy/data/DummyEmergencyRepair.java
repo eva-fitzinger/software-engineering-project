@@ -2,13 +2,14 @@ package at.jku.softengws20.group1.maintenance.dummy.data;
 
 import at.jku.softengws20.group1.maintenance.impl.*;
 
+import static at.jku.softengws20.group1.shared.Config.*;
+import static at.jku.softengws20.group1.maintenance.impl.MaintenanceConstants.*;
+
 import java.util.*;
 
-import static at.jku.softengws20.group1.shared.Config.*;
-
-import at.jku.softengws20.group1.shared.Config;
-
-import static at.jku.softengws20.group1.maintenance.impl.Constants.*;
+/**
+ * Dummy class used to create EmergencyRepairs
+ */
 
 public class DummyEmergencyRepair {
 
