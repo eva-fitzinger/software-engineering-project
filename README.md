@@ -29,6 +29,7 @@ Alternative in Intellij: Gradleview -> Tasks -> applications -> bootrun
 ## GUI’s:
 Note: For the GUIs to work the other subsystems must already be up and running
 Participants Debugging gui: http://localhost:8080/participants/gui
+
 Control Center GUI: Terminal: gradlew run
 Alternative in Intellij: Gradleview -> Applications -> run
 
